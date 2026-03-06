@@ -1,0 +1,165 @@
+<!-- html-version/pages/guest/blog-detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Post - High Street Gym</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../../css/styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="bg-gray-50">
+
+    <!-- Navbar -->
+    <nav
+        class="bg-white border-b border-gray-200 h-20 px-8 flex items-center justify-between shadow-sm sticky top-0 z-50">
+        <div class="flex items-center gap-2">
+            <i data-lucide="dumbbell" class="h-8 w-8 text-indigo-600"></i>
+            <span class="text-xl font-bold text-gray-900">High Street Gym</span>
+        </div>
+
+        <div class="flex items-center gap-8">
+            <a href="index.html" class="text-gray-700 hover:text-indigo-600 transition-colors">Home</a>
+            <a href="blog.html" class="text-indigo-600 font-medium hover:text-indigo-700 transition-colors">Blog</a>
+            <a href="#about" class="text-gray-700 hover:text-indigo-600 transition-colors">About</a>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button onclick="navigateTo('login.html')"
+                class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                Login
+            </button>
+        </div>
+    </nav>
+
+    <!-- Article -->
+    <article class="max-w-4xl mx-auto px-8 py-16">
+
+        <!-- Back Button -->
+        <button onclick="navigateTo('blog.html')"
+            class="flex items-center gap-2 text-gray-600 hover:text-indigo-600 mb-8">
+            <i data-lucide="arrow-left" class="h-4 w-4"></i>
+            Back to Blog
+        </button>
+
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex items-center gap-2 text-sm text-gray-500 mb-4">
+                <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-semibold"
+                    id="category">Training</span>
+                <span>•</span>
+                <span id="date">March 15, 2024</span>
+            </div>
+            <h1 class="text-5xl font-bold text-gray-900 mb-6" id="title">10 Essential Exercises for Building Muscle</h1>
+            <div class="flex items-center gap-4">
+                <div class="bg-gray-200 rounded-full w-12 h-12 flex items-center justify-center">
+                    <i data-lucide="user" class="h-6 w-6 text-gray-600"></i>
+                </div>
+                <div>
+                    <p class="font-semibold text-gray-900" id="author">John Smith</p>
+                    <p class="text-sm text-gray-500">Certified Trainer</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Featured Image -->
+        <img src="https://via.placeholder.com/800x400" alt="Blog post" class="w-full h-96 object-cover rounded-xl mb-8">
+
+        <!-- Content -->
+        <div class="prose prose-lg max-w-none" id="content">
+            <p class="text-xl text-gray-700 mb-6">
+                Building muscle effectively requires a combination of proper technique, consistency, and the right
+                exercises. In this comprehensive guide, we'll explore the fundamental movements that form the foundation
+                of any successful muscle-building program.
+            </p>
+
+            <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">1. Compound Movements</h2>
+            <p class="text-gray-700 mb-4">
+                Compound exercises work multiple muscle groups simultaneously, making them incredibly efficient for
+                building overall strength and mass. These movements should form the core of your training program.
+            </p>
+
+            <h3 class="text-xl font-bold text-gray-900 mt-6 mb-3">Squat</h3>
+            <p class="text-gray-700 mb-4">
+                The king of all exercises, squats target your quads, hamstrings, glutes, and core. Proper form is
+                crucial - keep your chest up, knees tracking over toes, and descend until your thighs are parallel to
+                the ground.
+            </p>
+
+            <h3 class="text-xl font-bold text-gray-900 mt-6 mb-3">Deadlift</h3>
+            <p class="text-gray-700 mb-4">
+                Deadlifts work your entire posterior chain - back, glutes, and hamstrings. This exercise builds
+                tremendous strength and muscle mass when performed correctly.
+            </p>
+
+            <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">2. Progressive Overload</h2>
+            <p class="text-gray-700 mb-4">
+                To continue building muscle, you must progressively increase the demands on your muscles. This can be
+                achieved through:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 mb-4 space-y-2">
+                <li>Increasing weight</li>
+                <li>Adding more repetitions</li>
+                <li>Reducing rest periods</li>
+                <li>Improving exercise form</li>
+            </ul>
+
+            <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">3. Recovery and Nutrition</h2>
+            <p class="text-gray-700 mb-4">
+                Remember that muscle growth happens during recovery, not during the workout itself. Ensure you're
+                getting adequate protein (1g per pound of body weight), quality sleep, and proper rest between training
+                sessions.
+            </p>
+
+            <div class="bg-indigo-50 border-l-4 border-indigo-600 p-6 my-8">
+                <p class="text-indigo-900 font-semibold mb-2">Pro Tip</p>
+                <p class="text-indigo-800">Consistency beats perfection. Focus on showing up regularly and making small
+                    improvements over time rather than seeking dramatic changes overnight.</p>
+            </div>
+
+            <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">Conclusion</h2>
+            <p class="text-gray-700 mb-4">
+                Building muscle is a journey that requires patience, dedication, and the right approach. By focusing on
+                these essential exercises and principles, you'll be well on your way to achieving your strength and
+                physique goals.
+            </p>
+        </div>
+
+        <!-- Share -->
+        <div class="border-t border-gray-200 mt-12 pt-8">
+            <p class="text-gray-600 mb-4">Share this article:</p>
+            <div class="flex gap-4">
+                <button class="p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    <i data-lucide="facebook" class="h-5 w-5"></i>
+                </button>
+                <button class="p-3 bg-sky-500 text-white rounded-lg hover:bg-sky-600">
+                    <i data-lucide="twitter" class="h-5 w-5"></i>
+                </button>
+                <button class="p-3 bg-pink-600 text-white rounded-lg hover:bg-pink-700">
+                    <i data-lucide="instagram" class="h-5 w-5"></i>
+                </button>
+            </div>
+        </div>
+
+    </article>
+
+    <!-- Related Posts -->
+    <section class="bg-white py-16">
+        <div class="max-w-7xl mx-auto px-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">Related Articles</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Related posts would go here -->
+            </div>
+        </div>
+    </section>
+
+    <script src="../../js/main.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

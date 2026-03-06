@@ -1,0 +1,181 @@
+<!-- html-version/pages/guest/blog.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - High Street Gym</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../../css/styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="bg-gray-50">
+
+    <!-- Navbar -->
+    <nav
+        class="bg-white border-b border-gray-200 h-20 px-8 flex items-center justify-between shadow-sm sticky top-0 z-50">
+        <div class="flex items-center gap-2">
+            <i data-lucide="dumbbell" class="h-8 w-8 text-indigo-600"></i>
+            <span class="text-xl font-bold text-gray-900">High Street Gym</span>
+        </div>
+
+        <div class="flex items-center gap-8">
+            <a href="index.html" class="text-gray-700 hover:text-indigo-600 transition-colors">Home</a>
+            <a href="blog.html" class="text-indigo-600 font-medium hover:text-indigo-700 transition-colors">Blog</a>
+            <a href="#about" class="text-gray-700 hover:text-indigo-600 transition-colors">About</a>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button onclick="navigateTo('login.html')"
+                class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                Login
+            </button>
+            <button onclick="navigateTo('register.html')"
+                class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                Sign Up
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Header -->
+    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-16">
+        <div class="max-w-7xl mx-auto px-8">
+            <h1 class="text-5xl font-bold mb-4">Fitness Blog</h1>
+            <p class="text-xl text-indigo-100">Tips, guides, and insights from our expert trainers</p>
+        </div>
+    </div>
+
+    <!-- Blog Posts Grid -->
+    <div class="max-w-7xl mx-auto px-8 py-16">
+
+        <!-- Search and Filter -->
+        <div class="mb-12 flex flex-col md:flex-row gap-4">
+            <div class="flex-1">
+                <input type="text" placeholder="Search articles..."
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+            </div>
+            <select
+                class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+                <option>All Categories</option>
+                <option>Nutrition</option>
+                <option>Training</option>
+                <option>Wellness</option>
+                <option>Motivation</option>
+            </select>
+        </div>
+
+        <!-- Blog Grid -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="blogGrid">
+            <!-- Blog posts will be inserted here -->
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 mt-20">
+        <div class="max-w-7xl mx-auto px-8">
+            <div class="text-center text-gray-400">
+                <p>&copy; 2024 High Street Gym. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../js/main.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script>
+        lucide.createIcons();
+
+        // Sample blog posts
+        const blogPosts = [
+            {
+                id: 1,
+                title: "10 Essential Exercises for Building Muscle",
+                excerpt: "Discover the fundamental exercises that will help you build strength and muscle mass effectively.",
+                author: "John Smith",
+                date: "2024-03-15",
+                category: "Training",
+                image: "https://via.placeholder.com/400x250"
+            },
+            {
+                id: 2,
+                title: "Nutrition Tips for Optimal Performance",
+                excerpt: "Learn how to fuel your body properly for maximum workout performance and recovery.",
+                author: "Sarah Johnson",
+                date: "2024-03-12",
+                category: "Nutrition",
+                image: "https://via.placeholder.com/400x250"
+            },
+            {
+                id: 3,
+                title: "The Importance of Rest and Recovery",
+                excerpt: "Understanding why rest days are just as important as training days for achieving your fitness goals.",
+                author: "Mike Davis",
+                date: "2024-03-10",
+                category: "Wellness",
+                image: "https://via.placeholder.com/400x250"
+            },
+            {
+                id: 4,
+                title: "HIIT vs Steady State Cardio",
+                excerpt: "Comparing two popular cardio approaches and helping you choose the right one for your goals.",
+                author: "Emma Wilson",
+                date: "2024-03-08",
+                category: "Training",
+                image: "https://via.placeholder.com/400x250"
+            },
+            {
+                id: 5,
+                title: "Staying Motivated on Your Fitness Journey",
+                excerpt: "Practical strategies to maintain motivation and consistency in your workout routine.",
+                author: "David Lee",
+                date: "2024-03-05",
+                category: "Motivation",
+                image: "https://via.placeholder.com/400x250"
+            },
+            {
+                id: 6,
+                title: "Supplements: What Really Works?",
+                excerpt: "An honest look at popular fitness supplements and their actual benefits based on science.",
+                author: "Lisa Chen",
+                date: "2024-03-01",
+                category: "Nutrition",
+                image: "https://via.placeholder.com/400x250"
+            }
+        ];
+
+        // Render blog posts
+        function renderBlogPosts() {
+            const blogGrid = document.getElementById('blogGrid');
+            blogGrid.innerHTML = blogPosts.map(post => `
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow cursor-pointer" onclick="navigateTo('blog-detail.html?id=${post.id}')">
+          <img src="${post.image}" alt="${post.title}" class="w-full h-48 object-cover">
+          <div class="p-6">
+            <div class="flex items-center gap-2 text-sm text-gray-500 mb-3">
+              <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-semibold">${post.category}</span>
+              <span>•</span>
+              <span>${formatDate(post.date)}</span>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">${post.title}</h3>
+            <p class="text-gray-600 mb-4">${post.excerpt}</p>
+            <div class="flex items-center gap-3">
+              <div class="bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center">
+                <i data-lucide="user" class="h-5 w-5 text-gray-600"></i>
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-gray-900">${post.author}</p>
+                <p class="text-xs text-gray-500">Trainer</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+            lucide.createIcons();
+        }
+
+        renderBlogPosts();
+    </script>
+</body>
+
+</html>
