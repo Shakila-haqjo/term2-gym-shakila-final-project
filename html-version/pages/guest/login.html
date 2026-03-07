@@ -1,4 +1,5 @@
-<!-- html-version/pages/guest/login.html -->
+<!-- pages/guest/login.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,77 +8,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - High Street Gym</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../../css/styles.css">
-    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body class="bg-gray-50">
-
-    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="min-h-screen flex items-center justify-center py-12 px-4">
         <div class="max-w-md w-full">
-
             <!-- Logo and Title -->
             <div class="text-center mb-8">
-                <div class="flex items-center justify-center gap-2 mb-4">
-                    <i data-lucide="dumbbell" class="h-10 w-10 text-indigo-600"></i>
-                    <span class="text-2xl font-bold text-gray-900">High Street Gym</span>
-                </div>
-                <h2 class="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
+                <h1 class="text-4xl font-bold text-blue-600 mb-2">High Street Gym</h1>
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Welcome Back</h2>
                 <p class="text-gray-600">Sign in to your account to continue</p>
             </div>
 
             <!-- Login Form -->
-            <div class="bg-white rounded-xl shadow-lg p-8">
-                <form id="loginForm" onsubmit="handleLoginSubmit(event)">
-
-                    <!-- Email -->
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <form id="loginForm">
                     <div class="mb-6">
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                        <input type="email" id="email" name="email" required
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors"
+                        <input type="email" id="email" required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             placeholder="you@example.com">
                     </div>
 
-                    <!-- Password -->
                     <div class="mb-6">
                         <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                        <input type="password" id="password" name="password" required
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors"
+                        <input type="password" id="password" required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             placeholder="••••••••">
                     </div>
 
-                    <!-- Role Selection -->
-                    <div class="mb-6">
-                        <label for="role" class="block text-sm font-medium text-gray-700 mb-2">Login As</label>
-                        <select id="role" name="role" required
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors">
-                            <option value="member">Member</option>
-                            <option value="trainer">Trainer</option>
-                            <option value="admin">Admin</option>
-                        </select>
-                    </div>
-
-                    <!-- Remember Me & Forgot Password -->
                     <div class="flex items-center justify-between mb-6">
                         <label class="flex items-center">
                             <input type="checkbox"
-                                class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                                class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4">
                             <span class="ml-2 text-sm text-gray-600">Remember me</span>
                         </label>
-                        <a href="reset-password.html" class="text-sm text-indigo-600 hover:text-indigo-700">
-                            Forgot password?
-                        </a>
+                        <a href="reset-password.html" class="text-sm text-blue-600 hover:text-blue-700">Forgot
+                            password?</a>
                     </div>
 
-                    <!-- Submit Button -->
-                    <button type="submit"
-                        class="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors">
+                    <div id="errorMessage"
+                        class="hidden mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                        <p id="errorText"></p>
+                    </div>
+
+                    <button type="submit" id="loginBtn"
+                        class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
                         Sign In
                     </button>
-
                 </form>
 
-                <!-- Divider -->
                 <div class="relative my-6">
                     <div class="absolute inset-0 flex items-center">
                         <div class="w-full border-t border-gray-300"></div>
@@ -87,54 +67,75 @@
                     </div>
                 </div>
 
-                <!-- Register Link -->
-                <button onclick="navigateTo('register.html')"
-                    class="w-full border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors">
+                <a href="register.html"
+                    class="block w-full text-center border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors">
                     Create Account
-                </button>
+                </a>
 
-                <!-- Back to Home -->
                 <div class="text-center mt-6">
-                    <a href="index.html"
-                        class="text-sm text-gray-600 hover:text-indigo-600 flex items-center justify-center gap-1">
-                        <i data-lucide="arrow-left" class="h-4 w-4"></i>
-                        Back to Home
+                    <a href="index.html" class="text-sm text-gray-600 hover:text-blue-600">
+                        ← Back to Home
                     </a>
                 </div>
-
             </div>
-
-            <!-- Demo Credentials -->
-            <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p class="text-sm text-blue-800 font-semibold mb-2">Demo Credentials:</p>
-                <p class="text-xs text-blue-700">Member: member@gym.com / password</p>
-                <p class="text-xs text-blue-700">Trainer: trainer@gym.com / password</p>
-                <p class="text-xs text-blue-700">Admin: admin@gym.com / password</p>
-            </div>
-
         </div>
     </div>
 
-    <script src="../../js/main.js"></script>
-    <script src="../../js/auth.js"></script>
     <script>
-        lucide.createIcons();
+        const API_URL = 'http://localhost:3000/api';
 
-        function handleLoginSubmit(event) {
-            event.preventDefault();
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const loginBtn = document.getElementById('loginBtn');
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Signing in...';
 
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const role = document.getElementById('role').value;
 
-            // Simple validation
-            if (!email || !password || !role) {
-                showToast('Please fill in all fields', 'error');
-                return;
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || data.message || 'Login failed');
+                }
+
+                // Store token and user data
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+
+                // Redirect based on role
+                const role = data.user.role;
+                if (role === 'admin') {
+                    window.location.href = '../admin/dashboard.html';
+                } else if (role === 'trainer') {
+                    window.location.href = '../trainer/dashboard.html';
+                } else {
+                    window.location.href = '../member/dashboard.html';
+                }
+
+            } catch (error) {
+                console.error('Login error:', error);
+                showError(error.message);
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Sign In';
             }
+        });
 
-            // Handle login
-            handleLogin(email, password, role);
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorDiv.classList.remove('hidden');
         }
     </script>
 </body>

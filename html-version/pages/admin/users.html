@@ -1,0 +1,527 @@
+<!-- pages/admin/users.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - High Street Gym</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../../css/styles.css">
+</head>
+
+<body class="bg-gray-50">
+    <nav class="bg-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-blue-600">High Street Gym - Admin</h1>
+                <div class="space-x-4">
+                    <a href="dashboard.html" class="text-gray-700 hover:text-blue-600">Dashboard</a>
+                    <a href="users.html" class="text-blue-600 font-semibold">Users</a>
+                    <a href="sessions.html" class="text-gray-700 hover:text-blue-600">Sessions</a>
+                    <a href="activities.html" class="text-gray-700 hover:text-blue-600">Activities</a>
+                    <a href="locations.html" class="text-gray-700 hover:text-blue-600">Locations</a>
+                    <a href="bookings.html" class="text-gray-700 hover:text-blue-600">Bookings</a>
+                    <button id="logoutBtn" class="text-red-600 hover:text-red-800">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-800">Manage Users</h2>
+                <p class="text-gray-600 mt-2">View and manage all system users</p>
+            </div>
+            <button id="addUserBtn"
+                class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                + Add User
+            </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="bg-white rounded-lg shadow-md p-4 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Role</label>
+                    <select id="roleFilter"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="">All Roles</option>
+                        <option value="member">Members</option>
+                        <option value="trainer">Trainers</option>
+                        <option value="admin">Admins</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
+                    <input type="text" id="searchInput" placeholder="Search by name or email..."
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="flex items-end">
+                    <button id="clearFilters"
+                        class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                        Clear Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <p class="mt-4 text-gray-600">Loading users...</p>
+        </div>
+
+        <!-- Users Table -->
+        <div id="usersContainer" class="bg-white rounded-lg shadow-md overflow-hidden hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                User</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Email</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Phone</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Role</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Joined</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- Users will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="text-center py-12 hidden">
+            <svg class="mx-auto h-24 w-24 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                </path>
+            </svg>
+            <h3 class="mt-4 text-xl font-semibold text-gray-700">No Users Found</h3>
+        </div>
+    </main>
+
+    <!-- Add/Edit User Modal -->
+    <div id="userModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 id="modalTitle" class="text-2xl font-bold text-gray-800">Add User</h3>
+                    <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <form id="userForm" class="p-6 space-y-6">
+                <input type="hidden" id="userId">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">First Name *</label>
+                        <input type="text" id="firstName" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">Last Name *</label>
+                        <input type="text" id="lastName" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                    <input type="email" id="email" required
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                    <input type="tel" id="phone"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label for="role" class="block text-sm font-medium text-gray-700 mb-2">Role *</label>
+                    <select id="role" required
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="">Select Role</option>
+                        <option value="member">Member</option>
+                        <option value="trainer">Trainer</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+
+                <div id="trainerFields" class="hidden space-y-6">
+                    <div>
+                        <label for="specialization"
+                            class="block text-sm font-medium text-gray-700 mb-2">Specialization</label>
+                        <input type="text" id="specialization"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                            placeholder="e.g., Yoga, HIIT">
+                    </div>
+                    <div>
+                        <label for="bio" class="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                        <textarea id="bio" rows="3"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+                </div>
+
+                <div id="passwordField">
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password *</label>
+                    <input type="password" id="password"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <p class="text-sm text-gray-500 mt-1">Minimum 6 characters</p>
+                </div>
+
+                <div id="modalError" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                    <p id="modalErrorText"></p>
+                </div>
+
+                <div class="flex justify-end space-x-4 pt-4 border-t border-gray-200">
+                    <button type="button" id="cancelBtn"
+                        class="px-6 py-3 text-gray-700 bg-gray-100 font-semibold rounded-lg hover:bg-gray-200">Cancel</button>
+                    <button type="submit" id="submitBtn"
+                        class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700">Save
+                        User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Delete User</h3>
+            <p class="text-gray-600 mb-6">Are you sure you want to delete this user? This action cannot be undone.</p>
+            <div class="flex justify-end space-x-4">
+                <button id="deleteModalClose"
+                    class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">Cancel</button>
+                <button id="confirmDelete" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Delete
+                    User</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let allUsers = [];
+        let currentUserId = null;
+        let userToDelete = null;
+
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+        if (!token || user.role !== 'admin') {
+            window.location.href = '../guest/login.html';
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../guest/login.html';
+        });
+
+        // Show/hide trainer fields based on role
+        document.getElementById('role').addEventListener('change', (e) => {
+            const trainerFields = document.getElementById('trainerFields');
+            if (e.target.value === 'trainer') {
+                trainerFields.classList.remove('hidden');
+            } else {
+                trainerFields.classList.add('hidden');
+            }
+        });
+
+        async function fetchUsers() {
+            try {
+                const response = await fetch(`${API_URL}/users`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) throw new Error('Failed to fetch users');
+
+                allUsers = await response.json();
+                displayUsers(allUsers);
+            } catch (error) {
+                console.error('Error fetching users:', error);
+                showError('Failed to load users');
+            }
+        }
+
+        function displayUsers(users) {
+            const loading = document.getElementById('loadingState');
+            const container = document.getElementById('usersContainer');
+            const empty = document.getElementById('emptyState');
+            const tableBody = document.getElementById('usersTableBody');
+
+            loading.classList.add('hidden');
+
+            if (users.length === 0) {
+                container.classList.add('hidden');
+                empty.classList.remove('hidden');
+                return;
+            }
+
+            empty.classList.add('hidden');
+            container.classList.remove('hidden');
+            tableBody.innerHTML = '';
+
+            users.forEach(user => {
+                const row = createUserRow(user);
+                tableBody.appendChild(row);
+            });
+        }
+
+        function createUserRow(user) {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-gray-50';
+
+            const createdDate = new Date(user.created_at);
+            const formattedDate = createdDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+            const roleColors = {
+                admin: 'bg-red-100 text-red-800',
+                trainer: 'bg-purple-100 text-purple-800',
+                member: 'bg-blue-100 text-blue-800'
+            };
+
+            tr.innerHTML = `
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <span class="text-blue-600 font-semibold">
+                                ${user.first_name[0]}${user.last_name[0]}
+                            </span>
+                        </div>
+                        <div class="ml-4">
+                            <div class="text-sm font-medium text-gray-900">${user.first_name} ${user.last_name}</div>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">${user.email}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">${user.phone || 'N/A'}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${roleColors[user.role]}">
+                        ${user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                    </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    ${formattedDate}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                    <button onclick="editUser(${user.user_id || user.id})" class="text-blue-600 hover:text-blue-900">Edit</button>
+                    <button onclick="showDeleteModal(${user.user_id || user.id})" class="text-red-600 hover:text-red-900">Delete</button>
+                </td>
+            `;
+
+            return tr;
+        }
+
+        function showCreateModal() {
+            currentUserId = null;
+            document.getElementById('modalTitle').textContent = 'Add User';
+            document.getElementById('userForm').reset();
+            document.getElementById('userId').value = '';
+            document.getElementById('passwordField').classList.remove('hidden');
+            document.getElementById('password').required = true;
+            document.getElementById('submitBtn').textContent = 'Save User';
+            document.getElementById('userModal').classList.remove('hidden');
+        }
+
+        async function editUser(userId) {
+            currentUserId = userId;
+            const user = allUsers.find(u => (u.user_id || u.id) === userId);
+
+            if (!user) return;
+
+            document.getElementById('modalTitle').textContent = 'Edit User';
+            document.getElementById('userId').value = userId;
+            document.getElementById('firstName').value = user.first_name;
+            document.getElementById('lastName').value = user.last_name;
+            document.getElementById('email').value = user.email;
+            document.getElementById('phone').value = user.phone || '';
+            document.getElementById('role').value = user.role;
+            document.getElementById('specialization').value = user.specialization || '';
+            document.getElementById('bio').value = user.bio || '';
+
+            if (user.role === 'trainer') {
+                document.getElementById('trainerFields').classList.remove('hidden');
+            }
+
+            document.getElementById('passwordField').classList.add('hidden');
+            document.getElementById('password').required = false;
+            document.getElementById('submitBtn').textContent = 'Update User';
+            document.getElementById('userModal').classList.remove('hidden');
+        }
+
+        function hideModal() {
+            document.getElementById('userModal').classList.add('hidden');
+            document.getElementById('modalError').classList.add('hidden');
+        }
+
+        document.getElementById('userForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = currentUserId ? 'Updating...' : 'Creating...';
+
+            const formData = {
+                first_name: document.getElementById('firstName').value.trim(),
+                last_name: document.getElementById('lastName').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.trim() || null,
+                role: document.getElementById('role').value
+            };
+
+            if (formData.role === 'trainer') {
+                formData.specialization = document.getElementById('specialization').value.trim() || null;
+                formData.bio = document.getElementById('bio').value.trim() || null;
+            }
+
+            if (!currentUserId) {
+                formData.password = document.getElementById('password').value;
+            }
+
+            try {
+                const url = currentUserId ? `${API_URL}/users/${currentUserId}` : `${API_URL}/users`;
+                const method = currentUserId ? 'PUT' : 'POST';
+
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to save user');
+                }
+
+                hideModal();
+                alert(currentUserId ? 'User updated successfully!' : 'User created successfully!');
+                fetchUsers();
+
+            } catch (error) {
+                console.error('Error saving user:', error);
+                showModalError(error.message);
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+
+        function showDeleteModal(userId) {
+            userToDelete = userId;
+            document.getElementById('deleteModal').classList.remove('hidden');
+        }
+
+        function hideDeleteModal() {
+            userToDelete = null;
+            document.getElementById('deleteModal').classList.add('hidden');
+        }
+
+        async function deleteUser() {
+            if (!userToDelete) return;
+
+            try {
+                const response = await fetch(`${API_URL}/users/${userToDelete}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) throw new Error('Failed to delete user');
+
+                hideDeleteModal();
+                alert('User deleted successfully');
+                fetchUsers();
+            } catch (error) {
+                console.error('Error deleting user:', error);
+                alert('Failed to delete user');
+            }
+        }
+
+        // Filter functions
+        function filterUsers() {
+            const roleFilter = document.getElementById('roleFilter').value;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            let filtered = allUsers;
+
+            if (roleFilter) {
+                filtered = filtered.filter(u => u.role === roleFilter);
+            }
+
+            if (searchTerm) {
+                filtered = filtered.filter(u =>
+                    u.first_name.toLowerCase().includes(searchTerm) ||
+                    u.last_name.toLowerCase().includes(searchTerm) ||
+                    u.email.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            displayUsers(filtered);
+        }
+
+        function showModalError(message) {
+            const errorDiv = document.getElementById('modalError');
+            const errorText = document.getElementById('modalErrorText');
+            errorText.textContent = message;
+            errorDiv.classList.remove('hidden');
+        }
+
+        function showError(message) {
+            const loading = document.getElementById('loadingState');
+            loading.innerHTML = `
+                <div class="text-center py-12">
+                    <svg class="mx-auto h-24 w-24 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <h3 class="mt-4 text-xl font-semibold text-gray-700">${message}</h3>
+                    <button onclick="location.reload()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Retry</button>
+                </div>
+            `;
+        }
+
+        // Event listeners
+        document.getElementById('addUserBtn').addEventListener('click', showCreateModal);
+        document.getElementById('closeModal').addEventListener('click', hideModal);
+        document.getElementById('cancelBtn').addEventListener('click', hideModal);
+        document.getElementById('deleteModalClose').addEventListener('click', hideDeleteModal);
+        document.getElementById('confirmDelete').addEventListener('click', deleteUser);
+        document.getElementById('roleFilter').addEventListener('change', filterUsers);
+        document.getElementById('searchInput').addEventListener('input', filterUsers);
+        document.getElementById('clearFilters').addEventListener('click', () => {
+            document.getElementById('roleFilter').value = '';
+            document.getElementById('searchInput').value = '';
+            displayUsers(allUsers);
+        });
+
+        // Initialize
+        fetchUsers();
+    </script>
+</body>
+
+</html>

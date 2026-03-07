@@ -1,4 +1,5 @@
-<!-- html-version/pages/member/profile.html -->
+<!-- pages/member/profile.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,201 +9,236 @@
     <title>My Profile - High Street Gym</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="../../css/styles.css">
-    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body class="bg-gray-50">
+    <nav class="bg-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-blue-600">High Street Gym</h1>
+                <div class="space-x-4">
+                    <a href="dashboard.html" class="text-gray-700 hover:text-blue-600">Dashboard</a>
+                    <a href="sessions.html" class="text-gray-700 hover:text-blue-600">Sessions</a>
+                    <a href="bookings.html" class="text-gray-700 hover:text-blue-600">Bookings</a>
+                    <a href="profile.html" class="text-blue-600 font-semibold">Profile</a>
+                    <button id="logoutBtn" class="text-red-600 hover:text-red-800">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-    <div class="flex h-screen">
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+        <div class="mb-6">
+            <h2 class="text-3xl font-bold text-gray-800">My Profile</h2>
+            <p class="text-gray-600 mt-2">Manage your personal information</p>
+        </div>
 
-        <!-- Sidebar -->
-        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col shadow-sm">
-            <div class="p-6 border-b border-gray-200">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="dumbbell" class="h-6 w-6 text-indigo-600"></i>
-                    <span class="text-lg font-bold text-gray-900">Member Portal</span>
+        <!-- Loading State -->
+        <div id="loadingState" class="text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <p class="mt-4 text-gray-600">Loading profile...</p>
+        </div>
+
+        <div id="profileContainer" class="hidden">
+            <!-- Profile Picture -->
+            <div class="bg-white rounded-lg shadow-md p-8 mb-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-6">Profile Picture</h3>
+                <div class="flex items-center gap-6">
+                    <div class="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center text-white text-3xl font-bold"
+                        id="avatarInitial">
+                        M
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Profile pictures are not supported yet</p>
+                    </div>
                 </div>
             </div>
 
-            <nav class="flex-1 px-3 py-4">
-                <a href="dashboard.html"
-                    class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg mb-1 text-gray-700 hover:bg-gray-100"
-                    data-page="dashboard">
-                    <i data-lucide="home" class="h-5 w-5"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="profile.html"
-                    class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg mb-1 bg-indigo-600 text-white"
-                    data-page="profile">
-                    <i data-lucide="user" class="h-5 w-5"></i>
-                    <span>My Profile</span>
-                </a>
-                <a href="sessions.html"
-                    class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg mb-1 text-gray-700 hover:bg-gray-100"
-                    data-page="sessions">
-                    <i data-lucide="calendar" class="h-5 w-5"></i>
-                    <span>Sessions</span>
-                </a>
-                <a href="bookings.html"
-                    class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg mb-1 text-gray-700 hover:bg-gray-100"
-                    data-page="bookings">
-                    <i data-lucide="book-open" class="h-5 w-5"></i>
-                    <span>My Bookings</span>
-                </a>
-                <a href="create-blog.html"
-                    class="sidebar-item flex items-center gap-3 px-4 py-3 rounded-lg mb-1 text-gray-700 hover:bg-gray-100"
-                    data-page="blog">
-                    <i data-lucide="file-text" class="h-5 w-5"></i>
-                    <span>Blog</span>
-                </a>
-            </nav>
+            <!-- Personal Information -->
+            <div class="bg-white rounded-lg shadow-md p-8">
+                <h3 class="text-xl font-bold text-gray-800 mb-6">Personal Information</h3>
 
-            <div class="p-3 border-t border-gray-200">
-                <button onclick="logout()"
-                    class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors">
-                    <i data-lucide="log-out" class="h-5 w-5"></i>
-                    <span>Logout</span>
-                </button>
-            </div>
-        </aside>
+                <form id="profileForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">
+                                First Name *
+                            </label>
+                            <input type="text" id="firstName" required
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
 
-        <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto">
-
-            <!-- Header -->
-            <header class="bg-white border-b border-gray-200 px-8 py-6">
-                <h1 class="text-3xl font-bold text-gray-900">My Profile</h1>
-                <p class="text-gray-600 mt-1">Manage your personal information</p>
-            </header>
-
-            <!-- Profile Content -->
-            <div class="p-8">
-
-                <div class="max-w-4xl">
-
-                    <!-- Profile Picture -->
-                    <div class="bg-white rounded-xl shadow-sm p-8 mb-6">
-                        <h2 class="text-xl font-bold text-gray-900 mb-6">Profile Picture</h2>
-                        <div class="flex items-center gap-6">
-                            <div
-                                class="w-24 h-24 bg-indigo-600 rounded-full flex items-center justify-center text-white text-3xl font-bold">
-                                <span id="avatarInitial">M</span>
-                            </div>
-                            <div>
-                                <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 mb-2">
-                                    Upload New Photo
-                                </button>
-                                <p class="text-sm text-gray-500">JPG or PNG. Max size 5MB</p>
-                            </div>
+                        <div>
+                            <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">
+                                Last Name *
+                            </label>
+                            <input type="text" id="lastName" required
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         </div>
                     </div>
 
-                    <!-- Personal Information -->
-                    <div class="bg-white rounded-xl shadow-sm p-8 mb-6">
-                        <h2 class="text-xl font-bold text-gray-900 mb-6">Personal Information</h2>
-                        <form id="profileForm" onsubmit="handleProfileUpdate(event)">
-
-                            <div class="grid md:grid-cols-2 gap-6 mb-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
-                                    <input type="text" value="John"
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
-                                    <input type="text" value="Doe"
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
-                                </div>
-                            </div>
-
-                            <div class="mb-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                                <input type="email" value="member@gym.com"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
-                            </div>
-
-                            <div class="mb-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                                <input type="tel" value="+1 (555) 123-4567"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
-                            </div>
-
-                            <div class="mb-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
-                                <input type="text" value="123 Main Street"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none mb-4">
-                                <div class="grid md:grid-cols-3 gap-4">
-                                    <input type="text" placeholder="City"
-                                        class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
-                                    <input type="text" placeholder="State"
-                                        class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
-                                    <input type="text" placeholder="ZIP"
-                                        class="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
-                                </div>
-                            </div>
-
-                            <button type="submit"
-                                class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 font-semibold">
-                                Save Changes
-                            </button>
-
-                        </form>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                            Email *
+                        </label>
+                        <input type="email" id="email" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
 
-                    <!-- Change Password -->
-                    <div class="bg-white rounded-xl shadow-sm p-8">
-                        <h2 class="text-xl font-bold text-gray-900 mb-6">Change Password</h2>
-                        <form id="passwordForm" onsubmit="handlePasswordChange(event)">
-
-                            <div class="mb-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
-                                <input type="password"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
-                            </div>
-
-                            <div class="mb-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">New Password</label>
-                                <input type="password"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
-                            </div>
-
-                            <div class="mb-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
-                                <input type="password"
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
-                            </div>
-
-                            <button type="submit"
-                                class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 font-semibold">
-                                Update Password
-                            </button>
-
-                        </form>
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+                            Phone Number
+                        </label>
+                        <input type="tel" id="phone"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
 
-                </div>
+                    <!-- Error Message -->
+                    <div id="errorMessage"
+                        class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                        <p class="font-semibold">Error</p>
+                        <p id="errorText"></p>
+                    </div>
 
+                    <!-- Success Message -->
+                    <div id="successMessage"
+                        class="hidden bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+                        <p class="font-semibold">Success!</p>
+                        <p>Your profile has been updated successfully.</p>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex justify-end space-x-4 pt-4 border-t border-gray-200">
+                        <button type="button" onclick="window.location.reload()"
+                            class="px-6 py-3 text-gray-700 bg-gray-100 font-semibold rounded-lg hover:bg-gray-200 transition-colors">
+                            Cancel
+                        </button>
+                        <button type="submit" id="submitBtn"
+                            class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
             </div>
+        </div>
+    </main>
 
-        </main>
-
-    </div>
-
-    <script src="../../js/main.js"></script>
-    <script src="../../js/auth.js"></script>
     <script>
-        lucide.createIcons();
-        protectPage('member');
+        const API_URL = 'http://localhost:3000/api';
 
-        function handleProfileUpdate(event) {
-            event.preventDefault();
-            showToast('Profile updated successfully!', 'success');
+        // Check authentication
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+        if (!token) {
+            window.location.href = '../guest/login.html';
         }
 
-        function handlePasswordChange(event) {
-            event.preventDefault();
-            showToast('Password updated successfully!', 'success');
+        // Logout handler
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../guest/login.html';
+        });
+
+        // Fetch user profile
+        async function fetchProfile() {
+            try {
+                const response = await fetch(`${API_URL}/users/profile`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to fetch profile');
+
+                const userData = await response.json();
+                populateForm(userData);
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+                showError('Failed to load profile');
+            }
         }
+
+        // Populate form with user data
+        function populateForm(userData) {
+            document.getElementById('firstName').value = userData.first_name || '';
+            document.getElementById('lastName').value = userData.last_name || '';
+            document.getElementById('email').value = userData.email || '';
+            document.getElementById('phone').value = userData.phone || '';
+
+            const initial = userData.first_name ? userData.first_name[0].toUpperCase() : 'M';
+            document.getElementById('avatarInitial').textContent = initial;
+
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('profileContainer').classList.remove('hidden');
+        }
+
+        // Handle form submission
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saving...';
+
+            const formData = {
+                first_name: document.getElementById('firstName').value.trim(),
+                last_name: document.getElementById('lastName').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.trim() || null
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/users/profile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to update profile');
+                }
+
+                // Update local storage
+                const updatedUser = { ...user, ...formData };
+                localStorage.setItem('user', JSON.stringify(updatedUser));
+
+                // Show success message
+                document.getElementById('successMessage').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('successMessage').classList.add('hidden');
+                }, 3000);
+
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Save Changes';
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showError(error.message);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Save Changes';
+            }
+        });
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorDiv.classList.remove('hidden');
+
+            setTimeout(() => {
+                errorDiv.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Initialize
+        fetchProfile();
     </script>
 </body>
 

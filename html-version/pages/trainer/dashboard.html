@@ -1,4 +1,5 @@
-<!-- html-version/pages/trainer/dashboard.html -->
+<!-- pages/trainer/dashboard.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,247 +9,299 @@
     <title>Trainer Dashboard - High Street Gym</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="../../css/styles.css">
-    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body class="bg-gray-50">
-
-    <div class="flex h-screen">
-
-        <!-- Sidebar -->
-        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col shadow-sm">
-            <div class="p-6 border-b border-gray-200">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="dumbbell" class="h-6 w-6 text-indigo-600"></i>
-                    <span class="text-lg font-bold text-gray-900">Trainer Portal</span>
+    <nav class="bg-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-blue-600">High Street Gym</h1>
+                <div class="space-x-4">
+                    <a href="dashboard.html" class="text-blue-600 font-semibold">Dashboard</a>
+                    <a href="sessions.html" class="text-gray-700 hover:text-blue-600">My Sessions</a>
+                    <a href="blog.html" class="text-gray-700 hover:text-blue-600">Blog</a>
+                    <a href="profile.html" class="text-gray-700 hover:text-blue-600">Profile</a>
+                    <button id="logoutBtn" class="text-red-600 hover:text-red-800">Logout</button>
                 </div>
             </div>
-
-            <nav class="flex-1 px-3 py-4">
-                <a href="dashboard.html"
-                    class="flex items-center gap-3 px-4 py-3 rounded-lg mb-1 bg-indigo-600 text-white">
-                    <i data-lucide="home" class="h-5 w-5"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="sessions.html"
-                    class="flex items-center gap-3 px-4 py-3 rounded-lg mb-1 text-gray-700 hover:bg-gray-100">
-                    <i data-lucide="calendar" class="h-5 w-5"></i>
-                    <span>My Sessions</span>
-                </a>
-                <a href="blog.html"
-                    class="flex items-center gap-3 px-4 py-3 rounded-lg mb-1 text-gray-700 hover:bg-gray-100">
-                    <i data-lucide="file-text" class="h-5 w-5"></i>
-                    <span>Blog Posts</span>
-                </a>
-                <a href="profile.html"
-                    class="flex items-center gap-3 px-4 py-3 rounded-lg mb-1 text-gray-700 hover:bg-gray-100">
-                    <i data-lucide="user" class="h-5 w-5"></i>
-                    <span>Profile</span>
-                </a>
-            </nav>
-
-            <div class="p-3 border-t border-gray-200">
-                <button onclick="logout()"
-                    class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors">
-                    <i data-lucide="log-out" class="h-5 w-5"></i>
-                    <span>Logout</span>
-                </button>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto">
-
-            <!-- Header -->
-            <header class="bg-white border-b border-gray-200 px-8 py-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h1 class="text-3xl font-bold text-gray-900">Welcome Back, <span id="userName">Trainer</span>!
-                        </h1>
-                        <p class="text-gray-600 mt-1">Manage your sessions and members</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <button class="p-2 hover:bg-gray-100 rounded-lg">
-                            <i data-lucide="bell" class="h-6 w-6 text-gray-600"></i>
-                        </button>
-                        <div
-                            class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-semibold">
-                            <span id="userInitial">T</span>
-                        </div>
-                    </div>
-                </div>
-            </header>
-
-            <!-- Dashboard Content -->
-            <div class="p-8">
-
-                <!-- Stats Cards -->
-                <div class="grid md:grid-cols-4 gap-6 mb-8">
-
-                    <div class="bg-white rounded-xl p-6 shadow-sm">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="bg-blue-100 rounded-lg p-3">
-                                <i data-lucide="calendar" class="h-6 w-6 text-blue-600"></i>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-1">Total Sessions</p>
-                        <p class="text-3xl font-bold text-gray-900">42</p>
-                    </div>
-
-                    <div class="bg-white rounded-xl p-6 shadow-sm">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="bg-green-100 rounded-lg p-3">
-                                <i data-lucide="users" class="h-6 w-6 text-green-600"></i>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-1">Active Members</p>
-                        <p class="text-3xl font-bold text-gray-900">128</p>
-                    </div>
-
-                    <div class="bg-white rounded-xl p-6 shadow-sm">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="bg-purple-100 rounded-lg p-3">
-                                <i data-lucide="clock" class="h-6 w-6 text-purple-600"></i>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-1">Upcoming This Week</p>
-                        <p class="text-3xl font-bold text-gray-900">12</p>
-                    </div>
-
-                    <div class="bg-white rounded-xl p-6 shadow-sm">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="bg-orange-100 rounded-lg p-3">
-                                <i data-lucide="star" class="h-6 w-6 text-orange-600"></i>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-1">Average Rating</p>
-                        <p class="text-3xl font-bold text-gray-900">4.9</p>
-                    </div>
-
-                </div>
-
-                <!-- Two Column Layout -->
-                <div class="grid lg:grid-cols-3 gap-8">
-
-                    <!-- Upcoming Sessions -->
-                    <div class="lg:col-span-2">
-                        <div class="bg-white rounded-xl shadow-sm">
-                            <div class="p-6 border-b border-gray-200 flex items-center justify-between">
-                                <h2 class="text-xl font-bold text-gray-900">My Upcoming Sessions</h2>
-                                <button onclick="navigateTo('create-session.html')"
-                                    class="text-indigo-600 hover:text-indigo-700 text-sm font-semibold">
-                                    + New Session
-                                </button>
-                            </div>
-                            <div class="p-6">
-                                <div class="space-y-4" id="upcomingSessions"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Quick Actions -->
-                    <div>
-                        <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
-                            <h2 class="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
-                            <div class="space-y-3">
-                                <button onclick="navigateTo('create-session.html')"
-                                    class="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2">
-                                    <i data-lucide="plus" class="h-5 w-5"></i>
-                                    Create Session
-                                </button>
-                                <button onclick="navigateTo('sessions.html')"
-                                    class="w-full border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
-                                    <i data-lucide="calendar" class="h-5 w-5"></i>
-                                    View All Sessions
-                                </button>
-                                <button onclick="navigateTo('blog.html')"
-                                    class="w-full border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
-                                    <i data-lucide="edit" class="h-5 w-5"></i>
-                                    Write Blog Post
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- This Week Summary -->
-                        <div
-                            class="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl shadow-sm p-6 text-white">
-                            <h3 class="font-bold text-lg mb-4">This Week</h3>
-                            <div class="space-y-3">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-indigo-100">Sessions Conducted</span>
-                                    <span class="font-bold">8</span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-indigo-100">Members Trained</span>
-                                    <span class="font-bold">45</span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-indigo-100">Hours Logged</span>
-                                    <span class="font-bold">12.5h</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </main>
-
-    </div>
-
-    <script src="../../js/main.js"></script>
-    <script src="../../js/auth.js"></script>
-    <script>
-        lucide.createIcons();
-        protectPage('trainer');
-
-        const user = getUserSession();
-        if (user) {
-            document.getElementById('userName').textContent = user.name || 'Trainer';
-            document.getElementById('userInitial').textContent = (user.name || 'T').charAt(0).toUpperCase();
-        }
-
-        const upcomingSessions = [
-            { id: 1, activity: 'Yoga', date: '2024-03-20', time: '10:00 AM', enrolled: 8, capacity: 10, location: 'Studio A' },
-            { id: 2, activity: 'HIIT Training', date: '2024-03-22', time: '6:00 PM', enrolled: 12, capacity: 15, location: 'Main Gym' },
-            { id: 3, activity: 'Strength Training', date: '2024-03-25', time: '7:00 AM', enrolled: 6, capacity: 8, location: 'Weight Room' }
-        ];
-
-        function renderUpcomingSessions() {
-            const container = document.getElementById('upcomingSessions');
-            container.innerHTML = upcomingSessions.map(session => `
-        <div class="border border-gray-200 rounded-lg p-4 hover:border-indigo-300 hover:shadow-md transition-all">
-          <div class="flex items-start justify-between mb-3">
-            <div>
-              <h3 class="font-bold text-gray-900">${session.activity}</h3>
-              <p class="text-sm text-gray-600">${session.enrolled}/${session.capacity} enrolled</p>
-            </div>
-            <button onclick="navigateTo('session-bookings.html?id=${session.id}')" class="text-indigo-600 hover:text-indigo-700 text-sm font-semibold">
-              View Details
-            </button>
-          </div>
-          <div class="flex items-center gap-4 text-sm text-gray-600">
-            <div class="flex items-center gap-1">
-              <i data-lucide="calendar" class="h-4 w-4"></i>
-              <span>${formatDate(session.date)}</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <i data-lucide="clock" class="h-4 w-4"></i>
-              <span>${session.time}</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <i data-lucide="map-pin" class="h-4 w-4"></i>
-              <span>${session.location}</span>
-            </div>
-          </div>
         </div>
-      `).join('');
-            lucide.createIcons();
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-800">Welcome Back, <span id="trainerName">Trainer</span>!</h2>
+            <p class="text-gray-600 mt-2">Here's your training overview</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="bg-blue-100 rounded-lg p-3">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-gray-600 text-sm mb-1">Total Sessions</p>
+                <p class="text-3xl font-bold text-gray-900" id="totalSessions">0</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="bg-green-100 rounded-lg p-3">
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-gray-600 text-sm mb-1">Upcoming Sessions</p>
+                <p class="text-3xl font-bold text-gray-900" id="upcomingSessions">0</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="bg-purple-100 rounded-lg p-3">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-gray-600 text-sm mb-1">Total Participants</p>
+                <p class="text-3xl font-bold text-gray-900" id="totalParticipants">0</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="bg-orange-100 rounded-lg p-3">
+                        <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-gray-600 text-sm mb-1">Blog Posts</p>
+                <p class="text-3xl font-bold text-gray-900" id="totalBlogs">0</p>
+            </div>
+        </div>
+
+        <!-- Two Column Layout -->
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Upcoming Sessions -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow-md">
+                    <div class="p-6 border-b border-gray-200 flex items-center justify-between">
+                        <h3 class="text-xl font-bold text-gray-800">Your Upcoming Sessions</h3>
+                        <a href="sessions.html" class="text-blue-600 hover:text-blue-800 text-sm font-semibold">View
+                            All</a>
+                    </div>
+                    <div class="p-6">
+                        <!-- Loading State -->
+                        <div id="sessionsLoading" class="text-center py-8">
+                            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600">
+                            </div>
+                            <p class="mt-2 text-gray-600">Loading sessions...</p>
+                        </div>
+
+                        <!-- Sessions List -->
+                        <div id="sessionsList" class="space-y-4 hidden">
+                            <!-- Sessions will be populated here -->
+                        </div>
+
+                        <!-- Empty State -->
+                        <div id="sessionsEmpty" class="text-center py-8 hidden">
+                            <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            <p class="mt-2 text-gray-600">No upcoming sessions</p>
+                            <a href="create-session.html"
+                                class="mt-4 inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                Create Session
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div>
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Quick Actions</h3>
+                    <div class="space-y-3">
+                        <a href="create-session.html"
+                            class="w-full block px-6 py-3 bg-blue-600 text-white text-center font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                            Create Session
+                        </a>
+                        <a href="sessions.html"
+                            class="w-full block px-6 py-3 border border-gray-300 text-gray-700 text-center font-semibold rounded-lg hover:bg-gray-50 transition-colors">
+                            Manage Sessions
+                        </a>
+                        <a href="blog.html"
+                            class="w-full block px-6 py-3 border border-gray-300 text-gray-700 text-center font-semibold rounded-lg hover:bg-gray-50 transition-colors">
+                            Write Blog Post
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg shadow-md p-6 text-white">
+                    <h3 class="font-bold text-lg mb-4">This Week</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-blue-100">Sessions Scheduled</span>
+                            <span class="font-bold" id="weekSessions">0</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-blue-100">Total Bookings</span>
+                            <span class="font-bold" id="weekBookings">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+
+        // Check authentication
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+        if (!token || user.role !== 'trainer') {
+            window.location.href = '../guest/login.html';
         }
 
-        renderUpcomingSessions();
+        // Set trainer name
+        document.getElementById('trainerName').textContent = user.first_name || 'Trainer';
+
+        // Logout handler
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../guest/login.html';
+        });
+
+        // Fetch dashboard data
+        async function fetchDashboardData() {
+            try {
+                // Fetch sessions
+                const sessionsResponse = await fetch(`${API_URL}/sessions/trainer/${user.id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!sessionsResponse.ok) throw new Error('Failed to fetch sessions');
+                const sessions = await sessionsResponse.json();
+
+                const now = new Date();
+                const upcoming = sessions.filter(s => new Date(s.session_date) >= now);
+                const totalParticipants = sessions.reduce((sum, s) => sum + (s.current_participants || 0), 0);
+
+                document.getElementById('totalSessions').textContent = sessions.length;
+                document.getElementById('upcomingSessions').textContent = upcoming.length;
+                document.getElementById('totalParticipants').textContent = totalParticipants;
+
+                // Calculate this week
+                const weekStart = new Date();
+                weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+                const weekEnd = new Date(weekStart);
+                weekEnd.setDate(weekEnd.getDate() + 7);
+
+                const weekSessions = sessions.filter(s => {
+                    const sessionDate = new Date(s.session_date);
+                    return sessionDate >= weekStart && sessionDate < weekEnd;
+                });
+
+                const weekBookings = weekSessions.reduce((sum, s) => sum + (s.current_participants || 0), 0);
+
+                document.getElementById('weekSessions').textContent = weekSessions.length;
+                document.getElementById('weekBookings').textContent = weekBookings;
+
+                displayUpcomingSessions(upcoming.slice(0, 3));
+
+                // Fetch blogs
+                const blogsResponse = await fetch(`${API_URL}/blogs/user/${user.id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (blogsResponse.ok) {
+                    const blogs = await blogsResponse.json();
+                    document.getElementById('totalBlogs').textContent = blogs.length;
+                }
+            } catch (error) {
+                console.error('Error fetching dashboard data:', error);
+            }
+        }
+
+        // Display upcoming sessions
+        function displayUpcomingSessions(sessions) {
+            const loading = document.getElementById('sessionsLoading');
+            const list = document.getElementById('sessionsList');
+            const empty = document.getElementById('sessionsEmpty');
+
+            loading.classList.add('hidden');
+
+            if (sessions.length === 0) {
+                empty.classList.remove('hidden');
+                return;
+            }
+
+            list.classList.remove('hidden');
+            list.innerHTML = sessions.map(session => {
+                const sessionDate = new Date(session.session_date);
+                const formattedDate = sessionDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                const availableSpots = session.max_participants - session.current_participants;
+
+                return `
+                    <div class="border border-gray-200 rounded-lg p-4 hover:border-blue-300 hover:shadow-md transition-all">
+                        <div class="flex items-start justify-between mb-3">
+                            <div>
+                                <h4 class="font-bold text-gray-900">${session.session_name}</h4>
+                                <p class="text-sm text-gray-600">${session.activity_name}</p>
+                            </div>
+                            ${availableSpots === 0 ?
+                        '<span class="px-3 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded-full">Full</span>' :
+                        '<span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Active</span>'
+                    }
+                        </div>
+                        <div class="flex items-center gap-4 text-sm text-gray-600 mb-3">
+                            <div class="flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <span>${formattedDate}</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>${session.session_time}</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                                <span>${session.current_participants}/${session.max_participants} participants</span>
+                            </div>
+                        </div>
+                        <a href="session-bookings.html?id=${session.id || session.session_id}" class="text-blue-600 hover:text-blue-800 text-sm font-semibold">
+                            View Bookings →
+                        </a>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Initialize
+        fetchDashboardData();
     </script>
 </body>
 

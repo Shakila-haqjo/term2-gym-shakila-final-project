@@ -1,4 +1,5 @@
-<!-- html-version/pages/guest/blog-detail.html -->
+<!-- pages/guest/blog-detail.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,157 +9,156 @@
     <title>Blog Post - High Street Gym</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="../../css/styles.css">
-    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body class="bg-gray-50">
-
-    <!-- Navbar -->
-    <nav
-        class="bg-white border-b border-gray-200 h-20 px-8 flex items-center justify-between shadow-sm sticky top-0 z-50">
-        <div class="flex items-center gap-2">
-            <i data-lucide="dumbbell" class="h-8 w-8 text-indigo-600"></i>
-            <span class="text-xl font-bold text-gray-900">High Street Gym</span>
-        </div>
-
-        <div class="flex items-center gap-8">
-            <a href="index.html" class="text-gray-700 hover:text-indigo-600 transition-colors">Home</a>
-            <a href="blog.html" class="text-indigo-600 font-medium hover:text-indigo-700 transition-colors">Blog</a>
-            <a href="#about" class="text-gray-700 hover:text-indigo-600 transition-colors">About</a>
-        </div>
-
-        <div class="flex items-center gap-3">
-            <button onclick="navigateTo('login.html')"
-                class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
-                Login
-            </button>
+    <nav class="bg-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-blue-600">High Street Gym</h1>
+                <div class="space-x-4">
+                    <a href="index.html" class="text-gray-700 hover:text-blue-600">Home</a>
+                    <a href="blog.html" class="text-gray-700 hover:text-blue-600">Blog</a>
+                    <a href="login.html" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Login</a>
+                </div>
+            </div>
         </div>
     </nav>
 
-    <!-- Article -->
-    <article class="max-w-4xl mx-auto px-8 py-16">
-
+    <main class="container mx-auto px-4 py-8">
         <!-- Back Button -->
-        <button onclick="navigateTo('blog.html')"
-            class="flex items-center gap-2 text-gray-600 hover:text-indigo-600 mb-8">
-            <i data-lucide="arrow-left" class="h-4 w-4"></i>
-            Back to Blog
-        </button>
-
-        <!-- Header -->
-        <header class="mb-8">
-            <div class="flex items-center gap-2 text-sm text-gray-500 mb-4">
-                <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-semibold"
-                    id="category">Training</span>
-                <span>•</span>
-                <span id="date">March 15, 2024</span>
-            </div>
-            <h1 class="text-5xl font-bold text-gray-900 mb-6" id="title">10 Essential Exercises for Building Muscle</h1>
-            <div class="flex items-center gap-4">
-                <div class="bg-gray-200 rounded-full w-12 h-12 flex items-center justify-center">
-                    <i data-lucide="user" class="h-6 w-6 text-gray-600"></i>
-                </div>
-                <div>
-                    <p class="font-semibold text-gray-900" id="author">John Smith</p>
-                    <p class="text-sm text-gray-500">Certified Trainer</p>
-                </div>
-            </div>
-        </header>
-
-        <!-- Featured Image -->
-        <img src="https://via.placeholder.com/800x400" alt="Blog post" class="w-full h-96 object-cover rounded-xl mb-8">
-
-        <!-- Content -->
-        <div class="prose prose-lg max-w-none" id="content">
-            <p class="text-xl text-gray-700 mb-6">
-                Building muscle effectively requires a combination of proper technique, consistency, and the right
-                exercises. In this comprehensive guide, we'll explore the fundamental movements that form the foundation
-                of any successful muscle-building program.
-            </p>
-
-            <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">1. Compound Movements</h2>
-            <p class="text-gray-700 mb-4">
-                Compound exercises work multiple muscle groups simultaneously, making them incredibly efficient for
-                building overall strength and mass. These movements should form the core of your training program.
-            </p>
-
-            <h3 class="text-xl font-bold text-gray-900 mt-6 mb-3">Squat</h3>
-            <p class="text-gray-700 mb-4">
-                The king of all exercises, squats target your quads, hamstrings, glutes, and core. Proper form is
-                crucial - keep your chest up, knees tracking over toes, and descend until your thighs are parallel to
-                the ground.
-            </p>
-
-            <h3 class="text-xl font-bold text-gray-900 mt-6 mb-3">Deadlift</h3>
-            <p class="text-gray-700 mb-4">
-                Deadlifts work your entire posterior chain - back, glutes, and hamstrings. This exercise builds
-                tremendous strength and muscle mass when performed correctly.
-            </p>
-
-            <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">2. Progressive Overload</h2>
-            <p class="text-gray-700 mb-4">
-                To continue building muscle, you must progressively increase the demands on your muscles. This can be
-                achieved through:
-            </p>
-            <ul class="list-disc list-inside text-gray-700 mb-4 space-y-2">
-                <li>Increasing weight</li>
-                <li>Adding more repetitions</li>
-                <li>Reducing rest periods</li>
-                <li>Improving exercise form</li>
-            </ul>
-
-            <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">3. Recovery and Nutrition</h2>
-            <p class="text-gray-700 mb-4">
-                Remember that muscle growth happens during recovery, not during the workout itself. Ensure you're
-                getting adequate protein (1g per pound of body weight), quality sleep, and proper rest between training
-                sessions.
-            </p>
-
-            <div class="bg-indigo-50 border-l-4 border-indigo-600 p-6 my-8">
-                <p class="text-indigo-900 font-semibold mb-2">Pro Tip</p>
-                <p class="text-indigo-800">Consistency beats perfection. Focus on showing up regularly and making small
-                    improvements over time rather than seeking dramatic changes overnight.</p>
-            </div>
-
-            <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">Conclusion</h2>
-            <p class="text-gray-700 mb-4">
-                Building muscle is a journey that requires patience, dedication, and the right approach. By focusing on
-                these essential exercises and principles, you'll be well on your way to achieving your strength and
-                physique goals.
-            </p>
+        <div class="mb-6">
+            <a href="blog.html" class="inline-flex items-center text-blue-600 hover:text-blue-800">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                Back to Blog
+            </a>
         </div>
 
-        <!-- Share -->
-        <div class="border-t border-gray-200 mt-12 pt-8">
-            <p class="text-gray-600 mb-4">Share this article:</p>
-            <div class="flex gap-4">
-                <button class="p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                    <i data-lucide="facebook" class="h-5 w-5"></i>
-                </button>
-                <button class="p-3 bg-sky-500 text-white rounded-lg hover:bg-sky-600">
-                    <i data-lucide="twitter" class="h-5 w-5"></i>
-                </button>
-                <button class="p-3 bg-pink-600 text-white rounded-lg hover:bg-pink-700">
-                    <i data-lucide="instagram" class="h-5 w-5"></i>
-                </button>
-            </div>
+        <!-- Loading State -->
+        <div id="loadingState" class="text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <p class="mt-4 text-gray-600">Loading blog post...</p>
         </div>
 
-    </article>
+        <!-- Blog Post Content -->
+        <article id="blogContent" class="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden hidden">
+            <!-- Content will be populated here -->
+        </article>
+    </main>
 
-    <!-- Related Posts -->
-    <section class="bg-white py-16">
-        <div class="max-w-7xl mx-auto px-8">
-            <h2 class="text-3xl font-bold text-gray-900 mb-8">Related Articles</h2>
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- Related posts would go here -->
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-4 py-8">
+            <div class="text-center">
+                <p>&copy; 2024 High Street Gym. All rights reserved.</p>
             </div>
         </div>
-    </section>
+    </footer>
 
-    <script src="../../js/main.js"></script>
     <script>
-        lucide.createIcons();
+        const API_URL = 'http://localhost:3000/api';
+        let blogId = null;
+
+        // Get blog ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        blogId = urlParams.get('id');
+
+        if (!blogId) {
+            window.location.href = 'blog.html';
+        }
+
+        // Fetch blog post
+        async function fetchBlog() {
+            try {
+                const response = await fetch(`${API_URL}/blogs/${blogId}`);
+
+                if (!response.ok) throw new Error('Failed to fetch blog post');
+
+                const blog = await response.json();
+                displayBlog(blog);
+            } catch (error) {
+                console.error('Error fetching blog:', error);
+                showError('Failed to load blog post');
+            }
+        }
+
+        // Display blog post
+        function displayBlog(blog) {
+            const content = document.getElementById('blogContent');
+            const loading = document.getElementById('loadingState');
+
+            loading.classList.add('hidden');
+            content.classList.remove('hidden');
+
+            const createdDate = new Date(blog.created_at);
+            const formattedDate = createdDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+            // Format content with proper line breaks
+            const formattedContent = blog.content.replace(/\n/g, '<br>');
+
+            content.innerHTML = `
+                ${blog.image ? `
+                    <div class="h-96 bg-gray-200 overflow-hidden">
+                        <img src="${blog.image}" alt="${blog.title}" class="w-full h-full object-cover">
+                    </div>
+                ` : ''}
+                
+                <div class="p-8 md:p-12">
+                    <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+                        ${blog.title}
+                    </h1>
+
+                    <div class="flex items-center text-gray-600 mb-8 pb-8 border-b border-gray-200">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                <span class="text-blue-600 font-semibold text-lg">
+                                    ${blog.firstname[0]}${blog.lastname[0]}
+                                </span>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-800">${blog.firstname} ${blog.lastname}</p>
+                                <p class="text-sm text-gray-500">${formattedDate}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="prose prose-lg max-w-none">
+                        <div class="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                            ${formattedContent}
+                        </div>
+                    </div>
+
+                    <div class="mt-12 pt-8 border-t border-gray-200">
+                        <a href="blog.html" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                            Back to All Posts
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Show error message
+        function showError(message) {
+            const loading = document.getElementById('loadingState');
+            loading.innerHTML = `
+                <div class="text-center py-12">
+                    <svg class="mx-auto h-24 w-24 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <h3 class="mt-4 text-xl font-semibold text-gray-700">${message}</h3>
+                    <button onclick="window.location.href='blog.html'" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                        Back to Blog
+                    </button>
+                </div>
+            `;
+        }
+
+        // Initialize
+        fetchBlog();
     </script>
 </body>
 

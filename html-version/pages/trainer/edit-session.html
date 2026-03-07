@@ -1,214 +1,325 @@
-<!-- html-version/pages/trainer/edit-session.html -->
+<!-- pages/trainer/edit-session.html -->
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Edit Session - High Street Gym</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="../../css/styles.css">
-  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="bg-gray-100">
-  
-  <div class="flex h-screen">
-    
-    <!-- Sidebar -->
-    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col shadow-sm">
-      <div class="p-6 border-b border-gray-200">
-        <div class="flex items-center gap-2">
-          <span class="text-lg font-bold text-blue-600">High Street Gym</span>
+
+<body class="bg-gray-50">
+  <nav class="bg-white shadow-lg">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-blue-600">High Street Gym</h1>
+        <div class="space-x-4">
+          <a href="dashboard.html" class="text-gray-700 hover:text-blue-600">Dashboard</a>
+          <a href="sessions.html" class="text-gray-700 hover:text-blue-600">My Sessions</a>
+          <a href="profile.html" class="text-gray-700 hover:text-blue-600">Profile</a>
+          <button id="logoutBtn" class="text-red-600 hover:text-red-800">Logout</button>
         </div>
       </div>
-      
-      <nav class="flex-1 px-3 py-4">
-        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-lg mb-1 text-gray-700 hover:bg-gray-100">
-          <span>Dashboard</span>
-        </a>
-        <a href="sessions.html" class="flex items-center gap-3 px-4 py-3 rounded-lg mb-1 bg-blue-600 text-white">
-          <span>My Sessions</span>
-        </a>
-        <a href="blog.html" class="flex items-center gap-3 px-4 py-3 rounded-lg mb-1 text-gray-700 hover:bg-gray-100">
-          <span>My Blog</span>
-        </a>
-        <a href="profile.html" class="flex items-center gap-3 px-4 py-3 rounded-lg mb-1 text-gray-700 hover:bg-gray-100">
-          <span>Profile</span>
-        </a>
-      </nav>
-      
-      <div class="p-3">
-        <button onclick="logout()" class="w-full text-red-600 hover:bg-red-50 px-4 py-3 rounded-lg transition-colors">
-          Logout
-        </button>
-      </div>
-    </aside>
+    </div>
+  </nav>
 
-    <!-- Main Content -->
-    <main class="flex-1 overflow-y-auto bg-white">
-      
-      <!-- Header -->
-      <header class="bg-white border-b border-gray-200 px-8 py-6">
-        <h1 class="text-2xl font-bold text-gray-900">Edit Session</h1>
-      </header>
+  <main class="container mx-auto px-4 py-8 max-w-3xl">
+    <div class="mb-6">
+      <h2 class="text-3xl font-bold text-gray-800">Edit Session</h2>
+      <p class="text-gray-600 mt-2">Update session details</p>
+    </div>
 
-      <!-- Form -->
-      <div class="p-8">
-        <div class="max-w-3xl">
-          <form id="editSessionForm" onsubmit="handleUpdateSession(event)" class="space-y-6">
-            
-            <!-- Session Name -->
-            <div>
-              <label class="block text-sm font-medium text-gray-900 mb-2">Session Name</label>
-              <input 
-                type="text" 
-                id="sessionName"
-                value="Morning Training"
-                required
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-              >
-            </div>
+    <!-- Loading State -->
+    <div id="loadingState" class="text-center py-12">
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <p class="mt-4 text-gray-600">Loading session...</p>
+    </div>
 
-            <!-- Activity Type & Location -->
-            <div class="grid grid-cols-2 gap-6">
-              <div>
-                <label class="block text-sm font-medium text-gray-900 mb-2">Activity Type</label>
-                <select 
-                  id="activityType"
-                  required
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                >
-                  <option value="Personal Training" selected>Personal Training</option>
-                  <option value="Yoga">Yoga</option>
-                  <option value="Pilates">Pilates</option>
-                  <option value="HIIT">HIIT</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-900 mb-2">Location</label>
-                <select 
-                  id="location"
-                  required
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                >
-                  <option value="Main Gym" selected>Main Gym</option>
-                  <option value="Studio A">Studio A</option>
-                  <option value="Studio B">Studio B</option>
-                  <option value="Weight Room">Weight Room</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Date & Time -->
-            <div class="grid grid-cols-2 gap-6">
-              <div>
-                <label class="block text-sm font-medium text-gray-900 mb-2">Date</label>
-                <input 
-                  type="date" 
-                  id="date"
-                  value="2026-10-02"
-                  required
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                >
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-900 mb-2">Time</label>
-                <input 
-                  type="time" 
-                  id="time"
-                  value="10:00"
-                  required
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                >
-              </div>
-            </div>
-
-            <!-- Duration & Max Participants -->
-            <div class="grid grid-cols-2 gap-6">
-              <div>
-                <label class="block text-sm font-medium text-gray-900 mb-2">Duration(minutes)</label>
-                <input 
-                  type="number" 
-                  id="duration"
-                  value="60"
-                  min="15"
-                  step="15"
-                  required
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                >
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-900 mb-2">Max Participants</label>
-                <input 
-                  type="number" 
-                  id="maxParticipants"
-                  value="5"
-                  min="1"
-                  required
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                >
-              </div>
-            </div>
-
-            <!-- Description -->
-            <div>
-              <label class="block text-sm font-medium text-gray-900 mb-2">Description</label>
-              <textarea 
-                id="description"
-                rows="4"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
-              >Intensive one-on-one training session</textarea>
-            </div>
-
-            <!-- Buttons -->
-            <div class="flex gap-4">
-              <button 
-                type="submit"
-                class="px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-              >
-                Update Session
-              </button>
-              <button 
-                type="button"
-                onclick="navigateTo('sessions.html')"
-                class="px-8 py-3 text-gray-700 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
-              >
-                Cancel
-              </button>
-              <button 
-                type="button"
-                onclick="deleteSession()"
-                class="px-8 py-3 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-colors ml-auto"
-              >
-                Delete
-              </button>
-            </div>
-
-          </form>
+    <div id="formContainer" class="bg-white rounded-lg shadow-md p-6 hidden">
+      <form id="editSessionForm" class="space-y-6">
+        <!-- Session Name -->
+        <div>
+          <label for="sessionName" class="block text-sm font-medium text-gray-700 mb-2">
+            Session Name *
+          </label>
+          <input type="text" id="sessionName" required
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
         </div>
-      </div>
 
-    </main>
+        <!-- Activity -->
+        <div>
+          <label for="activity" class="block text-sm font-medium text-gray-700 mb-2">
+            Activity Type *
+          </label>
+          <select id="activity" required
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="">Select an activity</option>
+          </select>
+        </div>
 
-  </div>
+        <!-- Location -->
+        <div>
+          <label for="location" class="block text-sm font-medium text-gray-700 mb-2">
+            Location *
+          </label>
+          <select id="location" required
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="">Select a location</option>
+          </select>
+        </div>
 
-  <script src="../../js/main.js"></script>
-  <script src="../../js/auth.js"></script>
+        <!-- Date and Time -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="sessionDate" class="block text-sm font-medium text-gray-700 mb-2">
+              Date *
+            </label>
+            <input type="date" id="sessionDate" required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          </div>
+          <div>
+            <label for="sessionTime" class="block text-sm font-medium text-gray-700 mb-2">
+              Time *
+            </label>
+            <input type="time" id="sessionTime" required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          </div>
+        </div>
+
+        <!-- Duration and Max Participants -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="duration" class="block text-sm font-medium text-gray-700 mb-2">
+              Duration (minutes) *
+            </label>
+            <input type="number" id="duration" required min="15" step="15"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          </div>
+          <div>
+            <label for="maxParticipants" class="block text-sm font-medium text-gray-700 mb-2">
+              Max Participants *
+            </label>
+            <input type="number" id="maxParticipants" required min="1" max="50"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <p class="text-sm text-gray-500 mt-1">
+              Current bookings: <span id="currentBookings">0</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+            Description
+          </label>
+          <textarea id="description" rows="4"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          <p class="font-semibold">Error</p>
+          <p id="errorText"></p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex justify-end space-x-4 pt-4 border-t border-gray-200">
+          <a href="sessions.html"
+            class="px-6 py-3 text-gray-700 bg-gray-100 font-semibold rounded-lg hover:bg-gray-200 transition-colors">
+            Cancel
+          </a>
+          <button type="submit" id="submitBtn"
+            class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+            Update Session
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
   <script>
-    lucide.createIcons();
-    protectPage('trainer');
+    const API_URL = 'http://localhost:3000/api';
+    let sessionId = null;
 
-    function handleUpdateSession(event) {
-      event.preventDefault();
-      showToast('Session updated successfully!', 'success');
-      setTimeout(() => navigateTo('sessions.html'), 1500);
+    // Check authentication
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+    if (!token || user.role !== 'trainer') {
+      window.location.href = '../guest/login.html';
     }
 
-    function deleteSession() {
-      if(confirm('Are you sure you want to delete this session?')) {
-        showToast('Session deleted successfully', 'success');
-        setTimeout(() => navigateTo('sessions.html'), 1500);
+    // Get session ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    sessionId = urlParams.get('id');
+
+    if (!sessionId) {
+      window.location.href = 'sessions.html';
+    }
+
+    // Logout handler
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '../guest/login.html';
+    });
+
+    // Fetch session data
+    async function fetchSession() {
+      try {
+        const response = await fetch(`${API_URL}/sessions/${sessionId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch session');
+
+        const session = await response.json();
+        populateForm(session);
+      } catch (error) {
+        console.error('Error fetching session:', error);
+        showError('Failed to load session');
       }
     }
+
+    // Fetch activities
+    async function fetchActivities() {
+      try {
+        const response = await fetch(`${API_URL}/activities`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch activities');
+
+        const activities = await response.json();
+        const select = document.getElementById('activity');
+
+        activities.forEach(activity => {
+          const option = document.createElement('option');
+          option.value = activity.id || activity.activity_id;
+          option.textContent = activity.name;
+          select.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Error fetching activities:', error);
+      }
+    }
+
+    // Fetch locations
+    async function fetchLocations() {
+      try {
+        const response = await fetch(`${API_URL}/locations`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch locations');
+
+        const locations = await response.json();
+        const select = document.getElementById('location');
+
+        locations.forEach(location => {
+          const option = document.createElement('option');
+          option.value = location.id || location.location_id;
+          option.textContent = location.name;
+          select.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Error fetching locations:', error);
+      }
+    }
+
+    // Populate form with session data
+    function populateForm(session) {
+      document.getElementById('sessionName').value = session.session_name;
+      document.getElementById('activity').value = session.activity_id;
+      document.getElementById('location').value = session.location_id;
+      document.getElementById('sessionDate').value = session.session_date;
+      document.getElementById('sessionTime').value = session.session_time;
+      document.getElementById('duration').value = session.duration;
+      document.getElementById('maxParticipants').value = session.max_participants;
+      document.getElementById('description').value = session.description || '';
+      document.getElementById('currentBookings').textContent = session.current_participants || 0;
+
+      // Set minimum max_participants to current bookings
+      document.getElementById('maxParticipants').setAttribute('min', session.current_participants || 1);
+
+      document.getElementById('loadingState').classList.add('hidden');
+      document.getElementById('formContainer').classList.remove('hidden');
+    }
+
+    // Handle form submission
+    document.getElementById('editSessionForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Updating...';
+
+      const formData = {
+        session_name: document.getElementById('sessionName').value,
+        activity_id: parseInt(document.getElementById('activity').value),
+        location_id: parseInt(document.getElementById('location').value),
+        session_date: document.getElementById('sessionDate').value,
+        session_time: document.getElementById('sessionTime').value,
+        duration: parseInt(document.getElementById('duration').value),
+        max_participants: parseInt(document.getElementById('maxParticipants').value),
+        description: document.getElementById('description').value || null
+      };
+
+      try {
+        const response = await fetch(`${API_URL}/sessions/${sessionId}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to update session');
+        }
+
+        alert('Session updated successfully!');
+        window.location.href = 'sessions.html';
+      } catch (error) {
+        console.error('Error updating session:', error);
+        showError(error.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Update Session';
+      }
+    });
+
+    // Show error message
+    function showError(message) {
+      const errorDiv = document.getElementById('errorMessage');
+      const errorText = document.getElementById('errorText');
+      errorText.textContent = message;
+      errorDiv.classList.remove('hidden');
+
+      setTimeout(() => {
+        errorDiv.classList.add('hidden');
+      }, 5000);
+    }
+
+    // Initialize
+    Promise.all([
+      fetchActivities(),
+      fetchLocations()
+    ]).then(() => {
+      fetchSession();
+    });
   </script>
 </body>
+
 </html>
