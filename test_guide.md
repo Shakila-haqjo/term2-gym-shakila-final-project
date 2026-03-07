@@ -1,414 +1,182 @@
-# HIGH STREET GYM - COMPLETE TESTING GUIDE
+# API Integration Testing Guide
 
-## 🚀 HOW TO RUN THE PROJECT
+## ✅ Backend is Running
+Your backend API is now live at: `http://localhost:3000/api`
 
-### Step 1: Setup
+## 🧪 Testing Steps
+
+### 1. Test Login with Database Credentials
+
+Open your browser and navigate to:
+```
+http://localhost:8000/pages/guest/login.html
+```
+
+**Test with these real database accounts:**
+
+| Email              | Password    | Role    |
+|-------------------|-------------|---------|
+| member@gym.com    | member123   | Member  |
+| trainer@gym.com   | trainer123  | Trainer |
+| admin@gym.com     | admin123    | Admin   |
+
+### 2. What Should Happen
+
+1. **Enter credentials** → Click "Sign In"
+2. **Backend processes login** → MySQL checks database
+3. **JWT token generated** → Stored in browser localStorage
+4. **Redirect to dashboard** → Based on user role
+5. **Data loads from MySQL** → Real data, not fake!
+
+### 3. Check Browser Console
+
+Open browser DevTools (F12) and check:
+- **Console tab**: Should show API requests
+- **Network tab**: Should show POST to `/api/auth/login`
+- **Application tab** → **Local Storage**: Should have `token` and `user`
+
+### 4. Test Registration
+
+Navigate to:
+```
+http://localhost:8000/pages/guest/register.html
+```
+
+Create a new account:
+- Fill out the form
+- Click "Create Account"
+- New user saved to MySQL database!
+- Check database:
+
 ```bash
-cd html-version
-python3 -m http.server 8000
+mysql -u root high_street_gym -e "SELECT * FROM users;"
 ```
 
-### Step 2: Open in Browser
-```
-http://localhost:8000/pages/guest/index.html
-```
+### 5. Current Status
 
----
+✅ **Working:**
+- Login with real MySQL database
+- Registration creates real users
+- JWT authentication
+- Role-based redirects
+- Protected pages
 
-## 🧪 TESTING ALL ROLES - STEP BY STEP
+⏳ **Still Using Hardcoded Data:**
+- Sessions list (member/sessions.html)
+- Bookings list (member/bookings.html)
+- Trainer sessions
+- Dashboard stats
 
-### 🏠 **TEST 1: GUEST PAGES** (No Login Required)
+## 🔧 Next Steps to Complete Integration
 
-#### Home Page
-1. Visit: `http://localhost:8000/pages/guest/index.html`
-2. **Verify:**
-   - Hero section displays
-   - Features cards show (Expert Trainers, Flexible Sessions, Personalized Programs)
-   - Activities section shows (Yoga, Pilates, Abs, HIIT)
-   - Footer displays with links
+### Step 1: Update Member Sessions Page
 
-#### Blog Listing
-1. Click "Blog" in navbar
-2. **Verify:**
-   - 6 blog posts display in grid
-   - Search bar works
-   - Category filter dropdown works
-   - Click any blog post to go to detail page
+File: `pages/member/sessions.html`
 
-#### Blog Detail
-1. Click any blog post
-2. **Verify:**
-   - Full article displays
-   - Author info shows
-   - "Back to Blog" button works
-   - Share buttons display
+Replace the hardcoded sessions array with API call:
 
-#### Login Page
-1. Click "Login" button
-2. **Verify:**
-   - Email, Password, and Role dropdown show
-   - "Remember me" checkbox works
-   - "Forgot password?" link goes to reset page
+```javascript
+// Instead of hardcoded sessions = [...]
+async function loadSessions() {
+    try {
+        const data = await apiRequest('/sessions');
+        if (data && data.success) {
+            displaySessions(data.sessions);
+        }
+    } catch (error) {
+        console.error('Error loading sessions:', error);
+        showToast('Failed to load sessions', 'error');
+    }
+}
 
-#### Register Page
-1. Click "Sign Up" button
-2. **Verify:**
-   - All form fields display (First Name, Last Name, Email, Phone, Password, Confirm Password)
-   - Terms checkbox required
-   - Form validation works
-   - "Sign In" link goes back to login
-
-#### Reset Password
-1. From login, click "Forgot password?"
-2. **Verify:**
-   - Email input displays
-   - "Send Reset Link" button works
-   - "Back to Login" link works
-
----
-
-### 👤 **TEST 2: MEMBER ROLE**
-
-#### Login as Member
-**Credentials:**
-- Email: `member@gym.com`
-- Password: `password`
-- Role: `Member`
-
-#### Member Dashboard
-**URL:** `pages/member/dashboard.html`
-
-1. **After login, verify:**
-   - Redirects to member dashboard
-   - Shows "Welcome Back, member!" (or your email username)
-   - Stats cards display:
-     - Total Bookings: 24
-     - Completed Sessions: 18
-     - Upcoming Sessions: 6
-     - Monthly Goal: 75%
-   - Upcoming sessions list shows 3 sessions
-   - Quick actions panel displays
-   - Activity summary (This Week) shows
-
-2. **Test Sidebar Navigation:**
-   - Click "My Profile" → Goes to profile page
-   - Click "Sessions" → Goes to sessions page
-   - Click "My Bookings" → Goes to bookings page
-   - Click "Blog" → Goes to create blog page
-   - Click "Dashboard" → Returns to dashboard
-   - Click "Logout" → Returns to home page
-
-#### Member Profile
-**URL:** `pages/member/profile.html`
-
-1. **Verify:**
-   - Profile picture section displays
-   - Personal information form shows (First Name, Last Name, Email, Phone, Address)
-   - Change password section displays
-   - "Save Changes" button works (shows toast notification)
-
-#### Member Sessions
-**URL:** `pages/member/sessions.html`
-
-1. **Verify:**
-   - Filter dropdowns work (Activity, Trainer, Date, Time)
-   - 6 sessions display in grid
-   - Each session shows:
-     - Activity name
-     - Trainer name
-     - Date, Time, Duration
-     - Location
-     - "X spots left" badge
-     - "Book Session" button
-   - Click "Book Session" → Shows confirmation dialog
-   - After confirming → Shows success toast
-   - After booking → Redirects to bookings page
-
-#### Member Bookings
-**URL:** `pages/member/bookings.html`
-
-1. **Verify Tabs:**
-   - "Upcoming" tab (active by default) shows 3 bookings
-   - Click "Past" tab → Shows 2 completed bookings
-   - Click "Cancelled" tab → Shows 1 cancelled booking
-   - Tab switching works correctly
-
-2. **Verify Booking Cards:**
-   - Each booking shows activity, trainer, date, time, location
-   - Upcoming bookings have "Cancel" button
-   - Click "Cancel" → Shows confirmation dialog
-   - After cancelling → Booking moves to "Cancelled" tab
-   - Past/Cancelled bookings have no action buttons
-
----
-
-### 💪 **TEST 3: TRAINER ROLE**
-
-#### Login as Trainer
-**Credentials:**
-- Email: `trainer@gym.com`
-- Password: `password`
-- Role: `Trainer`
-
-#### Trainer Dashboard
-**URL:** `pages/trainer/dashboard.html`
-
-1. **After login, verify:**
-   - Redirects to trainer dashboard
-   - Shows "Welcome Back, trainer!" (or your email username)
-   - Stats cards display:
-     - Total Sessions: 42
-     - Active Members: 128
-     - Upcoming This Week: 12
-     - Average Rating: 4.9
-   - "My Upcoming Sessions" shows 3 sessions with enrollment counts
-   - Quick actions panel displays:
-     - Create Session
-     - View All Sessions
-     - Write Blog Post
-   - "This Week" summary shows stats
-
-2. **Test Sidebar Navigation:**
-   - Sidebar shows "Trainer Portal"
-   - Menu items: Dashboard, My Sessions, Blog Posts, Profile
-   - Click each menu item → Goes to correct page
-   - Click "Logout" → Returns to home page
-
-3. **Test Quick Actions:**
-   - Click "Create Session" → Goes to create-session.html
-   - Click "View All Sessions" → Goes to sessions.html
-   - Click "Write Blog Post" → Goes to blog.html
-
-4. **Test Session Details:**
-   - Each upcoming session shows enrollment (e.g., "8/10 enrolled")
-   - Click "View Details" → Goes to session-bookings.html
-
----
-
-### 🔧 **TEST 4: ADMIN ROLE**
-
-#### Login as Admin
-**Credentials:**
-- Email: `admin@gym.com`
-- Password: `password`
-- Role: `Admin`
-
-#### Admin Dashboard
-**URL:** `pages/admin/dashboard.html`
-
-1. **After login, verify:**
-   - Redirects to admin dashboard
-   - Shows "Admin Dashboard" header
-   - Stats cards display:
-     - Total Users: 1,248 (+12% this month)
-     - Active Sessions: 156 (+8% this week)
-     - Total Bookings: 3,842 (+15% this month)
-     - Revenue: $45.2K (+22% this month)
-   - "Recent Activity" shows 5 recent activities with icons
-   - "User Distribution" shows breakdown:
-     - Members: 956 (76%)
-     - Trainers: 42 (3%)
-     - Admins: 8 (1%)
-   - Quick Actions panel displays
-
-2. **Test Sidebar Navigation:**
-   - Sidebar shows "Admin Portal"
-   - Menu items display:
-     - Dashboard
-     - Users
-     - Sessions
-     - Activities
-     - Locations
-     - Bookings
-     - Blog
-   - Click each menu item → Goes to correct page
-   - Click "Logout" → Returns to home page
-
-3. **Test Quick Actions:**
-   - Click "Manage Users" → Goes to users.html
-   - Click "View Sessions" → Goes to sessions.html
-   - Click "Check Bookings" → Goes to bookings.html
-
----
-
-## ✅ COMPLETE TESTING CHECKLIST
-
-### Guest Features
-- [ ] Home page loads correctly
-- [ ] Blog listing shows all posts
-- [ ] Blog detail page works
-- [ ] Login page accepts credentials
-- [ ] Register form validates
-- [ ] Password reset page works
-- [ ] Navigation between pages works
-
-### Member Features
-- [ ] Login as member works
-- [ ] Dashboard displays correctly
-- [ ] Profile page loads and form works
-- [ ] Sessions page shows available sessions
-- [ ] Can book a session
-- [ ] Bookings page shows all bookings
-- [ ] Can cancel a booking
-- [ ] Tab switching works (Upcoming/Past/Cancelled)
-- [ ] Logout returns to home
-
-### Trainer Features
-- [ ] Login as trainer works
-- [ ] Trainer dashboard displays correctly
-- [ ] Stats cards show trainer-specific data
-- [ ] Upcoming sessions show enrollment counts
-- [ ] Quick actions work
-- [ ] Can navigate to create session
-- [ ] Sidebar navigation works
-- [ ] Logout returns to home
-
-### Admin Features
-- [ ] Login as admin works
-- [ ] Admin dashboard displays correctly
-- [ ] System stats display correctly
-- [ ] Recent activity shows
-- [ ] User distribution chart displays
-- [ ] Quick actions work
-- [ ] Full sidebar with all admin menu items
-- [ ] Logout returns to home
-
----
-
-## 🎯 DEMO CREDENTIALS SUMMARY
-
-| Role    | Email              | Password | Dashboard URL                  |
-|---------|-------------------|----------|--------------------------------|
-| Member  | member@gym.com    | password | pages/member/dashboard.html    |
-| Trainer | trainer@gym.com   | password | pages/trainer/dashboard.html   |
-| Admin   | admin@gym.com     | password | pages/admin/dashboard.html     |
-
----
-
-## 🔍 TROUBLESHOOTING
-
-### Problem: Pages don't load
-**Solution:** Make sure you're running the HTTP server and accessing via `http://localhost:8000`
-
-### Problem: Login doesn't work
-**Solution:** 
-1. Check you entered exact credentials (case-sensitive)
-2. Check you selected correct role in dropdown
-3. Open browser console (F12) to see any errors
-
-### Problem: Icons don't show
-**Solution:** Make sure you have internet connection (Lucide icons load from CDN)
-
-### Problem: Styling looks broken
-**Solution:** Make sure you have internet connection (Tailwind CSS loads from CDN)
-
-### Problem: Navigation doesn't work
-**Solution:** Check that all files are in correct directories as shown in structure
-
----
-
-## 📁 FILE STRUCTURE REFERENCE
-
-```
-html-version/
-├── pages/
-│   ├── guest/
-│   │   ├── index.html          ✅ Complete
-│   │   ├── login.html          ✅ Complete
-│   │   ├── register.html       ✅ Complete
-│   │   ├── blog.html           ✅ Complete
-│   │   ├── blog-detail.html    ✅ Complete
-│   │   └── reset-password.html ✅ Complete
-│   ├── member/
-│   │   ├── dashboard.html      ✅ Complete
-│   │   ├── profile.html        ✅ Complete
-│   │   ├── sessions.html       ✅ Complete
-│   │   └── bookings.html       ✅ Complete
-│   ├── trainer/
-│   │   └── dashboard.html      ✅ Complete
-│   └── admin/
-│       └── dashboard.html      ✅ Complete
-├── css/
-│   └── styles.css              ✅ Complete
-└── js/
-    ├── main.js                 ✅ Complete
-    └── auth.js                 ✅ Complete
+// Call on page load
+loadSessions();
 ```
 
----
+### Step 2: Update Bookings Page
 
-## 🎨 TESTING VISUAL ELEMENTS
+File: `pages/member/bookings.html`
 
-### Colors (Verify these appear correctly)
-- **Primary:** Indigo/Purple gradient (buttons, active states)
-- **Success:** Green badges (confirmed bookings, positive stats)
-- **Warning:** Orange badges (pending items)
-- **Error:** Red buttons (cancel, delete, logout)
+```javascript
+async function loadBookings() {
+    try {
+        const data = await apiRequest('/bookings/my-bookings');
+        if (data && data.success) {
+            displayBookings(data.bookings);
+        }
+    } catch (error) {
+        console.error('Error loading bookings:', error);
+    }
+}
+```
 
-### Responsive Design
-1. Test on desktop (>1024px)
-2. Test on tablet (768px-1024px)
-3. Test on mobile (<768px)
-4. Verify sidebar collapses/adapts on mobile
+### Step 3: Implement Create Booking
 
-### Interactive Elements
-- [ ] Buttons change color on hover
-- [ ] Cards have hover effects (shadow, slight lift)
-- [ ] Forms show focus states (blue ring)
-- [ ] Toast notifications appear and disappear
-- [ ] Confirmation dialogs work
+```javascript
+async function createBooking(sessionId) {
+    try {
+        const data = await apiRequest('/bookings', {
+            method: 'POST',
+            body: JSON.stringify({ sessionId })
+        });
+        
+        if (data && data.success) {
+            showToast('Booking created successfully!', 'success');
+            loadBookings(); // Refresh list
+        } else {
+            showToast(data.message || 'Booking failed', 'error');
+        }
+    } catch (error) {
+        console.error('Booking error:', error);
+        showToast('Failed to create booking', 'error');
+    }
+}
+```
 
----
+## 🎯 Priority Integration Order
 
-## 📝 NOTES FOR EACH ROLE
+1. ✅ **Login/Register** - DONE
+2. **Member Sessions** - Load from API
+3. **Member Bookings** - Load and create via API
+4. **Trainer Sessions** - CRUD operations via API
+5. **Dashboard Stats** - Calculate from real data
+6. **Blog Posts** - Full CRUD via API
 
-### Member Testing Focus:
-- Booking flow (Sessions → Book → Bookings)
-- Profile management
-- Dashboard stats accuracy
-- Booking cancellation
+## 🐛 Troubleshooting
 
-### Trainer Testing Focus:
-- Session management interface
-- Enrollment tracking
-- Quick actions functionality
-- Different stats from member
+### Login fails with network error
+- Check backend is running: `npm run dev` in backend folder
+- Check backend terminal for errors
+- Verify MySQL is running: `brew services list | grep mysql`
 
-### Admin Testing Focus:
-- System-wide statistics
-- User distribution visualization
-- Recent activity feed
-- Access to all management sections
+### CORS errors
+- Backend already configured for `http://localhost:8000`
+- If using different port, update `.env` FRONTEND_URL
 
----
+### Token invalid errors
+- Clear localStorage: Browser DevTools → Application → Local Storage → Clear
+- Try logging in again
 
-## 🚀 NEXT STEPS AFTER TESTING
+## 📊 Database Check Commands
 
-1. **Verify all pages work** with the credentials above
-2. **Check all navigation** between pages
-3. **Test all interactive elements** (buttons, forms, tabs)
-4. **Report any issues** you find
-5. **Complete remaining pages** using the same patterns
+```bash
+# Check users
+mysql -u root high_street_gym -e "SELECT user_id, email, first_name, last_name, role FROM users;"
 
----
+# Check sessions
+mysql -u root high_street_gym -e "SELECT * FROM sessions;"
 
-## ⚡ QUICK TEST WORKFLOW
+# Check bookings
+mysql -u root high_street_gym -e "SELECT * FROM bookings;"
+```
 
-### 5-Minute Test:
-1. Open home page → Check it loads
-2. Login as member → Check dashboard
-3. Click Sessions → Book a session
-4. Logout
-5. Login as trainer → Check dashboard
-6. Logout
-7. Login as admin → Check dashboard
-8. Done!
+## ✨ What You've Achieved
 
-### Complete Test (15 minutes):
-Follow the full testing checklist above for each role.
+- ✅ MySQL database connected
+- ✅ Node.js/Express backend running
+- ✅ JWT authentication working
+- ✅ Real login/register with database
+- ✅ API endpoints ready for all features
+- ✅ Frontend connected to backend
 
----
-
-**Last Updated:** March 2024
-**Version:** 1.0
-**Status:** Ready for Testing
+**Next: Complete the remaining page integrations to fully replace hardcoded data!**
