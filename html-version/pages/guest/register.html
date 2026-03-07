@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - High Street Gym</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 
 <body class="bg-gray-50">
@@ -80,13 +80,13 @@
                     </div>
                 </div>
 
-                <a href="login.html"
+                <a href="/pages/guest/login.html"
                     class="block w-full text-center border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors">
                     Sign In
                 </a>
 
                 <div class="text-center mt-6">
-                    <a href="index.html" class="text-sm text-gray-600 hover:text-blue-600">
+                    <a href="/pages/guest/index.html" class="text-sm text-gray-600 hover:text-blue-600">
                         ← Back to Home
                     </a>
                 </div>
@@ -128,11 +128,8 @@
                     throw new Error(data.error || data.message || 'Registration failed');
                 }
 
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('user', JSON.stringify(data.user));
-
                 alert('Account created successfully!');
-                window.location.href = '../member/dashboard.html';
+                window.location.href = '/pages/guest/login.html';
 
             } catch (error) {
                 console.error('Registration error:', error);

@@ -6,7 +6,7 @@ const db = require('../../config/database');
 // Register new user
 exports.register = async (req, res) => {
     try {
-        const { email, password, firstName, lastName, phone, role } = req.body;
+        const { email, password, first_name, last_name, phone, role } = req.body;
 
         // Check if user already exists
         const [existingUsers] = await db.query(
@@ -27,7 +27,7 @@ exports.register = async (req, res) => {
         // Insert new user
         const [result] = await db.query(
             'INSERT INTO users (email, password, first_name, last_name, phone, role) VALUES (?, ?, ?, ?, ?, ?)',
-            [email, hashedPassword, firstName, lastName, phone, role || 'member']
+            [email, hashedPassword, first_name, last_name, phone, role || 'member']
         );
 
         res.status(201).json({

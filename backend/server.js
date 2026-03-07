@@ -9,14 +9,17 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:8000',
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
     credentials: true
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static files (if needed)
-app.use(express.static('public'));
+// Serve static files - CORRECTED PATHS
+// Assuming your project structure has 'pages', 'css', 'js' folders at the same level as 'backend'
+app.use('/pages', express.static(path.join(__dirname, '..', 'pages')));
+app.use('/css', express.static(path.join(__dirname, '..', 'css')));
+app.use('/js', express.static(path.join(__dirname, '..', 'js')));
 
 // Import routes
 const authRoutes = require('./routes/authRoutes');
@@ -36,10 +39,21 @@ app.use('/api/blog', blogRoutes);
 app.use('/api/activities', activityRoutes);
 app.use('/api/locations', locationRoutes);
 
+// Root redirect
+app.get('/', (req, res) => {
+    res.redirect('/pages/guest/index.html');
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', message: 'Server is running' });
 });
+
+// Test database connection
+const db = require('./config/database');
+db.query('SELECT 1')
+    .then(() => console.log('✅ Database connected successfully'))
+    .catch(err => console.error('❌ Database connection failed:', err));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -62,6 +76,7 @@ app.use((req, res) => {
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
     console.log(`📍 API available at http://localhost:${PORT}/api`);
+    console.log(`🌐 Frontend available at http://localhost:${PORT}`);
 });
 
 module.exports = app;
