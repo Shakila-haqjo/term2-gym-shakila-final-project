@@ -17,9 +17,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Serve static files - CORRECTED PATHS
 // Assuming your project structure has 'pages', 'css', 'js' folders at the same level as 'backend'
-app.use('/pages', express.static(path.join(__dirname, '..', 'pages')));
-app.use('/css', express.static(path.join(__dirname, '..', 'css')));
-app.use('/js', express.static(path.join(__dirname, '..', 'js')));
+app.use('/pages', express.static(path.join(__dirname, '..', 'html-version', 'pages')));
+app.use('/css', express.static(path.join(__dirname, '..', 'html-version', 'css')));
+app.use('/js', express.static(path.join(__dirname, '..', 'html-version', 'js')));
 
 // Import routes
 const authRoutes = require('./routes/authRoutes');

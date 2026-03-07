@@ -1,3 +1,4 @@
+// backend/controllers/activity/activityController.js
 // controllers/activity/activityController.js
 
 const Activity = require('../../models/Activity');

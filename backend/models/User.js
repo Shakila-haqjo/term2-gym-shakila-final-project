@@ -1,3 +1,4 @@
+// backend/models/User.js
 // models/User.js
 
 const db = require('../config/database');

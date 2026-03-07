@@ -1,3 +1,4 @@
+<!-- html-version/readme.md -->
 # High Street Gym - HTML/CSS/JS Version
 
 Complete rewrite of the React-based gym management system in pure HTML, CSS (Tailwind CDN), and vanilla JavaScript.

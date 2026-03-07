@@ -1,3 +1,4 @@
+// backend/controllers/blog/blogController.js
 // controllers/blog/blogController.js
 
 const Blog = require('../../models/Blog');

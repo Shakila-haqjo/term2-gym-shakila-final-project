@@ -1,3 +1,4 @@
+# setup-backend.sh
 #!/bin/bash
 # setup-backend.sh - Create Node.js/Express backend structure
 

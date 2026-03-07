@@ -1,3 +1,4 @@
+// backend/models/Activity.js
 // models/Activity.js
 
 const db = require('../config/database');

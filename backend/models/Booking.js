@@ -1,3 +1,4 @@
+// backend/models/Booking.js
 // models/Booking.js
 
 const db = require('../config/database');

@@ -1,3 +1,4 @@
+<!-- backend/README.md -->
 # High Street Gym - Backend API
 
 Complete Node.js/Express/MySQL backend for High Street Gym Management System.

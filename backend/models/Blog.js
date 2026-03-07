@@ -1,3 +1,4 @@
+// backend/models/Blog.js
 // models/Blog.js
 
 const db = require('../config/database');

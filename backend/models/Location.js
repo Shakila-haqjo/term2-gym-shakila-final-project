@@ -1,3 +1,4 @@
+// backend/models/Location.js
 // models/Location.js
 
 const db = require('../config/database');

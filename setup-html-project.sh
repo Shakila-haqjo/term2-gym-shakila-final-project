@@ -1,3 +1,4 @@
+# setup-html-project.sh
 #!/bin/bash
 # setup-html-project.sh - Create complete HTML project structure
 

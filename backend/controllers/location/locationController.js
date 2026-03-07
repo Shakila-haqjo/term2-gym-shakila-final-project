@@ -1,3 +1,4 @@
+// backend/controllers/location/locationController.js
 // controllers/location/locationController.js
 
 const Location = require('../../models/Location');
