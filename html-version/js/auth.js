@@ -1,4 +1,5 @@
-// html-version/js/auth.js
+// js/auth.js
+
 const API_BASE_URL = 'http://localhost:3000/api';
 
 // Get token from localStorage
@@ -41,32 +42,25 @@ function getUserRole() {
 
 // Logout
 function logout() {
-    removeToken();
-    window.location.href = '/pages/guest/login.html';
+    RoleNavigator.logout();
 }
 
 // Protect page - redirect if not authenticated or wrong role
 function protectPage(requiredRole) {
-    if (!isLoggedIn()) {
-        window.location.href = '/pages/guest/login.html';
-        return;
-    }
-
-    const userRole = getUserRole();
-    if (requiredRole && userRole !== requiredRole) {
-        window.location.href = '/pages/guest/login.html';
-        return;
-    }
+    RoleNavigator.protect(requiredRole);
 }
 
 // Handle login form submission
 async function handleLogin(event) {
     event.preventDefault();
+    console.log('🔐 handleLogin() called');
 
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
+    console.log('📧 Email:', email);
 
     try {
+        console.log('📡 Sending login request to:', `${API_BASE_URL}/auth/login`);
         const response = await fetch(`${API_BASE_URL}/auth/login`, {
             method: 'POST',
             headers: {
@@ -75,30 +69,32 @@ async function handleLogin(event) {
             body: JSON.stringify({ email, password })
         });
 
+        console.log('📥 Response status:', response.status);
         const data = await response.json();
+        console.log('📦 Response data:', data);
 
         if (data.success) {
-            setToken(data.token);
-            setUserSession(data.user);
+            console.log('✅ Login successful');
+            console.log('👤 User data from API:', data.user);
+            console.log('🔑 Token from API:', data.token?.substring(0, 20) + '...');
+            
+            // Use RoleNavigator to set session
+            RoleNavigator.setSession(data.token, data.user);
 
             showToast('Login successful!', 'success');
 
-            // Redirect based on role
-            const role = data.user.role;
+            // Redirect based on role using RoleNavigator
+            console.log('⏱️ Setting timeout for redirect...');
             setTimeout(() => {
-                if (role === 'admin') {
-                    window.location.href = '/pages/admin/dashboard.html';
-                } else if (role === 'trainer') {
-                    window.location.href = '/pages/trainer/dashboard.html';
-                } else {
-                    window.location.href = '/pages/member/dashboard.html';
-                }
+                console.log('🚀 Timeout fired, calling redirectToDashboard()');
+                RoleNavigator.redirectToDashboard();
             }, 1000);
         } else {
+            console.log('❌ Login failed:', data.message);
             showToast(data.message || 'Login failed', 'error');
         }
     } catch (error) {
-        console.error('Login error:', error);
+        console.error('💥 Login error:', error);
         showToast('Login failed. Please check your connection.', 'error');
     }
 }
@@ -188,10 +184,9 @@ async function apiRequest(endpoint, options = {}) {
         const response = await fetch(`${API_BASE_URL}${endpoint}`, mergedOptions);
         const data = await response.json();
 
-        // If unauthorized, redirect to login
+        // If unauthorized, redirect to login using RoleNavigator
         if (response.status === 401) {
-            removeToken();
-            window.location.href = '/pages/guest/login.html';
+            RoleNavigator.redirectToLogin('Session expired. Please login again.');
             return null;
         }
 

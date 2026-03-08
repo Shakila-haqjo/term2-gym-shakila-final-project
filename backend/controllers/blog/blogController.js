@@ -37,7 +37,7 @@ exports.createBlog = async (req, res) => {
         }
 
         const blogId = await Blog.create({
-            user_id: req.user.id,
+            user_id: req.user.user_id,
             title,
             content,
             image: image || null
@@ -62,7 +62,7 @@ exports.updateBlog = async (req, res) => {
             return res.status(404).json({ error: 'Blog not found' });
         }
 
-        if (blog.user_id !== req.user.id && req.user.role !== 'admin') {
+        if (blog.user_id !== req.user.user_id && req.user.role !== 'admin') {
             return res.status(403).json({ error: 'Not authorized to update this blog' });
         }
 
@@ -85,7 +85,7 @@ exports.deleteBlog = async (req, res) => {
             return res.status(404).json({ error: 'Blog not found' });
         }
 
-        if (blog.user_id !== req.user.id && req.user.role !== 'admin') {
+        if (blog.user_id !== req.user.user_id && req.user.role !== 'admin') {
             return res.status(403).json({ error: 'Not authorized to delete this blog' });
         }
 
@@ -99,7 +99,7 @@ exports.deleteBlog = async (req, res) => {
 // Get blogs by user ID
 exports.getBlogsByUser = async (req, res) => {
     try {
-        const userId = req.params.userId || req.user.id;
+        const userId = req.params.userId || req.user.user_id;
         const blogs = await Blog.findByUserId(userId);
         res.json(blogs);
     } catch (error) {

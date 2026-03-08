@@ -13,6 +13,12 @@
 </head>
 
 <body class="bg-gray-50">
+    <!-- Load dependencies first -->
+    <script src="../../js/role-navigator.js"></script>
+    <script src="../../js/auth-guard.js"></script>
+    <script src="../../js/page-protection.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/main.js"></script>
     <nav class="bg-white shadow-lg">
         <div class="container mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
@@ -22,7 +28,7 @@
                     <a href="sessions.html" class="text-gray-700 hover:text-blue-600">My Sessions</a>
                     <a href="blog.html" class="text-gray-700 hover:text-blue-600">Blog</a>
                     <a href="profile.html" class="text-gray-700 hover:text-blue-600">Profile</a>
-                    <button id="logoutBtn" class="text-red-600 hover:text-red-800">Logout</button>
+                    <button data-logout class="text-red-600 hover:text-red-800">Logout</button>
                 </div>
             </div>
         </div>
@@ -171,26 +177,49 @@
     </main>
 
     <script>
+        console.log('📄 Trainer dashboard script loaded');
         const API_URL = 'http://localhost:3000/api';
 
-        const auth = AuthGuard.protect(['trainer', 'admin']);
-        if (!auth) return;
+        console.log('🔍 Calling RoleNavigator.protect for trainer page');
+        const auth = RoleNavigator.protect(['trainer', 'admin']);
+        if (!auth) {
+            console.log('❌ Auth check failed, script stopped');
+            return;
+        }
 
+        console.log('✅ Auth check passed, continuing with dashboard');
         const { token, user } = auth;
+        console.log('👤 User in dashboard:', user);
 
-        document.getElementById('logoutBtn')?.addEventListener('click', () => {
-            AuthGuard.logout();
-        });
+        // Set trainer name
+        const trainerNameEl = document.getElementById('trainerName');
+        if (trainerNameEl) {
+            trainerNameEl.textContent = user.first_name || 'Trainer';
+        }
+
+        // Logout handler
+        const logoutBtn = document.querySelector('[data-logout]');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                RoleNavigator.logout();
+            });
+        }
 
         // Fetch dashboard data
         async function fetchDashboardData() {
+            console.log('📊 fetchDashboardData() called');
             try {
                 // Fetch sessions
-                const sessionsResponse = await fetch(`${API_URL}/sessions/trainer/${user.id}`, {
+                console.log('📡 Fetching sessions from:', `${API_URL}/sessions/trainer/${user.user_id}`);
+                const sessionsResponse = await fetch(`${API_URL}/sessions/trainer/${user.user_id}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
-                if (!sessionsResponse.ok) throw new Error('Failed to fetch sessions');
+                if (!sessionsResponse.ok) {
+                    document.getElementById('sessionsLoading').classList.add('hidden');
+                    document.getElementById('sessionsEmpty').classList.remove('hidden');
+                    throw new Error('Failed to fetch sessions');
+                }
                 const sessions = await sessionsResponse.json();
 
                 const now = new Date();
@@ -220,7 +249,7 @@
                 displayUpcomingSessions(upcoming.slice(0, 3));
 
                 // Fetch blogs
-                const blogsResponse = await fetch(`${API_URL}/blogs/user/${user.id}`, {
+                const blogsResponse = await fetch(`${API_URL}/blogs/user/${user.user_id}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
@@ -230,6 +259,8 @@
                 }
             } catch (error) {
                 console.error('Error fetching dashboard data:', error);
+                document.getElementById('sessionsLoading').classList.add('hidden');
+                document.getElementById('sessionsEmpty').classList.remove('hidden');
             }
         }
 

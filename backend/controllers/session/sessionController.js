@@ -186,3 +186,30 @@ exports.getTrainerSessions = async (req, res) => {
         });
     }
 };
+
+// Get sessions by trainer ID (for viewing specific trainer's sessions)
+exports.getTrainerSessionsById = async (req, res) => {
+    try {
+        const [sessions] = await db.query(`
+            SELECT s.*, 
+                   a.name as activity_name,
+                   l.name as location_name,
+                   u.first_name, u.last_name,
+                   (SELECT COUNT(*) FROM bookings WHERE session_id = s.session_id AND status = 'confirmed') as current_participants
+            FROM sessions s
+            JOIN activities a ON s.activity_id = a.activity_id
+            JOIN locations l ON s.location_id = l.location_id
+            JOIN users u ON s.trainer_id = u.user_id
+            WHERE s.trainer_id = ?
+            ORDER BY s.session_date DESC, s.session_time
+        `, [req.params.trainerId]);
+
+        res.json(sessions);
+    } catch (error) {
+        console.error('Get trainer sessions by ID error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to fetch sessions'
+        });
+    }
+};

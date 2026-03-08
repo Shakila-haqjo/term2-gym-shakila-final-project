@@ -13,6 +13,12 @@
 </head>
 
 <body class="bg-gray-50">
+    <!-- Load dependencies first -->
+    <script src="../../js/role-navigator.js"></script>
+    <script src="../../js/auth-guard.js"></script>
+    <script src="../../js/page-protection.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/main.js"></script>
     <nav class="bg-white shadow-lg">
         <div class="container mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
@@ -24,7 +30,7 @@
                     <a href="activities.html" class="text-gray-700 hover:text-blue-600">Activities</a>
                     <a href="locations.html" class="text-gray-700 hover:text-blue-600">Locations</a>
                     <a href="bookings.html" class="text-gray-700 hover:text-blue-600">Bookings</a>
-                    <button id="logoutBtn" class="text-red-600 hover:text-red-800">Logout</button>
+                    <button data-logout class="text-red-600 hover:text-red-800">Logout</button>
                 </div>
             </div>
         </div>
@@ -168,18 +174,22 @@
         </div>
     </main>
 
-    <script src="../../js/auth-guard.js"></script>
+
     <script>
         const API_URL = 'http://localhost:3000/api';
 
-        const auth = AuthGuard.protect('admin');
+        const auth = RoleNavigator.protect('admin');
         if (!auth) return;
 
         const { token, user } = auth;
 
-        document.getElementById('logoutBtn')?.addEventListener('click', () => {
-            AuthGuard.logout();
-        });
+        // Logout handler
+        const logoutBtn = document.querySelector('[data-logout]');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                RoleNavigator.logout();
+            });
+        }
 
         // Fetch dashboard stats
         async function fetchDashboardStats() {
@@ -205,6 +215,9 @@
                     const upcoming = sessions.filter(s => new Date(s.session_date) >= now);
                     document.getElementById('activeSessions').textContent = upcoming.length;
                     displayRecentSessions(sessions.slice(0, 5));
+                } else {
+                    document.getElementById('sessionsLoading').classList.add('hidden');
+                    document.getElementById('sessionsEmpty').classList.remove('hidden');
                 }
 
                 // Fetch bookings
@@ -236,6 +249,8 @@
 
             } catch (error) {
                 console.error('Error fetching dashboard stats:', error);
+                document.getElementById('sessionsLoading').classList.add('hidden');
+                document.getElementById('sessionsEmpty').classList.remove('hidden');
             }
         }
 
@@ -277,6 +292,7 @@
         // Initialize
         fetchDashboardStats();
     </script>
+
 </body>
 
 </html>

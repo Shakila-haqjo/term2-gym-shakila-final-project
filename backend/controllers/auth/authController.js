@@ -48,6 +48,7 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
+        console.log('🔐 Login attempt for email:', email);
 
         // Get user from database
         const [users] = await db.query(
@@ -56,6 +57,7 @@ exports.login = async (req, res) => {
         );
 
         if (users.length === 0) {
+            console.log('❌ User not found:', email);
             return res.status(401).json({
                 success: false,
                 message: 'Invalid credentials'
@@ -63,11 +65,13 @@ exports.login = async (req, res) => {
         }
 
         const user = users[0];
+        console.log('👤 User found:', { email: user.email, role: user.role, user_id: user.user_id });
 
         // Verify password
         const isValidPassword = await bcrypt.compare(password, user.password);
 
         if (!isValidPassword) {
+            console.log('❌ Invalid password for:', email);
             return res.status(401).json({
                 success: false,
                 message: 'Invalid credentials'
@@ -83,6 +87,9 @@ exports.login = async (req, res) => {
 
         // Return user data (excluding password)
         const { password: _, ...userData } = user;
+        
+        console.log('✅ Login successful for:', email);
+        console.log('📦 Returning user data:', { ...userData, password: '[HIDDEN]' });
 
         res.json({
             success: true,
@@ -91,7 +98,7 @@ exports.login = async (req, res) => {
             user: userData
         });
     } catch (error) {
-        console.error('Login error:', error);
+        console.error('💥 Login error:', error);
         res.status(500).json({
             success: false,
             message: 'Login failed'

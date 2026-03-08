@@ -12,6 +12,12 @@
 </head>
 
 <body class="bg-gray-50">
+    <!-- Load dependencies first -->
+    <script src="../../js/role-navigator.js"></script>
+    <script src="../../js/auth-guard.js"></script>
+    <script src="../../js/page-protection.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/main.js"></script>
     <nav class="bg-white shadow-lg">
         <div class="container mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
@@ -21,7 +27,7 @@
                     <a href="sessions.html" class="text-gray-700 hover:text-blue-600">Sessions</a>
                     <a href="bookings.html" class="text-gray-700 hover:text-blue-600">Bookings</a>
                     <a href="profile.html" class="text-gray-700 hover:text-blue-600">Profile</a>
-                    <button id="logoutBtn" class="text-red-600 hover:text-red-800">Logout</button>
+                    <button data-logout class="text-red-600 hover:text-red-800">Logout</button>
                 </div>
             </div>
         </div>
@@ -29,7 +35,8 @@
 
     <main class="container mx-auto px-4 py-8">
         <div class="mb-8">
-            <h2 class="text-3xl font-bold text-gray-800">Welcome Back, <span id="userName">Member</span>!</h2>
+            <h2 class="text-3xl font-bold text-gray-800">Welcome Back, <span data-user-name id="userName">Member</span>
+                !</h2>
             <p class="text-gray-600 mt-2">Here's your fitness overview</p>
         </div>
 
@@ -167,32 +174,48 @@
         </div>
     </main>
 
-    <script src="../../js/auth-guard.js"></script>
+
     <script>
+        console.log('📄 Member dashboard script loaded');
         const API_URL = 'http://localhost:3000/api';
 
         // ✅ ROLE-BASED AUTH - Member only
-        const auth = AuthGuard.protect('member');
-        if (!auth) return;
+        console.log('🔍 Calling RoleNavigator.protect for member page');
+        const auth = RoleNavigator.protect('member');
+        if (!auth) {
+            console.log('❌ Auth check failed, script stopped');
+            return;
+        }
 
+        console.log('✅ Auth check passed, continuing with dashboard');
         const { token, user } = auth;
+        console.log('👤 User in dashboard:', user);
 
         // Set user name
         document.getElementById('userName').textContent = user.first_name || 'Member';
 
         // Logout handler
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            AuthGuard.logout();
-        });
+        const logoutBtn = document.querySelector('[data-logout]');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                RoleNavigator.logout();
+            });
+        }
 
         // Fetch dashboard data
         async function fetchDashboardData() {
+            console.log('📊 fetchDashboardData() called');
             try {
+                console.log('📡 Fetching bookings from:', `${API_URL}/bookings/my-bookings`);
                 const bookingsResponse = await fetch(`${API_URL}/bookings/my-bookings`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
-                if (!bookingsResponse.ok) throw new Error('Failed to fetch bookings');
+                if (!bookingsResponse.ok) {
+                    document.getElementById('sessionsLoading').classList.add('hidden');
+                    document.getElementById('sessionsEmpty').classList.remove('hidden');
+                    throw new Error('Failed to fetch bookings');
+                }
                 const bookings = await bookingsResponse.json();
 
                 const now = new Date();

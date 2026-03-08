@@ -23,7 +23,7 @@
                     <a href="activities.html" class="text-gray-700 hover:text-blue-600">Activities</a>
                     <a href="locations.html" class="text-gray-700 hover:text-blue-600">Locations</a>
                     <a href="bookings.html" class="text-gray-700 hover:text-blue-600">Bookings</a>
-                    <button id="logoutBtn" class="text-red-600 hover:text-red-800">Logout</button>
+                    <button data-logout class="text-red-600 hover:text-red-800">Logout</button>
                 </div>
             </div>
         </div>
@@ -217,20 +217,20 @@
         </div>
     </div>
 
-    <script src="../../js/auth-guard.js"></script>
+
     <script>
         const API_URL = 'http://localhost:3000/api';
         let allUsers = [];
         let currentUserId = null;
         let userToDelete = null;
 
-        const auth = AuthGuard.protect('admin');
+        const auth = RoleNavigator.protect('admin');
         if (!auth) return;
 
         const { token, user } = auth;
 
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            AuthGuard.logout();
+        document.querySelector('[data-logout]').addEventListener('click', () => {
+            RoleNavigator.logout();
         });
 
         // Show/hide trainer fields based on role
@@ -519,6 +519,15 @@
         // Initialize
         fetchUsers();
     </script>
+
+    <script src="../../js/role-navigator.js"></script>
+    <script src="../../js/page-protection.js"></script>
+    <script src="../../js/navigation-handler.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/main.js"></script>
+
+
+
 </body>
 
 </html>
