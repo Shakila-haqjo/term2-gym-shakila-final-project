@@ -14,6 +14,7 @@
 
 <body class="bg-gray-50">
     <!-- Load dependencies first -->
+    <script src="../../js/ui-helpers.js"></script>
     <script src="../../js/role-navigator.js"></script>
     <script src="../../js/auth-guard.js"></script>
     <script src="../../js/page-protection.js"></script>
@@ -249,13 +250,22 @@
                 displayUpcomingSessions(upcoming.slice(0, 3));
 
                 // Fetch blogs
-                const blogsResponse = await fetch(`${API_URL}/blogs/user/${user.user_id}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                try {
+                    const blogsResponse = await fetch(`${API_URL}/blogs/user/${user.user_id}`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
 
-                if (blogsResponse.ok) {
-                    const blogs = await blogsResponse.json();
-                    document.getElementById('totalBlogs').textContent = blogs.length;
+                    if (blogsResponse.ok) {
+                        const blogs = await blogsResponse.json();
+                        document.getElementById('totalBlogs').textContent = Array.isArray(blogs) ? blogs.length : 0;
+                        console.log('📝 Blogs loaded:', blogs.length);
+                    } else {
+                        console.warn('⚠️ Blogs fetch failed:', blogsResponse.status);
+                        document.getElementById('totalBlogs').textContent = 0;
+                    }
+                } catch (blogError) {
+                    console.error('💥 Blog fetch error:', blogError);
+                    document.getElementById('totalBlogs').textContent = 0;
                 }
             } catch (error) {
                 console.error('Error fetching dashboard data:', error);
