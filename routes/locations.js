@@ -4,25 +4,26 @@ const db = require('../database');
 const { authenticate, requireRole } = require('../middleware/auth');
 
 // GET /api/locations
-router.get('/', authenticate, (req, res) => {
+router.get('/', authenticate, async (req, res) => {
   let sql = 'SELECT * FROM locations';
-  if (req.user.role === 'member') {
-    sql += " WHERE status = 'active'";
-  }
+  if (req.user.role === 'member') sql += " WHERE status = 'active'";
   sql += ' ORDER BY name ASC';
-  const locations = db.prepare(sql).all();
+  const [locations] = await db.execute(sql);
   res.json({ locations });
 });
 
 // POST /api/locations - admin only
-router.post('/', requireRole('admin'), (req, res) => {
+router.post('/', requireRole('admin'), async (req, res) => {
   const { name, address, capacity, status } = req.body;
   if (!name) return res.status(400).json({ error: 'Name is required' });
 
   const locStatus = ['active','inactive'].includes(status) ? status : 'active';
   try {
-    const result = db.prepare('INSERT INTO locations (name, address, capacity, status) VALUES (?, ?, ?, ?)').run(name.trim(), address || null, capacity || 20, locStatus);
-    const location = db.prepare('SELECT * FROM locations WHERE id = ?').get(result.lastInsertRowid);
+    const [result] = await db.execute(
+      'INSERT INTO locations (name, address, capacity, status) VALUES (?, ?, ?, ?)',
+      [name.trim(), address || null, capacity || 20, locStatus]
+    );
+    const [[location]] = await db.execute('SELECT * FROM locations WHERE id = ?', [result.insertId]);
     res.status(201).json({ location });
   } catch (err) {
     res.status(500).json({ error: 'Failed to create location' });
@@ -30,8 +31,8 @@ router.post('/', requireRole('admin'), (req, res) => {
 });
 
 // PUT /api/locations/:id - admin only
-router.put('/:id', requireRole('admin'), (req, res) => {
-  const location = db.prepare('SELECT * FROM locations WHERE id = ?').get(req.params.id);
+router.put('/:id', requireRole('admin'), async (req, res) => {
+  const [[location]] = await db.execute('SELECT * FROM locations WHERE id = ?', [req.params.id]);
   if (!location) return res.status(404).json({ error: 'Location not found' });
 
   const { name, address, capacity, status } = req.body;
@@ -46,24 +47,24 @@ router.put('/:id', requireRole('admin'), (req, res) => {
   if (updates.length === 0) return res.status(400).json({ error: 'No fields to update' });
 
   params.push(req.params.id);
-  db.prepare(`UPDATE locations SET ${updates.join(', ')} WHERE id = ?`).run(...params);
+  await db.execute(`UPDATE locations SET ${updates.join(', ')} WHERE id = ?`, params);
 
-  const updated = db.prepare('SELECT * FROM locations WHERE id = ?').get(req.params.id);
+  const [[updated]] = await db.execute('SELECT * FROM locations WHERE id = ?', [req.params.id]);
   res.json({ location: updated });
 });
 
 // DELETE /api/locations/:id - admin only
-router.delete('/:id', requireRole('admin'), (req, res) => {
-  const location = db.prepare('SELECT * FROM locations WHERE id = ?').get(req.params.id);
+router.delete('/:id', requireRole('admin'), async (req, res) => {
+  const [[location]] = await db.execute('SELECT * FROM locations WHERE id = ?', [req.params.id]);
   if (!location) return res.status(404).json({ error: 'Location not found' });
 
-  const used = db.prepare('SELECT COUNT(*) as cnt FROM sessions WHERE location_id = ?').get(req.params.id).cnt;
+  const [[{ used }]] = await db.execute('SELECT COUNT(*) as used FROM sessions WHERE location_id = ?', [req.params.id]);
   if (used > 0) {
-    db.prepare("UPDATE locations SET status = 'inactive' WHERE id = ?").run(req.params.id);
+    await db.execute("UPDATE locations SET status = 'inactive' WHERE id = ?", [req.params.id]);
     return res.json({ message: 'Location deactivated (used in sessions)' });
   }
 
-  db.prepare('DELETE FROM locations WHERE id = ?').run(req.params.id);
+  await db.execute('DELETE FROM locations WHERE id = ?', [req.params.id]);
   res.json({ message: 'Location deleted' });
 });
 
