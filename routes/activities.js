@@ -2,12 +2,11 @@ const express = require('express');
 const router = express.Router();
 const db = require('../database');
 const { authenticate, requireRole } = require('../middleware/auth');
+const { ACTIVITIES } = require('../queries');
 
 // GET /api/activities
 router.get('/', authenticate, async (req, res) => {
-  let sql = 'SELECT * FROM activities';
-  if (req.user.role === 'member') sql += " WHERE status = 'active'";
-  sql += ' ORDER BY name ASC';
+  const sql = req.user.role === 'member' ? ACTIVITIES.LIST_ACTIVE : ACTIVITIES.LIST_ALL;
   const [activities] = await db.execute(sql);
   res.json({ activities });
 });
@@ -19,11 +18,8 @@ router.post('/', requireRole('admin'), async (req, res) => {
 
   const actStatus = ['active','inactive'].includes(status) ? status : 'active';
   try {
-    const [result] = await db.execute(
-      'INSERT INTO activities (name, description, status) VALUES (?, ?, ?)',
-      [name.trim(), description || null, actStatus]
-    );
-    const [[activity]] = await db.execute('SELECT * FROM activities WHERE id = ?', [result.insertId]);
+    const [result] = await db.execute(ACTIVITIES.INSERT, [name.trim(), description || null, actStatus]);
+    const [[activity]] = await db.execute(ACTIVITIES.GET_BY_ID, [result.insertId]);
     res.status(201).json({ activity });
   } catch (err) {
     res.status(500).json({ error: 'Failed to create activity' });
@@ -32,14 +28,14 @@ router.post('/', requireRole('admin'), async (req, res) => {
 
 // PUT /api/activities/:id - admin only
 router.put('/:id', requireRole('admin'), async (req, res) => {
-  const [[activity]] = await db.execute('SELECT * FROM activities WHERE id = ?', [req.params.id]);
+  const [[activity]] = await db.execute(ACTIVITIES.GET_BY_ID, [req.params.id]);
   if (!activity) return res.status(404).json({ error: 'Activity not found' });
 
   const { name, description, status } = req.body;
   const updates = [];
   const params = [];
 
-  if (name) { updates.push('name = ?'); params.push(name.trim()); }
+  if (name)                  { updates.push('name = ?');        params.push(name.trim()); }
   if (description !== undefined) { updates.push('description = ?'); params.push(description); }
   if (status && ['active','inactive'].includes(status)) { updates.push('status = ?'); params.push(status); }
 
@@ -48,22 +44,22 @@ router.put('/:id', requireRole('admin'), async (req, res) => {
   params.push(req.params.id);
   await db.execute(`UPDATE activities SET ${updates.join(', ')} WHERE id = ?`, params);
 
-  const [[updated]] = await db.execute('SELECT * FROM activities WHERE id = ?', [req.params.id]);
+  const [[updated]] = await db.execute(ACTIVITIES.GET_BY_ID, [req.params.id]);
   res.json({ activity: updated });
 });
 
 // DELETE /api/activities/:id - admin only
 router.delete('/:id', requireRole('admin'), async (req, res) => {
-  const [[activity]] = await db.execute('SELECT * FROM activities WHERE id = ?', [req.params.id]);
+  const [[activity]] = await db.execute(ACTIVITIES.GET_BY_ID, [req.params.id]);
   if (!activity) return res.status(404).json({ error: 'Activity not found' });
 
-  const [[{ used }]] = await db.execute('SELECT COUNT(*) as used FROM sessions WHERE activity_id = ?', [req.params.id]);
+  const [[{ used }]] = await db.execute(ACTIVITIES.CHECK_IN_USE, [req.params.id]);
   if (used > 0) {
-    await db.execute("UPDATE activities SET status = 'inactive' WHERE id = ?", [req.params.id]);
+    await db.execute(ACTIVITIES.DEACTIVATE, [req.params.id]);
     return res.json({ message: 'Activity deactivated (used in sessions)' });
   }
 
-  await db.execute('DELETE FROM activities WHERE id = ?', [req.params.id]);
+  await db.execute(ACTIVITIES.DELETE, [req.params.id]);
   res.json({ message: 'Activity deleted' });
 });
 

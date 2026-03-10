@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../database');
 const { authenticate, JWT_SECRET } = require('../middleware/auth');
+const { AUTH } = require('../queries');
 
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
@@ -11,7 +12,7 @@ router.post('/login', async (req, res) => {
   if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
 
   try {
-    const [[user]] = await db.execute('SELECT * FROM users WHERE email = ?', [email.toLowerCase().trim()]);
+    const [[user]] = await db.execute(AUTH.FIND_BY_EMAIL, [email.toLowerCase().trim()]);
     if (!user) return res.status(401).json({ error: 'Invalid email or password' });
     if (user.status !== 'active') return res.status(403).json({ error: 'Account is inactive. Contact admin.' });
 
@@ -46,21 +47,17 @@ router.post('/register', async (req, res) => {
   const userRole = allowedRoles.includes(role) ? role : 'member';
 
   try {
-    const [[existing]] = await db.execute('SELECT id FROM users WHERE email = ?', [email.toLowerCase().trim()]);
+    const [[existing]] = await db.execute(AUTH.CHECK_EMAIL, [email.toLowerCase().trim()]);
     if (existing) return res.status(409).json({ error: 'Email already registered' });
 
     if (password.length < 6) return res.status(400).json({ error: 'Password must be at least 6 characters' });
 
     const hash = bcrypt.hashSync(password, 10);
-    const [result] = await db.execute(
-      'INSERT INTO users (name, email, password_hash, phone, address, role, status) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    const [result] = await db.execute(AUTH.INSERT_USER,
       [name.trim(), email.toLowerCase().trim(), hash, phone || null, address || null, userRole, 'active']
     );
 
-    const [[user]] = await db.execute(
-      'SELECT id, name, email, role, avatar, phone, address FROM users WHERE id = ?',
-      [result.insertId]
-    );
+    const [[user]] = await db.execute(AUTH.GET_PROFILE, [result.insertId]);
     const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
 
     res.status(201).json({ token, user });
@@ -101,10 +98,7 @@ router.put('/me', authenticate, async (req, res) => {
   params.push(req.user.id);
   await db.execute(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`, params);
 
-  const [[updated]] = await db.execute(
-    'SELECT id, name, email, role, avatar, phone, address FROM users WHERE id = ?',
-    [req.user.id]
-  );
+  const [[updated]] = await db.execute(AUTH.GET_PROFILE, [req.user.id]);
   res.json({ user: updated });
 });
 

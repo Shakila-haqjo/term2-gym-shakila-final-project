@@ -2,12 +2,11 @@ const express = require('express');
 const router = express.Router();
 const db = require('../database');
 const { authenticate, requireRole } = require('../middleware/auth');
+const { LOCATIONS } = require('../queries');
 
 // GET /api/locations
 router.get('/', authenticate, async (req, res) => {
-  let sql = 'SELECT * FROM locations';
-  if (req.user.role === 'member') sql += " WHERE status = 'active'";
-  sql += ' ORDER BY name ASC';
+  const sql = req.user.role === 'member' ? LOCATIONS.LIST_ACTIVE : LOCATIONS.LIST_ALL;
   const [locations] = await db.execute(sql);
   res.json({ locations });
 });
@@ -19,11 +18,8 @@ router.post('/', requireRole('admin'), async (req, res) => {
 
   const locStatus = ['active','inactive'].includes(status) ? status : 'active';
   try {
-    const [result] = await db.execute(
-      'INSERT INTO locations (name, address, capacity, status) VALUES (?, ?, ?, ?)',
-      [name.trim(), address || null, capacity || 20, locStatus]
-    );
-    const [[location]] = await db.execute('SELECT * FROM locations WHERE id = ?', [result.insertId]);
+    const [result] = await db.execute(LOCATIONS.INSERT, [name.trim(), address || null, capacity || 20, locStatus]);
+    const [[location]] = await db.execute(LOCATIONS.GET_BY_ID, [result.insertId]);
     res.status(201).json({ location });
   } catch (err) {
     res.status(500).json({ error: 'Failed to create location' });
@@ -32,15 +28,15 @@ router.post('/', requireRole('admin'), async (req, res) => {
 
 // PUT /api/locations/:id - admin only
 router.put('/:id', requireRole('admin'), async (req, res) => {
-  const [[location]] = await db.execute('SELECT * FROM locations WHERE id = ?', [req.params.id]);
+  const [[location]] = await db.execute(LOCATIONS.GET_BY_ID, [req.params.id]);
   if (!location) return res.status(404).json({ error: 'Location not found' });
 
   const { name, address, capacity, status } = req.body;
   const updates = [];
   const params = [];
 
-  if (name) { updates.push('name = ?'); params.push(name.trim()); }
-  if (address !== undefined) { updates.push('address = ?'); params.push(address); }
+  if (name)                { updates.push('name = ?');     params.push(name.trim()); }
+  if (address !== undefined)  { updates.push('address = ?');  params.push(address); }
   if (capacity !== undefined) { updates.push('capacity = ?'); params.push(capacity); }
   if (status && ['active','inactive'].includes(status)) { updates.push('status = ?'); params.push(status); }
 
@@ -49,22 +45,22 @@ router.put('/:id', requireRole('admin'), async (req, res) => {
   params.push(req.params.id);
   await db.execute(`UPDATE locations SET ${updates.join(', ')} WHERE id = ?`, params);
 
-  const [[updated]] = await db.execute('SELECT * FROM locations WHERE id = ?', [req.params.id]);
+  const [[updated]] = await db.execute(LOCATIONS.GET_BY_ID, [req.params.id]);
   res.json({ location: updated });
 });
 
 // DELETE /api/locations/:id - admin only
 router.delete('/:id', requireRole('admin'), async (req, res) => {
-  const [[location]] = await db.execute('SELECT * FROM locations WHERE id = ?', [req.params.id]);
+  const [[location]] = await db.execute(LOCATIONS.GET_BY_ID, [req.params.id]);
   if (!location) return res.status(404).json({ error: 'Location not found' });
 
-  const [[{ used }]] = await db.execute('SELECT COUNT(*) as used FROM sessions WHERE location_id = ?', [req.params.id]);
+  const [[{ used }]] = await db.execute(LOCATIONS.CHECK_IN_USE, [req.params.id]);
   if (used > 0) {
-    await db.execute("UPDATE locations SET status = 'inactive' WHERE id = ?", [req.params.id]);
+    await db.execute(LOCATIONS.DEACTIVATE, [req.params.id]);
     return res.json({ message: 'Location deactivated (used in sessions)' });
   }
 
-  await db.execute('DELETE FROM locations WHERE id = ?', [req.params.id]);
+  await db.execute(LOCATIONS.DELETE, [req.params.id]);
   res.json({ message: 'Location deleted' });
 });
 

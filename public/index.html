@@ -6,6 +6,8 @@
   <title>FitGym - Premium Fitness Management</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/css/style.css">
+  <script>tailwind.config = { corePlugins: { preflight: false } }</script>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .stats-bar { background: var(--accent-gold); padding: 14px 40px; display: flex; justify-content: center; gap: 60px; flex-wrap: wrap; }
     .stats-bar-item { color: white; text-align: center; }
@@ -47,10 +49,10 @@
       <h1>Elevate Your <span>Fitness Journey</span> with Smart Management</h1>
       <p>Book sessions, track progress, and connect with expert trainers. Everything you need to achieve your fitness goals in one powerful platform.</p>
       <div class="hero-btns">
-        <a href="/register.html" class="btn btn-primary" style="font-size: 1rem; padding: 13px 28px;">
+        <a href="/register.html" class="btn btn-primary transition-all duration-200 hover:scale-105 hover:shadow-lg" style="font-size: 1rem; padding: 13px 28px;">
           <i class="fas fa-rocket"></i> Get Started Free
         </a>
-        <a href="/login.html" class="btn" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); font-size: 1rem; padding: 13px 28px;">
+        <a href="/login.html" class="btn transition-all duration-200 hover:scale-105" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); font-size: 1rem; padding: 13px 28px;">
           <i class="fas fa-sign-in-alt"></i> Sign In
         </a>
       </div>
@@ -59,10 +61,10 @@
 
   <!-- Stats Bar -->
   <div class="stats-bar">
-    <div class="stats-bar-item"><div class="num">500+</div><div class="lbl">Active Members</div></div>
-    <div class="stats-bar-item"><div class="num">50+</div><div class="lbl">Expert Trainers</div></div>
-    <div class="stats-bar-item"><div class="num">200+</div><div class="lbl">Weekly Sessions</div></div>
-    <div class="stats-bar-item"><div class="num">15+</div><div class="lbl">Activity Types</div></div>
+    <div class="stats-bar-item hover:scale-110 transition-transform duration-200 cursor-default"><div class="num">500+</div><div class="lbl">Active Members</div></div>
+    <div class="stats-bar-item hover:scale-110 transition-transform duration-200 cursor-default"><div class="num">50+</div><div class="lbl">Expert Trainers</div></div>
+    <div class="stats-bar-item hover:scale-110 transition-transform duration-200 cursor-default"><div class="num">200+</div><div class="lbl">Weekly Sessions</div></div>
+    <div class="stats-bar-item hover:scale-110 transition-transform duration-200 cursor-default"><div class="num">15+</div><div class="lbl">Activity Types</div></div>
   </div>
 
   <!-- Features -->
@@ -70,32 +72,32 @@
     <h2 class="section-title">Everything You Need</h2>
     <p class="section-subtitle">A complete gym management solution for members, trainers, and admins</p>
     <div class="features-grid">
-      <div class="feature-card">
+      <div class="feature-card hover:scale-105 hover:shadow-xl transition-all duration-200 cursor-pointer">
         <div class="feature-icon"><i class="fas fa-calendar-check"></i></div>
         <h3>Easy Session Booking</h3>
         <p>Browse and book fitness sessions with just a few clicks. View schedules, trainer info, and available spots.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card hover:scale-105 hover:shadow-xl transition-all duration-200 cursor-pointer">
         <div class="feature-icon"><i class="fas fa-users"></i></div>
         <h3>Expert Trainers</h3>
         <p>Connect with certified trainers across various disciplines. Read their bios and book their sessions.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card hover:scale-105 hover:shadow-xl transition-all duration-200 cursor-pointer">
         <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
         <h3>Track Progress</h3>
         <p>Monitor your booking history, upcoming sessions, and fitness journey all from your personal dashboard.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card hover:scale-105 hover:shadow-xl transition-all duration-200 cursor-pointer">
         <div class="feature-icon"><i class="fas fa-blog"></i></div>
         <h3>Fitness Blog</h3>
         <p>Read expert articles on fitness, nutrition, and wellness. Trainers share their knowledge and tips.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card hover:scale-105 hover:shadow-xl transition-all duration-200 cursor-pointer">
         <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
         <h3>Secure Platform</h3>
         <p>Your data is protected with JWT authentication and role-based access control throughout the platform.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card hover:scale-105 hover:shadow-xl transition-all duration-200 cursor-pointer">
         <div class="feature-icon"><i class="fas fa-cogs"></i></div>
         <h3>Admin Control</h3>
         <p>Powerful admin tools to manage users, sessions, locations, activities, and monitor all bookings.</p>
@@ -108,17 +110,17 @@
     <h2 class="section-title">What Our Members Say</h2>
     <p class="section-subtitle">Real experiences from our fitness community</p>
     <div class="testimonials-grid">
-      <div class="testimonial-card">
+      <div class="testimonial-card hover:-translate-y-1 hover:shadow-lg transition-all duration-200">
         <p>"FitGym completely transformed how I approach my workouts. Booking sessions is so easy and I love the blog content from trainers!"</p>
         <div class="testimonial-author">Sarah M.</div>
         <div class="testimonial-role">Member since 2024</div>
       </div>
-      <div class="testimonial-card">
+      <div class="testimonial-card hover:-translate-y-1 hover:shadow-lg transition-all duration-200">
         <p>"As a trainer, managing my sessions and tracking bookings has never been easier. The dashboard gives me everything I need at a glance."</p>
         <div class="testimonial-author">Mike T.</div>
         <div class="testimonial-role">Certified Trainer</div>
       </div>
-      <div class="testimonial-card">
+      <div class="testimonial-card hover:-translate-y-1 hover:shadow-lg transition-all duration-200">
         <p>"The admin panel is incredibly powerful. I can manage the entire gym operations from one place. Highly recommended!"</p>
         <div class="testimonial-author">James R.</div>
         <div class="testimonial-role">Gym Manager</div>
@@ -130,7 +132,7 @@
   <section class="cta-section">
     <h2>Ready to Start Your Fitness Journey?</h2>
     <p>Join thousands of members who have transformed their lives with FitGym</p>
-    <a href="/register.html" class="btn btn-primary" style="font-size: 1.05rem; padding: 14px 32px;">
+    <a href="/register.html" class="btn btn-primary transition-all duration-200 hover:scale-105 hover:shadow-xl" style="font-size: 1.05rem; padding: 14px 32px;">
       <i class="fas fa-user-plus"></i> Create Free Account
     </a>
   </section>

@@ -2,12 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../database');
 const { authenticate } = require('../middleware/auth');
-
-const BLOG_SELECT = `
-  SELECT b.*, u.name as author_name, u.avatar as author_avatar
-  FROM blogs b
-  JOIN users u ON u.id = b.author_id
-`;
+const { BLOGS } = require('../queries');
 
 // GET /api/blogs
 router.get('/', async (req, res) => {
@@ -24,13 +19,13 @@ router.get('/', async (req, res) => {
     } catch (e) {}
   }
 
-  let sql = BLOG_SELECT + ' WHERE 1=1';
+  let sql = BLOGS.LIST_BASE;
   const params = [];
 
   if (!currentUserId) {
     sql += " AND b.status = 'published'";
   } else {
-    const [[user]] = await db.execute('SELECT role FROM users WHERE id = ?', [currentUserId]);
+    const [[user]] = await db.execute(BLOGS.GET_AUTHOR_ROLE, [currentUserId]);
     if (user && user.role === 'admin') {
       if (status) { sql += ' AND b.status = ?'; params.push(status); }
     } else {
@@ -40,12 +35,8 @@ router.get('/', async (req, res) => {
     }
   }
 
-  if (search) {
-    sql += ' AND (b.title LIKE ? OR b.category LIKE ?)';
-    params.push(`%${search}%`, `%${search}%`);
-  }
+  if (search)   { sql += ' AND (b.title LIKE ? OR b.category LIKE ?)'; params.push(`%${search}%`, `%${search}%`); }
   if (category) { sql += ' AND b.category = ?'; params.push(category); }
-
   sql += ' ORDER BY b.created_at DESC';
 
   const [blogs] = await db.execute(sql, params);
@@ -54,7 +45,7 @@ router.get('/', async (req, res) => {
 
 // GET /api/blogs/:id
 router.get('/:id', async (req, res) => {
-  const [[blog]] = await db.execute(BLOG_SELECT + ' WHERE b.id = ?', [req.params.id]);
+  const [[blog]] = await db.execute(BLOGS.GET_BY_ID, [req.params.id]);
   if (!blog) return res.status(404).json({ error: 'Blog not found' });
   res.json({ blog });
 });
@@ -67,12 +58,10 @@ router.post('/', authenticate, async (req, res) => {
   const blogStatus = status === 'published' ? 'published' : 'draft';
 
   try {
-    const [result] = await db.execute(
-      'INSERT INTO blogs (title, author_id, category, content, featured_image, status) VALUES (?, ?, ?, ?, ?, ?)',
+    const [result] = await db.execute(BLOGS.INSERT,
       [title.trim(), req.user.id, category || null, content || null, featured_image || null, blogStatus]
     );
-
-    const [[blog]] = await db.execute(BLOG_SELECT + ' WHERE b.id = ?', [result.insertId]);
+    const [[blog]] = await db.execute(BLOGS.GET_BY_ID, [result.insertId]);
     res.status(201).json({ blog });
   } catch (err) {
     res.status(500).json({ error: 'Failed to create blog' });
@@ -81,7 +70,7 @@ router.post('/', authenticate, async (req, res) => {
 
 // PUT /api/blogs/:id
 router.put('/:id', authenticate, async (req, res) => {
-  const [[blog]] = await db.execute('SELECT * FROM blogs WHERE id = ?', [req.params.id]);
+  const [[blog]] = await db.execute(BLOGS.GET_RAW, [req.params.id]);
   if (!blog) return res.status(404).json({ error: 'Blog not found' });
 
   if (blog.author_id !== req.user.id && req.user.role !== 'admin') {
@@ -92,9 +81,9 @@ router.put('/:id', authenticate, async (req, res) => {
   const updates = [];
   const params = [];
 
-  if (title) { updates.push('title = ?'); params.push(title.trim()); }
-  if (category !== undefined) { updates.push('category = ?'); params.push(category); }
-  if (content !== undefined) { updates.push('content = ?'); params.push(content); }
+  if (title)                     { updates.push('title = ?');          params.push(title.trim()); }
+  if (category !== undefined)    { updates.push('category = ?');       params.push(category); }
+  if (content !== undefined)     { updates.push('content = ?');        params.push(content); }
   if (featured_image !== undefined) { updates.push('featured_image = ?'); params.push(featured_image); }
   if (status && ['published','draft'].includes(status)) { updates.push('status = ?'); params.push(status); }
 
@@ -103,26 +92,26 @@ router.put('/:id', authenticate, async (req, res) => {
   params.push(req.params.id);
   await db.execute(`UPDATE blogs SET ${updates.join(', ')} WHERE id = ?`, params);
 
-  const [[updated]] = await db.execute(BLOG_SELECT + ' WHERE b.id = ?', [req.params.id]);
+  const [[updated]] = await db.execute(BLOGS.GET_BY_ID, [req.params.id]);
   res.json({ blog: updated });
 });
 
 // DELETE /api/blogs/:id
 router.delete('/:id', authenticate, async (req, res) => {
-  const [[blog]] = await db.execute('SELECT * FROM blogs WHERE id = ?', [req.params.id]);
+  const [[blog]] = await db.execute(BLOGS.GET_RAW, [req.params.id]);
   if (!blog) return res.status(404).json({ error: 'Blog not found' });
 
   if (blog.author_id !== req.user.id && req.user.role !== 'admin') {
     return res.status(403).json({ error: "Cannot delete another author's blog" });
   }
 
-  await db.execute('DELETE FROM blogs WHERE id = ?', [req.params.id]);
+  await db.execute(BLOGS.DELETE, [req.params.id]);
   res.json({ message: 'Blog deleted' });
 });
 
 // POST /api/blogs/:id/view
 router.post('/:id/view', async (req, res) => {
-  await db.execute('UPDATE blogs SET views = views + 1 WHERE id = ?', [req.params.id]);
+  await db.execute(BLOGS.INCREMENT_VIEWS, [req.params.id]);
   res.json({ message: 'View counted' });
 });
 
