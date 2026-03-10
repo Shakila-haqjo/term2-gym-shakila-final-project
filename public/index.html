@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitGym - Premium Fitness Management</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .stats-bar { background: var(--accent-gold); padding: 14px 40px; display: flex; justify-content: center; gap: 60px; flex-wrap: wrap; }
+    .stats-bar-item { color: white; text-align: center; }
+    .stats-bar-item .num { font-size: 1.6rem; font-weight: 700; }
+    .stats-bar-item .lbl { font-size: 0.78rem; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.05em; }
+    .cta-section { background: linear-gradient(135deg, #1e2537, #2d3748); padding: 80px 40px; text-align: center; color: white; }
+    .cta-section h2 { font-size: 2.2rem; font-weight: 700; margin-bottom: 14px; }
+    .cta-section p { color: #94a3b8; margin-bottom: 32px; font-size: 1.05rem; }
+    footer { background: #111827; color: #6b7280; padding: 40px; text-align: center; }
+    footer .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 32px; max-width: 1000px; margin: 0 auto 32px; text-align: left; }
+    footer h4 { color: white; margin-bottom: 12px; font-size: 0.95rem; }
+    footer a { color: #6b7280; text-decoration: none; display: block; margin-bottom: 6px; font-size: 0.875rem; }
+    footer a:hover { color: var(--accent-gold); }
+    .testimonials { padding: 80px 40px; background: white; }
+    .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; max-width: 1000px; margin: 0 auto; }
+    .testimonial-card { background: var(--primary-bg); border-radius: 12px; padding: 24px; border-left: 4px solid var(--accent-gold); }
+    .testimonial-card p { font-style: italic; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.7; }
+    .testimonial-author { font-weight: 600; font-size: 0.875rem; }
+    .testimonial-role { font-size: 0.8rem; color: var(--text-secondary); }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="landing-nav">
+    <a href="/" class="logo"><i class="fas fa-dumbbell"></i> FitGym</a>
+    <div class="landing-nav-links">
+      <a href="/blog.html"><i class="fas fa-blog"></i> Blog</a>
+      <a href="/login.html" class="btn btn-outline" style="padding: 8px 16px; border-color: var(--accent-gold); color: var(--accent-gold);">Login</a>
+      <a href="/register.html" class="btn btn-primary" style="padding: 8px 16px;">Join Now</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <div style="display:inline-block; background: rgba(245,158,11,0.15); color: var(--accent-gold); padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-bottom: 20px; border: 1px solid rgba(245,158,11,0.3);">
+        <i class="fas fa-star"></i> Premium Fitness Management Platform
+      </div>
+      <h1>Elevate Your <span>Fitness Journey</span> with Smart Management</h1>
+      <p>Book sessions, track progress, and connect with expert trainers. Everything you need to achieve your fitness goals in one powerful platform.</p>
+      <div class="hero-btns">
+        <a href="/register.html" class="btn btn-primary" style="font-size: 1rem; padding: 13px 28px;">
+          <i class="fas fa-rocket"></i> Get Started Free
+        </a>
+        <a href="/login.html" class="btn" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); font-size: 1rem; padding: 13px 28px;">
+          <i class="fas fa-sign-in-alt"></i> Sign In
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stats-bar-item"><div class="num">500+</div><div class="lbl">Active Members</div></div>
+    <div class="stats-bar-item"><div class="num">50+</div><div class="lbl">Expert Trainers</div></div>
+    <div class="stats-bar-item"><div class="num">200+</div><div class="lbl">Weekly Sessions</div></div>
+    <div class="stats-bar-item"><div class="num">15+</div><div class="lbl">Activity Types</div></div>
+  </div>
+
+  <!-- Features -->
+  <section class="features-section">
+    <h2 class="section-title">Everything You Need</h2>
+    <p class="section-subtitle">A complete gym management solution for members, trainers, and admins</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-calendar-check"></i></div>
+        <h3>Easy Session Booking</h3>
+        <p>Browse and book fitness sessions with just a few clicks. View schedules, trainer info, and available spots.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-users"></i></div>
+        <h3>Expert Trainers</h3>
+        <p>Connect with certified trainers across various disciplines. Read their bios and book their sessions.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+        <h3>Track Progress</h3>
+        <p>Monitor your booking history, upcoming sessions, and fitness journey all from your personal dashboard.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-blog"></i></div>
+        <h3>Fitness Blog</h3>
+        <p>Read expert articles on fitness, nutrition, and wellness. Trainers share their knowledge and tips.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+        <h3>Secure Platform</h3>
+        <p>Your data is protected with JWT authentication and role-based access control throughout the platform.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-cogs"></i></div>
+        <h3>Admin Control</h3>
+        <p>Powerful admin tools to manage users, sessions, locations, activities, and monitor all bookings.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials">
+    <h2 class="section-title">What Our Members Say</h2>
+    <p class="section-subtitle">Real experiences from our fitness community</p>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <p>"FitGym completely transformed how I approach my workouts. Booking sessions is so easy and I love the blog content from trainers!"</p>
+        <div class="testimonial-author">Sarah M.</div>
+        <div class="testimonial-role">Member since 2024</div>
+      </div>
+      <div class="testimonial-card">
+        <p>"As a trainer, managing my sessions and tracking bookings has never been easier. The dashboard gives me everything I need at a glance."</p>
+        <div class="testimonial-author">Mike T.</div>
+        <div class="testimonial-role">Certified Trainer</div>
+      </div>
+      <div class="testimonial-card">
+        <p>"The admin panel is incredibly powerful. I can manage the entire gym operations from one place. Highly recommended!"</p>
+        <div class="testimonial-author">James R.</div>
+        <div class="testimonial-role">Gym Manager</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2>Ready to Start Your Fitness Journey?</h2>
+    <p>Join thousands of members who have transformed their lives with FitGym</p>
+    <a href="/register.html" class="btn btn-primary" style="font-size: 1.05rem; padding: 14px 32px;">
+      <i class="fas fa-user-plus"></i> Create Free Account
+    </a>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <h4><i class="fas fa-dumbbell" style="color:var(--accent-gold)"></i> FitGym</h4>
+        <p style="font-size: 0.85rem; line-height: 1.7;">Premium fitness management platform for modern gyms and their communities.</p>
+      </div>
+      <div>
+        <h4>Platform</h4>
+        <a href="/login.html">Member Login</a>
+        <a href="/register.html">Register</a>
+        <a href="/blog.html">Blog</a>
+      </div>
+      <div>
+        <h4>Roles</h4>
+        <a href="/register.html">Join as Member</a>
+        <a href="/register.html?role=trainer">Join as Trainer</a>
+        <a href="/login.html">Admin Portal</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="#"><i class="fas fa-envelope" style="width:16px"></i> info@fitgym.com</a>
+        <a href="#"><i class="fas fa-phone" style="width:16px"></i> +1 555-0100</a>
+        <a href="#"><i class="fas fa-map-marker-alt" style="width:16px"></i> 1 Gym Plaza</a>
+      </div>
+    </div>
+    <p style="border-top: 1px solid #1f2937; padding-top: 24px; font-size: 0.82rem;">
+      &copy; 2026 FitGym. All rights reserved. Built with Node.js + SQLite.
+    </p>
+  </footer>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    // If already logged in, show dashboard link
+    const user = getUser();
+    if (user) {
+      const navLinks = document.querySelector('.landing-nav-links');
+      navLinks.innerHTML = `
+        <a href="${getDashboardUrl(user.role)}" class="btn btn-primary" style="padding: 8px 16px;">
+          <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+      `;
+    }
+  </script>
+</body>
+</html>

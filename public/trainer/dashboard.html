@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trainer Dashboard - FitGym</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <div id="nav-placeholder"></div>
+    <div class="main-content">
+      <header class="top-header">
+        <div class="header-left">
+          <button class="hamburger" id="hamburgerBtn"><span></span><span></span><span></span></button>
+          <span class="page-title">Trainer Dashboard</span>
+        </div>
+        <div class="header-right">
+          <a href="/trainer/create-session.html" class="btn btn-sm btn-primary"><i class="fas fa-plus"></i> New Session</a>
+        </div>
+      </header>
+      <div class="page-content">
+        <div id="welcomeBanner" style="background:linear-gradient(135deg,#1e2537,#2d3748);border-radius:12px;padding:24px 28px;color:white;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+          <div>
+            <h2 style="font-size:1.4rem;font-weight:700;margin-bottom:4px;">Hello, <span id="welcomeName" style="color:var(--accent-gold)"></span>!</h2>
+            <p style="color:#94a3b8;font-size:0.9rem;">Manage your sessions and track member engagement from here.</p>
+          </div>
+          <a href="/trainer/create-session.html" class="btn btn-primary"><i class="fas fa-plus"></i> Create Session</a>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-dumbbell"></i></div><div class="stat-info"><div class="stat-value" id="statTotal">-</div><div class="stat-label">My Sessions</div></div></div>
+          <div class="stat-card"><div class="stat-icon green"><i class="fas fa-calendar-check"></i></div><div class="stat-info"><div class="stat-value" id="statUpcoming">-</div><div class="stat-label">Upcoming</div></div></div>
+          <div class="stat-card"><div class="stat-icon gold"><i class="fas fa-users"></i></div><div class="stat-info"><div class="stat-value" id="statBookings">-</div><div class="stat-label">Total Bookings</div></div></div>
+          <div class="stat-card"><div class="stat-icon purple"><i class="fas fa-blog"></i></div><div class="stat-info"><div class="stat-value" id="statBlogs">-</div><div class="stat-label">Blog Posts</div></div></div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title"><i class="fas fa-calendar-alt" style="color:var(--accent-gold)"></i> Upcoming Sessions</span>
+              <a href="/trainer/sessions.html" class="btn btn-sm btn-secondary">View All</a>
+            </div>
+            <div id="upcomingSessions" style="padding: 8px 0;">
+              <div class="loading-spinner"><div class="spinner"></div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title"><i class="fas fa-ticket-alt" style="color:var(--accent-gold)"></i> Recent Bookings</span>
+            </div>
+            <div id="recentBookings" style="padding: 8px 0;">
+              <div class="loading-spinner"><div class="spinner"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="toast-container"></div>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/nav.js"></script>
+  <script src="/js/trainer-dashboard.js"></script>
+</body>
+</html>

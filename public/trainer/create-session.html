@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Session - FitGym</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <div id="nav-placeholder"></div>
+    <div class="main-content">
+      <header class="top-header">
+        <div class="header-left">
+          <button class="hamburger" id="hamburgerBtn"><span></span><span></span><span></span></button>
+          <span class="page-title">Create Session</span>
+        </div>
+        <div class="header-right">
+          <a href="/trainer/sessions.html" class="btn btn-sm btn-secondary"><i class="fas fa-list"></i> My Sessions</a>
+        </div>
+      </header>
+      <div class="page-content">
+        <div id="alertBox"></div>
+        <div style="max-width:720px;">
+          <div class="card">
+            <div class="card-header"><span class="card-title"><i class="fas fa-plus-circle" style="color:var(--accent-gold)"></i> New Training Session</span></div>
+            <div class="card-body">
+              <form id="createSessionForm">
+                <div class="form-group">
+                  <label class="form-label">Session Name *</label>
+                  <input type="text" id="name" class="form-control" placeholder="e.g., Morning Yoga Flow" required>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Activity Type</label>
+                    <select id="activity_id" class="form-control">
+                      <option value="">Select activity...</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Location</label>
+                    <select id="location_id" class="form-control">
+                      <option value="">Select location...</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Date *</label>
+                    <input type="date" id="date" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Time *</label>
+                    <input type="time" id="time" class="form-control" required>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Duration (minutes)</label>
+                    <input type="number" id="duration_minutes" class="form-control" value="60" min="15" max="240">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Max Participants</label>
+                    <input type="number" id="max_participants" class="form-control" value="20" min="1" max="200">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Description</label>
+                  <textarea id="description" class="form-control" placeholder="Describe the session goals, requirements, what to bring..."></textarea>
+                </div>
+                <div style="display:flex; gap:10px;">
+                  <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Create Session</button>
+                  <a href="/trainer/sessions.html" class="btn btn-secondary">Cancel</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="toast-container"></div>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/nav.js"></script>
+  <script src="/js/trainer-create-session.js"></script>
+</body>
+</html>

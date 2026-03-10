@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Bookings - FitGym</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <div id="nav-placeholder"></div>
+    <div class="main-content">
+      <header class="top-header">
+        <div class="header-left">
+          <button class="hamburger" id="hamburgerBtn"><span></span><span></span><span></span></button>
+          <span class="page-title">My Bookings</span>
+        </div>
+        <div class="header-right">
+          <a href="/member/sessions.html" class="btn btn-sm btn-primary"><i class="fas fa-plus"></i> Book Session</a>
+        </div>
+      </header>
+      <div class="page-content">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('upcoming', this)">Upcoming</button>
+          <button class="tab-btn" onclick="switchTab('past', this)">Past</button>
+          <button class="tab-btn" onclick="switchTab('all', this)">All</button>
+        </div>
+
+        <div class="card">
+          <div class="card-body" style="padding: 0;">
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Session</th>
+                    <th>Activity</th>
+                    <th>Date & Time</th>
+                    <th>Location</th>
+                    <th>Trainer</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="bookingsTable">
+                  <tr><td colspan="7"><div class="loading-spinner"><div class="spinner"></div></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="toast-container"></div>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/nav.js"></script>
+  <script src="/js/member-bookings.js"></script>
+</body>
+</html>
