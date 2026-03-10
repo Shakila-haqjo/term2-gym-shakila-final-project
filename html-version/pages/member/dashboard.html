@@ -25,9 +25,9 @@
                 <h1 class="text-2xl font-bold text-blue-600">High Street Gym</h1>
                 <div class="space-x-4">
                     <a href="dashboard.html" class="text-blue-600 font-semibold">Dashboard</a>
-                    <a href="sessions.html" class="text-gray-700 hover:text-blue-600">Sessions</a>
+                    <a href="timetables.html" class="text-gray-700 hover:text-blue-600">Timetables</a>
                     <a href="bookings.html" class="text-gray-700 hover:text-blue-600">Bookings</a>
-                    <a href="profile.html" class="text-gray-700 hover:text-blue-600">Profile</a>
+                    <a href="blogs.html" class="text-gray-700 hover:text-blue-600">Blogs</a>
                     <button data-logout class="text-red-600 hover:text-red-800">Logout</button>
                 </div>
             </div>
@@ -66,8 +66,8 @@
                         </svg>
                     </div>
                 </div>
-                <p class="text-gray-600 text-sm mb-1">Completed Sessions</p>
-                <p class="text-3xl font-bold text-gray-900" id="completedSessions">0</p>
+                <p class="text-gray-600 text-sm mb-1">Completed Timetables</p>
+                <p class="text-3xl font-bold text-gray-900" id="completedTimetables">0</p>
             </div>
 
             <div class="bg-white rounded-lg shadow-md p-6">
@@ -79,8 +79,8 @@
                         </svg>
                     </div>
                 </div>
-                <p class="text-gray-600 text-sm mb-1">Upcoming Sessions</p>
-                <p class="text-3xl font-bold text-gray-900" id="upcomingSessions">0</p>
+                <p class="text-gray-600 text-sm mb-1">Upcoming Timetables</p>
+                <p class="text-3xl font-bold text-gray-900" id="upcomingTimetables">0</p>
             </div>
 
             <div class="bg-white rounded-lg shadow-md p-6">
@@ -99,39 +99,39 @@
 
         <!-- Two Column Layout -->
         <div class="grid lg:grid-cols-3 gap-8">
-            <!-- Upcoming Sessions -->
+            <!-- Upcoming Timetables -->
             <div class="lg:col-span-2">
                 <div class="bg-white rounded-lg shadow-md">
                     <div class="p-6 border-b border-gray-200 flex items-center justify-between">
-                        <h3 class="text-xl font-bold text-gray-800">Your Upcoming Sessions</h3>
-                        <a href="sessions.html" class="text-blue-600 hover:text-blue-800 text-sm font-semibold">View
+                        <h3 class="text-xl font-bold text-gray-800">Your Upcoming Timetables</h3>
+                        <a href="timetables.html" class="text-blue-600 hover:text-blue-800 text-sm font-semibold">View
                             All</a>
                     </div>
                     <div class="p-6">
                         <!-- Loading State -->
-                        <div id="sessionsLoading" class="text-center py-8">
+                        <div id="timetablesLoading" class="text-center py-8">
                             <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600">
                             </div>
-                            <p class="mt-2 text-gray-600">Loading sessions...</p>
+                            <p class="mt-2 text-gray-600">Loading timetables...</p>
                         </div>
 
-                        <!-- Sessions List -->
-                        <div id="sessionsList" class="space-y-4 hidden">
-                            <!-- Sessions will be populated here -->
+                        <!-- Timetables List -->
+                        <div id="timetablesList" class="space-y-4 hidden">
+                            <!-- Timetables will be populated here -->
                         </div>
 
                         <!-- Empty State -->
-                        <div id="sessionsEmpty" class="text-center py-8 hidden">
+                        <div id="timetablesEmpty" class="text-center py-8 hidden">
                             <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
                                 </path>
                             </svg>
-                            <p class="mt-2 text-gray-600">No upcoming sessions</p>
-                            <a href="sessions.html"
+                            <p class="mt-2 text-gray-600">No upcoming timetables</p>
+                            <a href="timetables.html"
                                 class="mt-4 inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                                Browse Sessions
+                                Browse Timetables
                             </a>
                         </div>
                     </div>
@@ -143,17 +143,17 @@
                 <div class="bg-white rounded-lg shadow-md p-6 mb-6">
                     <h3 class="text-xl font-bold text-gray-800 mb-4">Quick Actions</h3>
                     <div class="space-y-3">
-                        <a href="sessions.html"
+                        <a href="timetables.html"
                             class="w-full block px-6 py-3 bg-blue-600 text-white text-center font-semibold rounded-lg hover:bg-blue-700 transition-colors">
-                            Book a Session
+                            Book a Timetable
                         </a>
                         <a href="bookings.html"
                             class="w-full block px-6 py-3 border border-gray-300 text-gray-700 text-center font-semibold rounded-lg hover:bg-gray-50 transition-colors">
                             View Bookings
                         </a>
-                        <a href="profile.html"
+                        <a href="blogs.html"
                             class="w-full block px-6 py-3 border border-gray-300 text-gray-700 text-center font-semibold rounded-lg hover:bg-gray-50 transition-colors">
-                            Edit Profile
+                            Edit Blogs
                         </a>
                     </div>
                 </div>
@@ -213,26 +213,26 @@
                 });
 
                 if (!bookingsResponse.ok) {
-                    document.getElementById('sessionsLoading').classList.add('hidden');
-                    document.getElementById('sessionsEmpty').classList.remove('hidden');
+                    document.getElementById('timetablesLoading').classList.add('hidden');
+                    document.getElementById('timetablesEmpty').classList.remove('hidden');
                     throw new Error('Failed to fetch bookings');
                 }
                 const bookings = await bookingsResponse.json();
 
                 const now = new Date();
                 const upcoming = bookings.filter(b => {
-                    const sessionDate = new Date(b.session_date);
-                    return b.status === 'confirmed' && sessionDate >= now;
+                    const timetableDate = new Date(b.timetable_date);
+                    return b.status === 'confirmed' && timetableDate >= now;
                 });
                 const completed = bookings.filter(b => {
-                    const sessionDate = new Date(b.session_date);
-                    return b.status === 'confirmed' && sessionDate < now;
+                    const timetableDate = new Date(b.timetable_date);
+                    return b.status === 'confirmed' && timetableDate < now;
                 });
                 const active = bookings.filter(b => b.status === 'confirmed');
 
                 document.getElementById('totalBookings').textContent = bookings.length;
-                document.getElementById('completedSessions').textContent = completed.length;
-                document.getElementById('upcomingSessions').textContent = upcoming.length;
+                document.getElementById('completedTimetables').textContent = completed.length;
+                document.getElementById('upcomingTimetables').textContent = upcoming.length;
                 document.getElementById('activeBookings').textContent = active.length;
 
                 // Calculate activity
@@ -247,36 +247,36 @@
                 document.getElementById('weekActivity').textContent = weekActivity;
                 document.getElementById('monthActivity').textContent = monthActivity;
 
-                displayUpcomingSessions(upcoming.slice(0, 3));
+                displayUpcomingTimetables(upcoming.slice(0, 3));
             } catch (error) {
                 console.error('Error fetching dashboard data:', error);
             }
         }
 
-        // Display upcoming sessions
-        function displayUpcomingSessions(sessions) {
-            const loading = document.getElementById('sessionsLoading');
-            const list = document.getElementById('sessionsList');
-            const empty = document.getElementById('sessionsEmpty');
+        // Display upcoming timetables
+        function displayUpcomingTimetables(timetables) {
+            const loading = document.getElementById('timetablesLoading');
+            const list = document.getElementById('timetablesList');
+            const empty = document.getElementById('timetablesEmpty');
 
             loading.classList.add('hidden');
 
-            if (sessions.length === 0) {
+            if (timetables.length === 0) {
                 empty.classList.remove('hidden');
                 return;
             }
 
             list.classList.remove('hidden');
-            list.innerHTML = sessions.map(session => {
-                const sessionDate = new Date(session.session_date);
-                const formattedDate = sessionDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+            list.innerHTML = timetables.map(timetable => {
+                const timetableDate = new Date(timetable.timetable_date);
+                const formattedDate = timetableDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 
                 return `
                     <div class="border border-gray-200 rounded-lg p-4 hover:border-blue-300 hover:shadow-md transition-all">
                         <div class="flex items-start justify-between mb-3">
                             <div>
-                                <h4 class="font-bold text-gray-900">${session.session_name}</h4>
-                                <p class="text-sm text-gray-600">with ${session.trainer_name}</p>
+                                <h4 class="font-bold text-gray-900">${timetable.timetable_name}</h4>
+                                <p class="text-sm text-gray-600">with ${timetable.trainer_name}</p>
                             </div>
                             <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Confirmed</span>
                         </div>
@@ -291,13 +291,13 @@
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
-                                <span>${session.session_time}</span>
+                                <span>${timetable.timetable_time}</span>
                             </div>
                             <div class="flex items-center gap-1">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                                 </svg>
-                                <span>${session.location_name}</span>
+                                <span>${timetable.location_name}</span>
                             </div>
                         </div>
                     </div>

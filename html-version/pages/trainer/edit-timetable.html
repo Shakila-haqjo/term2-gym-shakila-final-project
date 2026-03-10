@@ -1,5 +1,5 @@
-<!-- html-version/pages/trainer/edit-session.html -->
-<!-- pages/trainer/edit-session.html -->
+<!-- html-version/pages/trainer/edit-timetable.html -->
+<!-- pages/trainer/edit-timetable.html -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,7 +7,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Edit Session - High Street Gym</title>
+  <title>Edit Timetable - High Street Gym</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="../../css/styles.css">
 </head>
@@ -19,8 +19,8 @@
         <h1 class="text-2xl font-bold text-blue-600">High Street Gym</h1>
         <div class="space-x-4">
           <a href="dashboard.html" class="text-gray-700 hover:text-blue-600">Dashboard</a>
-          <a href="sessions.html" class="text-gray-700 hover:text-blue-600">My Sessions</a>
-          <a href="profile.html" class="text-gray-700 hover:text-blue-600">Profile</a>
+          <a href="timetables.html" class="text-gray-700 hover:text-blue-600">My Timetables</a>
+          <a href="blogs.html" class="text-gray-700 hover:text-blue-600">Blogs</a>
           <button data-logout class="text-red-600 hover:text-red-800">Logout</button>
         </div>
       </div>
@@ -29,24 +29,24 @@
 
   <main class="container mx-auto px-4 py-8 max-w-3xl">
     <div class="mb-6">
-      <h2 class="text-3xl font-bold text-gray-800">Edit Session</h2>
-      <p class="text-gray-600 mt-2">Update session details</p>
+      <h2 class="text-3xl font-bold text-gray-800">Edit Timetable</h2>
+      <p class="text-gray-600 mt-2">Update timetable details</p>
     </div>
 
     <!-- Loading State -->
     <div id="loadingState" class="text-center py-12">
       <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      <p class="mt-4 text-gray-600">Loading session...</p>
+      <p class="mt-4 text-gray-600">Loading timetable...</p>
     </div>
 
     <div id="formContainer" class="bg-white rounded-lg shadow-md p-6 hidden">
-      <form id="editSessionForm" class="space-y-6">
-        <!-- Session Name -->
+      <form id="editTimetableForm" class="space-y-6">
+        <!-- Timetable Name -->
         <div>
-          <label for="sessionName" class="block text-sm font-medium text-gray-700 mb-2">
-            Session Name *
+          <label for="timetableName" class="block text-sm font-medium text-gray-700 mb-2">
+            Timetable Name *
           </label>
-          <input type="text" id="sessionName" required
+          <input type="text" id="timetableName" required
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
         </div>
 
@@ -75,17 +75,17 @@
         <!-- Date and Time -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label for="sessionDate" class="block text-sm font-medium text-gray-700 mb-2">
+            <label for="timetableDate" class="block text-sm font-medium text-gray-700 mb-2">
               Date *
             </label>
-            <input type="date" id="sessionDate" required
+            <input type="date" id="timetableDate" required
               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
           </div>
           <div>
-            <label for="sessionTime" class="block text-sm font-medium text-gray-700 mb-2">
+            <label for="timetableTime" class="block text-sm font-medium text-gray-700 mb-2">
               Time *
             </label>
-            <input type="time" id="sessionTime" required
+            <input type="time" id="timetableTime" required
               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
           </div>
         </div>
@@ -128,13 +128,13 @@
 
         <!-- Buttons -->
         <div class="flex justify-end space-x-4 pt-4 border-t border-gray-200">
-          <a href="sessions.html"
+          <a href="timetables.html"
             class="px-6 py-3 text-gray-700 bg-gray-100 font-semibold rounded-lg hover:bg-gray-200 transition-colors">
             Cancel
           </a>
           <button type="submit" id="submitBtn"
             class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
-            Update Session
+            Update Timetable
           </button>
         </div>
       </form>
@@ -143,7 +143,7 @@
 
   <script>
     const API_URL = 'http://localhost:3000/api';
-    let sessionId = null;
+    let timetableId = null;
 
     // Check authentication
     const token = localStorage.getItem('token');
@@ -153,12 +153,12 @@
       window.location.href = '../guest/login.html';
     }
 
-    // Get session ID from URL
+    // Get timetable ID from URL
     const urlParams = new URLSearchParams(window.location.search);
-    sessionId = urlParams.get('id');
+    timetableId = urlParams.get('id');
 
-    if (!sessionId) {
-      window.location.href = 'sessions.html';
+    if (!timetableId) {
+      window.location.href = 'timetables.html';
     }
 
     // Logout handler
@@ -168,22 +168,22 @@
       window.location.href = '../guest/login.html';
     });
 
-    // Fetch session data
-    async function fetchSession() {
+    // Fetch timetable data
+    async function fetchTimetable() {
       try {
-        const response = await fetch(`${API_URL}/sessions/${sessionId}`, {
+        const response = await fetch(`${API_URL}/timetables/${timetableId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
         });
 
-        if (!response.ok) throw new Error('Failed to fetch session');
+        if (!response.ok) throw new Error('Failed to fetch timetable');
 
-        const session = await response.json();
-        populateForm(session);
+        const timetable = await response.json();
+        populateForm(timetable);
       } catch (error) {
-        console.error('Error fetching session:', error);
-        showError('Failed to load session');
+        console.error('Error fetching timetable:', error);
+        showError('Failed to load timetable');
       }
     }
 
@@ -237,27 +237,27 @@
       }
     }
 
-    // Populate form with session data
-    function populateForm(session) {
-      document.getElementById('sessionName').value = session.session_name;
-      document.getElementById('activity').value = session.activity_id;
-      document.getElementById('location').value = session.location_id;
-      document.getElementById('sessionDate').value = session.session_date;
-      document.getElementById('sessionTime').value = session.session_time;
-      document.getElementById('duration').value = session.duration;
-      document.getElementById('maxParticipants').value = session.max_participants;
-      document.getElementById('description').value = session.description || '';
-      document.getElementById('currentBookings').textContent = session.current_participants || 0;
+    // Populate form with timetable data
+    function populateForm(timetable) {
+      document.getElementById('timetableName').value = timetable.timetable_name;
+      document.getElementById('activity').value = timetable.activity_id;
+      document.getElementById('location').value = timetable.location_id;
+      document.getElementById('timetableDate').value = timetable.timetable_date;
+      document.getElementById('timetableTime').value = timetable.timetable_time;
+      document.getElementById('duration').value = timetable.duration;
+      document.getElementById('maxParticipants').value = timetable.max_participants;
+      document.getElementById('description').value = timetable.description || '';
+      document.getElementById('currentBookings').textContent = timetable.current_participants || 0;
 
       // Set minimum max_participants to current bookings
-      document.getElementById('maxParticipants').setAttribute('min', session.current_participants || 1);
+      document.getElementById('maxParticipants').setAttribute('min', timetable.current_participants || 1);
 
       document.getElementById('loadingState').classList.add('hidden');
       document.getElementById('formContainer').classList.remove('hidden');
     }
 
     // Handle form submission
-    document.getElementById('editSessionForm').addEventListener('submit', async (e) => {
+    document.getElementById('editTimetableForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const submitBtn = document.getElementById('submitBtn');
@@ -265,18 +265,18 @@
       submitBtn.textContent = 'Updating...';
 
       const formData = {
-        session_name: document.getElementById('sessionName').value,
+        timetable_name: document.getElementById('timetableName').value,
         activity_id: parseInt(document.getElementById('activity').value),
         location_id: parseInt(document.getElementById('location').value),
-        session_date: document.getElementById('sessionDate').value,
-        session_time: document.getElementById('sessionTime').value,
+        timetable_date: document.getElementById('timetableDate').value,
+        timetable_time: document.getElementById('timetableTime').value,
         duration: parseInt(document.getElementById('duration').value),
         max_participants: parseInt(document.getElementById('maxParticipants').value),
         description: document.getElementById('description').value || null
       };
 
       try {
-        const response = await fetch(`${API_URL}/sessions/${sessionId}`, {
+        const response = await fetch(`${API_URL}/timetables/${timetableId}`, {
           method: 'PUT',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -288,16 +288,16 @@
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.error || 'Failed to update session');
+          throw new Error(data.error || 'Failed to update timetable');
         }
 
-        alert('Session updated successfully!');
-        window.location.href = 'sessions.html';
+        alert('Timetable updated successfully!');
+        window.location.href = 'timetables.html';
       } catch (error) {
-        console.error('Error updating session:', error);
+        console.error('Error updating timetable:', error);
         showError(error.message);
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Update Session';
+        submitBtn.textContent = 'Update Timetable';
       }
     });
 
@@ -318,7 +318,7 @@
       fetchActivities(),
       fetchLocations()
     ]).then(() => {
-      fetchSession();
+      fetchTimetable();
     });
   </script>
 </body>

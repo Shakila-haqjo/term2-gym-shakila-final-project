@@ -1,4 +1,5 @@
-<!-- html-version/pages/member/profile.html -->
+<!-- html-version/pages/trainer/blogs.html -->
+<!-- pages/trainer/blogs.html -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -6,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile - High Street Gym</title>
+    <title>My Blogs - High Street Gym</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="../../css/styles.css">
 </head>
@@ -18,9 +19,9 @@
                 <h1 class="text-2xl font-bold text-blue-600">High Street Gym</h1>
                 <div class="space-x-4">
                     <a href="dashboard.html" class="text-gray-700 hover:text-blue-600">Dashboard</a>
-                    <a href="sessions.html" class="text-gray-700 hover:text-blue-600">Sessions</a>
-                    <a href="bookings.html" class="text-gray-700 hover:text-blue-600">Bookings</a>
-                    <a href="profile.html" class="text-blue-600 font-semibold">Profile</a>
+                    <a href="timetables.html" class="text-gray-700 hover:text-blue-600">My Timetables</a>
+                    <a href="blog.html" class="text-gray-700 hover:text-blue-600">Blog</a>
+                    <a href="blogs.html" class="text-blue-600 font-semibold">Blogs</a>
                     <button data-logout class="text-red-600 hover:text-red-800">Logout</button>
                 </div>
             </div>
@@ -29,30 +30,33 @@
 
     <main class="container mx-auto px-4 py-8 max-w-4xl">
         <div class="mb-6">
-            <h2 class="text-3xl font-bold text-gray-800">My Profile</h2>
-            <p class="text-gray-600 mt-2">Manage your personal information</p>
+            <h2 class="text-3xl font-bold text-gray-800">My Blogs</h2>
+            <p class="text-gray-600 mt-2">Manage your trainer information</p>
         </div>
 
+        <!-- Loading State -->
         <div id="loadingState" class="text-center py-12">
             <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             <p class="mt-4 text-gray-600">Loading profile...</p>
         </div>
 
         <div id="profileContainer" class="hidden">
+            <!-- Blogs Picture -->
             <div class="bg-white rounded-lg shadow-md p-8 mb-6">
-                <h3 class="text-xl font-bold text-gray-800 mb-6">Profile Picture</h3>
+                <h3 class="text-xl font-bold text-gray-800 mb-6">Blogs Picture</h3>
                 <div class="flex items-center gap-6">
                     <div class="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center text-white text-3xl font-bold"
                         id="avatarInitial">
-                        M
+                        T
                     </div>
                     <div>
-                        <p class="text-sm text-gray-600">Profile pictures are not supported yet</p>
+                        <p class="text-sm text-gray-600">Blogs pictures are not supported yet</p>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-md p-8">
+            <!-- Personal Information -->
+            <div class="bg-white rounded-lg shadow-md p-8 mb-6">
                 <h3 class="text-xl font-bold text-gray-800 mb-6">Personal Information</h3>
 
                 <form id="profileForm" class="space-y-6">
@@ -90,18 +94,39 @@
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
 
+                    <div>
+                        <label for="specialization" class="block text-sm font-medium text-gray-700 mb-2">
+                            Specialization
+                        </label>
+                        <input type="text" id="specialization"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="e.g., Yoga, HIIT, Strength Training">
+                    </div>
+
+                    <div>
+                        <label for="bio" class="block text-sm font-medium text-gray-700 mb-2">
+                            Bio
+                        </label>
+                        <textarea id="bio" rows="4"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Tell members about yourself, your experience, and training philosophy..."></textarea>
+                    </div>
+
+                    <!-- Error Message -->
                     <div id="errorMessage"
                         class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
                         <p class="font-semibold">Error</p>
                         <p id="errorText"></p>
                     </div>
 
+                    <!-- Success Message -->
                     <div id="successMessage"
                         class="hidden bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
                         <p class="font-semibold">Success!</p>
                         <p>Your profile has been updated successfully.</p>
                     </div>
 
+                    <!-- Buttons -->
                     <div class="flex justify-end space-x-4 pt-4 border-t border-gray-200">
                         <button type="button" onclick="window.location.reload()"
                             class="px-6 py-3 text-gray-700 bg-gray-100 font-semibold rounded-lg hover:bg-gray-200 transition-colors">
@@ -117,20 +142,26 @@
         </div>
     </main>
 
-
     <script>
         const API_URL = 'http://localhost:3000/api';
 
-        const auth = RoleNavigator.protect('member');
-        if (!auth) return;
+        // Check authentication
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-        const { token, user } = auth;
+        if (!token || user.role !== 'trainer') {
+            window.location.href = '../guest/login.html';
+        }
 
+        // Logout handler
         document.querySelector('[data-logout]').addEventListener('click', () => {
-            RoleNavigator.logout();
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../guest/login.html';
         });
 
-        async function fetchProfile() {
+        // Fetch user profile
+        async function fetchBlogs() {
             try {
                 const response = await fetch(`${API_URL}/users/profile`, {
                     headers: {
@@ -142,25 +173,27 @@
 
                 const userData = await response.json();
                 populateForm(userData);
+
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('profileContainer').classList.remove('hidden');
+                console.log('✅ Blogs loaded successfully');
             } catch (error) {
-                console.error('Error fetching profile:', error);
-                showError('Failed to load profile');
+                console.error('💥 Error loading profile:', error);
+                document.getElementById('loadingState').innerHTML = `
+                    <div class="text-center py-12">
+                        <svg class="mx-auto h-16 w-16 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <p class="mt-4 text-gray-600">Failed to load profile</p>
+                        <button onclick="location.reload()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            Reload Page
+                        </button>
+                    </div>
+                `;
             }
         }
 
-        function populateForm(userData) {
-            document.getElementById('firstName').value = userData.first_name || '';
-            document.getElementById('lastName').value = userData.last_name || '';
-            document.getElementById('email').value = userData.email || '';
-            document.getElementById('phone').value = userData.phone || '';
-
-            const initial = userData.first_name ? userData.first_name[0].toUpperCase() : 'M';
-            document.getElementById('avatarInitial').textContent = initial;
-
-            document.getElementById('loadingState').classList.add('hidden');
-            document.getElementById('profileContainer').classList.remove('hidden');
-        }
-
+        // Handle form submission
         document.getElementById('profileForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -172,7 +205,9 @@
                 first_name: document.getElementById('firstName').value.trim(),
                 last_name: document.getElementById('lastName').value.trim(),
                 email: document.getElementById('email').value.trim(),
-                phone: document.getElementById('phone').value.trim() || null
+                phone: document.getElementById('phone').value.trim() || null,
+                specialization: document.getElementById('specialization').value.trim() || null,
+                bio: document.getElementById('bio').value.trim() || null
             };
 
             try {
@@ -191,9 +226,11 @@
                     throw new Error(data.error || 'Failed to update profile');
                 }
 
+                // Update local storage
                 const updatedUser = { ...user, ...formData };
                 localStorage.setItem('user', JSON.stringify(updatedUser));
 
+                // Show success message
                 document.getElementById('successMessage').classList.remove('hidden');
                 setTimeout(() => {
                     document.getElementById('successMessage').classList.add('hidden');
@@ -209,6 +246,7 @@
             }
         });
 
+        // Show error message
         function showError(message) {
             const errorDiv = document.getElementById('errorMessage');
             const errorText = document.getElementById('errorText');
@@ -220,7 +258,8 @@
             }, 5000);
         }
 
-        fetchProfile();
+        // Initialize
+        fetchBlogs();
     </script>
 </body>
 

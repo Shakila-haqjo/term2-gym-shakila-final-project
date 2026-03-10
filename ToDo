@@ -1,3 +1,10 @@
 member@gym22.com / member12322
 trainer22@gym.com / trainer12322
 admin22@gym.com / admin12322
+
+
+Default Users
+Email	Password	Role
+admin22@gym.com	admin12322	Admin
+trainer22@gym.com	trainer12322	Trainer
+member@gym22.com	member12322	Member

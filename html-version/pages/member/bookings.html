@@ -19,8 +19,8 @@
                 <h1 class="text-2xl font-bold text-blue-600">High Street Gym</h1>
                 <div class="space-x-4">
                     <a href="dashboard.html" class="text-gray-700 hover:text-blue-600">Dashboard</a>
-                    <a href="sessions.html" class="text-gray-700 hover:text-blue-600">Browse Sessions</a>
-                    <a href="profile.html" class="text-gray-700 hover:text-blue-600">Profile</a>
+                    <a href="timetables.html" class="text-gray-700 hover:text-blue-600">Browse Timetables</a>
+                    <a href="blogs.html" class="text-gray-700 hover:text-blue-600">Blogs</a>
                     <button data-logout class="text-red-600 hover:text-red-800">Logout</button>
                 </div>
             </div>
@@ -30,7 +30,7 @@
     <main class="container mx-auto px-4 py-8">
         <div class="mb-6">
             <h2 class="text-3xl font-bold text-gray-800">My Bookings</h2>
-            <p class="text-gray-600 mt-2">Manage your session bookings</p>
+            <p class="text-gray-600 mt-2">Manage your timetable bookings</p>
         </div>
 
         <!-- Tabs -->
@@ -67,10 +67,10 @@
                 </path>
             </svg>
             <h3 class="mt-4 text-xl font-semibold text-gray-700">No Bookings Found</h3>
-            <p class="mt-2 text-gray-600">You haven't booked any sessions yet</p>
-            <a href="sessions.html"
+            <p class="mt-2 text-gray-600">You haven't booked any timetables yet</p>
+            <a href="timetables.html"
                 class="mt-4 inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                Browse Sessions
+                Browse Timetables
             </a>
         </div>
     </main>
@@ -143,13 +143,13 @@
 
             if (currentTab === 'upcoming') {
                 filteredBookings = allBookings.filter(b => {
-                    const sessionDate = new Date(b.session_date);
-                    return b.status === 'confirmed' && sessionDate >= now;
+                    const timetableDate = new Date(b.timetable_date);
+                    return b.status === 'confirmed' && timetableDate >= now;
                 });
             } else if (currentTab === 'past') {
                 filteredBookings = allBookings.filter(b => {
-                    const sessionDate = new Date(b.session_date);
-                    return b.status === 'confirmed' && sessionDate < now;
+                    const timetableDate = new Date(b.timetable_date);
+                    return b.status === 'confirmed' && timetableDate < now;
                 });
             } else if (currentTab === 'cancelled') {
                 filteredBookings = allBookings.filter(b => b.status === 'cancelled');
@@ -176,8 +176,8 @@
             const card = document.createElement('div');
             card.className = 'bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow';
 
-            const sessionDate = new Date(booking.session_date);
-            const formattedDate = sessionDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const timetableDate = new Date(booking.timetable_date);
+            const formattedDate = timetableDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             const bookingDate = new Date(booking.booking_date);
             const formattedBookingDate = bookingDate.toLocaleDateString('en-US');
 
@@ -190,7 +190,7 @@
             card.innerHTML = `
                 <div class="flex justify-between items-start mb-4">
                     <div>
-                        <h3 class="text-xl font-bold text-gray-800">${booking.session_name}</h3>
+                        <h3 class="text-xl font-bold text-gray-800">${booking.timetable_name}</h3>
                         <p class="text-sm text-gray-500 mt-1">Booked on ${formattedBookingDate}</p>
                     </div>
                     <span class="px-3 py-1 ${statusColors[booking.status]} text-sm font-semibold rounded-full capitalize">
@@ -209,7 +209,7 @@
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span>${booking.session_time} (${booking.duration} mins)</span>
+                        <span>${booking.timetable_time} (${booking.duration} mins)</span>
                     </div>
                     <div class="flex items-center text-gray-600">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

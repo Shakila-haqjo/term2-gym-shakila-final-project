@@ -26,9 +26,9 @@
                 <h1 class="text-2xl font-bold text-blue-600">High Street Gym</h1>
                 <div class="space-x-4">
                     <a href="dashboard.html" class="text-blue-600 font-semibold">Dashboard</a>
-                    <a href="sessions.html" class="text-gray-700 hover:text-blue-600">My Sessions</a>
+                    <a href="timetables.html" class="text-gray-700 hover:text-blue-600">My Timetables</a>
                     <a href="blog.html" class="text-gray-700 hover:text-blue-600">Blog</a>
-                    <a href="profile.html" class="text-gray-700 hover:text-blue-600">Profile</a>
+                    <a href="blogs.html" class="text-gray-700 hover:text-blue-600">Blogs</a>
                     <button data-logout class="text-red-600 hover:text-red-800">Logout</button>
                 </div>
             </div>
@@ -53,8 +53,8 @@
                         </svg>
                     </div>
                 </div>
-                <p class="text-gray-600 text-sm mb-1">Total Sessions</p>
-                <p class="text-3xl font-bold text-gray-900" id="totalSessions">0</p>
+                <p class="text-gray-600 text-sm mb-1">Total Timetables</p>
+                <p class="text-3xl font-bold text-gray-900" id="totalTimetables">0</p>
             </div>
 
             <div class="bg-white rounded-lg shadow-md p-6">
@@ -66,8 +66,8 @@
                         </svg>
                     </div>
                 </div>
-                <p class="text-gray-600 text-sm mb-1">Upcoming Sessions</p>
-                <p class="text-3xl font-bold text-gray-900" id="upcomingSessions">0</p>
+                <p class="text-gray-600 text-sm mb-1">Upcoming Timetables</p>
+                <p class="text-3xl font-bold text-gray-900" id="upcomingTimetables">0</p>
             </div>
 
             <div class="bg-white rounded-lg shadow-md p-6">
@@ -101,39 +101,39 @@
 
         <!-- Two Column Layout -->
         <div class="grid lg:grid-cols-3 gap-8">
-            <!-- Upcoming Sessions -->
+            <!-- Upcoming Timetables -->
             <div class="lg:col-span-2">
                 <div class="bg-white rounded-lg shadow-md">
                     <div class="p-6 border-b border-gray-200 flex items-center justify-between">
-                        <h3 class="text-xl font-bold text-gray-800">Your Upcoming Sessions</h3>
-                        <a href="sessions.html" class="text-blue-600 hover:text-blue-800 text-sm font-semibold">View
+                        <h3 class="text-xl font-bold text-gray-800">Your Upcoming Timetables</h3>
+                        <a href="timetables.html" class="text-blue-600 hover:text-blue-800 text-sm font-semibold">View
                             All</a>
                     </div>
                     <div class="p-6">
                         <!-- Loading State -->
-                        <div id="sessionsLoading" class="text-center py-8">
+                        <div id="timetablesLoading" class="text-center py-8">
                             <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600">
                             </div>
-                            <p class="mt-2 text-gray-600">Loading sessions...</p>
+                            <p class="mt-2 text-gray-600">Loading timetables...</p>
                         </div>
 
-                        <!-- Sessions List -->
-                        <div id="sessionsList" class="space-y-4 hidden">
-                            <!-- Sessions will be populated here -->
+                        <!-- Timetables List -->
+                        <div id="timetablesList" class="space-y-4 hidden">
+                            <!-- Timetables will be populated here -->
                         </div>
 
                         <!-- Empty State -->
-                        <div id="sessionsEmpty" class="text-center py-8 hidden">
+                        <div id="timetablesEmpty" class="text-center py-8 hidden">
                             <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
                                 </path>
                             </svg>
-                            <p class="mt-2 text-gray-600">No upcoming sessions</p>
-                            <a href="create-session.html"
+                            <p class="mt-2 text-gray-600">No upcoming timetables</p>
+                            <a href="create-timetable.html"
                                 class="mt-4 inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                                Create Session
+                                Create Timetable
                             </a>
                         </div>
                     </div>
@@ -145,13 +145,13 @@
                 <div class="bg-white rounded-lg shadow-md p-6 mb-6">
                     <h3 class="text-xl font-bold text-gray-800 mb-4">Quick Actions</h3>
                     <div class="space-y-3">
-                        <a href="create-session.html"
+                        <a href="create-timetable.html"
                             class="w-full block px-6 py-3 bg-blue-600 text-white text-center font-semibold rounded-lg hover:bg-blue-700 transition-colors">
-                            Create Session
+                            Create Timetable
                         </a>
-                        <a href="sessions.html"
+                        <a href="timetables.html"
                             class="w-full block px-6 py-3 border border-gray-300 text-gray-700 text-center font-semibold rounded-lg hover:bg-gray-50 transition-colors">
-                            Manage Sessions
+                            Manage Timetables
                         </a>
                         <a href="blog.html"
                             class="w-full block px-6 py-3 border border-gray-300 text-gray-700 text-center font-semibold rounded-lg hover:bg-gray-50 transition-colors">
@@ -164,8 +164,8 @@
                     <h3 class="font-bold text-lg mb-4">This Week</h3>
                     <div class="space-y-3">
                         <div class="flex items-center justify-between">
-                            <span class="text-blue-100">Sessions Scheduled</span>
-                            <span class="font-bold" id="weekSessions">0</span>
+                            <span class="text-blue-100">Timetables Scheduled</span>
+                            <span class="font-bold" id="weekTimetables">0</span>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-blue-100">Total Bookings</span>
@@ -210,25 +210,25 @@
         async function fetchDashboardData() {
             console.log('📊 fetchDashboardData() called');
             try {
-                // Fetch sessions
-                console.log('📡 Fetching sessions from:', `${API_URL}/sessions/trainer/${user.user_id}`);
-                const sessionsResponse = await fetch(`${API_URL}/sessions/trainer/${user.user_id}`, {
+                // Fetch timetables
+                console.log('📡 Fetching timetables from:', `${API_URL}/timetables/trainer/${user.user_id}`);
+                const timetablesResponse = await fetch(`${API_URL}/timetables/trainer/${user.user_id}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
-                if (!sessionsResponse.ok) {
-                    document.getElementById('sessionsLoading').classList.add('hidden');
-                    document.getElementById('sessionsEmpty').classList.remove('hidden');
-                    throw new Error('Failed to fetch sessions');
+                if (!timetablesResponse.ok) {
+                    document.getElementById('timetablesLoading').classList.add('hidden');
+                    document.getElementById('timetablesEmpty').classList.remove('hidden');
+                    throw new Error('Failed to fetch timetables');
                 }
-                const sessions = await sessionsResponse.json();
+                const timetables = await timetablesResponse.json();
 
                 const now = new Date();
-                const upcoming = sessions.filter(s => new Date(s.session_date) >= now);
-                const totalParticipants = sessions.reduce((sum, s) => sum + (s.current_participants || 0), 0);
+                const upcoming = timetables.filter(s => new Date(s.timetable_date) >= now);
+                const totalParticipants = timetables.reduce((sum, s) => sum + (s.current_participants || 0), 0);
 
-                document.getElementById('totalSessions').textContent = sessions.length;
-                document.getElementById('upcomingSessions').textContent = upcoming.length;
+                document.getElementById('totalTimetables').textContent = timetables.length;
+                document.getElementById('upcomingTimetables').textContent = upcoming.length;
                 document.getElementById('totalParticipants').textContent = totalParticipants;
 
                 // Calculate this week
@@ -237,17 +237,17 @@
                 const weekEnd = new Date(weekStart);
                 weekEnd.setDate(weekEnd.getDate() + 7);
 
-                const weekSessions = sessions.filter(s => {
-                    const sessionDate = new Date(s.session_date);
-                    return sessionDate >= weekStart && sessionDate < weekEnd;
+                const weekTimetables = timetables.filter(s => {
+                    const timetableDate = new Date(s.timetable_date);
+                    return timetableDate >= weekStart && timetableDate < weekEnd;
                 });
 
-                const weekBookings = weekSessions.reduce((sum, s) => sum + (s.current_participants || 0), 0);
+                const weekBookings = weekTimetables.reduce((sum, s) => sum + (s.current_participants || 0), 0);
 
-                document.getElementById('weekSessions').textContent = weekSessions.length;
+                document.getElementById('weekTimetables').textContent = weekTimetables.length;
                 document.getElementById('weekBookings').textContent = weekBookings;
 
-                displayUpcomingSessions(upcoming.slice(0, 3));
+                displayUpcomingTimetables(upcoming.slice(0, 3));
 
                 // Fetch blogs
                 try {
@@ -269,36 +269,36 @@
                 }
             } catch (error) {
                 console.error('Error fetching dashboard data:', error);
-                document.getElementById('sessionsLoading').classList.add('hidden');
-                document.getElementById('sessionsEmpty').classList.remove('hidden');
+                document.getElementById('timetablesLoading').classList.add('hidden');
+                document.getElementById('timetablesEmpty').classList.remove('hidden');
             }
         }
 
-        // Display upcoming sessions
-        function displayUpcomingSessions(sessions) {
-            const loading = document.getElementById('sessionsLoading');
-            const list = document.getElementById('sessionsList');
-            const empty = document.getElementById('sessionsEmpty');
+        // Display upcoming timetables
+        function displayUpcomingTimetables(timetables) {
+            const loading = document.getElementById('timetablesLoading');
+            const list = document.getElementById('timetablesList');
+            const empty = document.getElementById('timetablesEmpty');
 
             loading.classList.add('hidden');
 
-            if (sessions.length === 0) {
+            if (timetables.length === 0) {
                 empty.classList.remove('hidden');
                 return;
             }
 
             list.classList.remove('hidden');
-            list.innerHTML = sessions.map(session => {
-                const sessionDate = new Date(session.session_date);
-                const formattedDate = sessionDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-                const availableSpots = session.max_participants - session.current_participants;
+            list.innerHTML = timetables.map(timetable => {
+                const timetableDate = new Date(timetable.timetable_date);
+                const formattedDate = timetableDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                const availableSpots = timetable.max_participants - timetable.current_participants;
 
                 return `
                     <div class="border border-gray-200 rounded-lg p-4 hover:border-blue-300 hover:shadow-md transition-all">
                         <div class="flex items-start justify-between mb-3">
                             <div>
-                                <h4 class="font-bold text-gray-900">${session.session_name}</h4>
-                                <p class="text-sm text-gray-600">${session.activity_name}</p>
+                                <h4 class="font-bold text-gray-900">${timetable.timetable_name}</h4>
+                                <p class="text-sm text-gray-600">${timetable.activity_name}</p>
                             </div>
                             ${availableSpots === 0 ?
                         '<span class="px-3 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded-full">Full</span>' :
@@ -316,16 +316,16 @@
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
-                                <span>${session.session_time}</span>
+                                <span>${timetable.timetable_time}</span>
                             </div>
                             <div class="flex items-center gap-1">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                 </svg>
-                                <span>${session.current_participants}/${session.max_participants} participants</span>
+                                <span>${timetable.current_participants}/${timetable.max_participants} participants</span>
                             </div>
                         </div>
-                        <a href="session-bookings.html?id=${session.id || session.session_id}" class="text-blue-600 hover:text-blue-800 text-sm font-semibold">
+                        <a href="timetable-bookings.html?id=${timetable.id || timetable.timetable_id}" class="text-blue-600 hover:text-blue-800 text-sm font-semibold">
                             View Bookings →
                         </a>
                     </div>

@@ -1,5 +1,5 @@
-<!-- html-version/pages/member/sessions.html -->
-<!-- pages/member/sessions.html -->
+<!-- html-version/pages/member/timetables.html -->
+<!-- pages/member/timetables.html -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Available Sessions - High Street Gym</title>
+    <title>Available Timetables - High Street Gym</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="../../css/styles.css">
 </head>
@@ -20,7 +20,7 @@
                 <div class="space-x-4">
                     <a href="dashboard.html" class="text-gray-700 hover:text-blue-600">Dashboard</a>
                     <a href="bookings.html" class="text-gray-700 hover:text-blue-600">My Bookings</a>
-                    <a href="profile.html" class="text-gray-700 hover:text-blue-600">Profile</a>
+                    <a href="blogs.html" class="text-gray-700 hover:text-blue-600">Blogs</a>
                     <button data-logout class="text-red-600 hover:text-red-800">Logout</button>
                 </div>
             </div>
@@ -29,8 +29,8 @@
 
     <main class="container mx-auto px-4 py-8">
         <div class="mb-6">
-            <h2 class="text-3xl font-bold text-gray-800">Available Sessions</h2>
-            <p class="text-gray-600 mt-2">Browse and book upcoming fitness sessions</p>
+            <h2 class="text-3xl font-bold text-gray-800">Available Timetables</h2>
+            <p class="text-gray-600 mt-2">Browse and book upcoming fitness timetables</p>
         </div>
 
         <!-- Filters -->
@@ -61,12 +61,12 @@
         <!-- Loading State -->
         <div id="loadingState" class="text-center py-12">
             <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            <p class="mt-4 text-gray-600">Loading sessions...</p>
+            <p class="mt-4 text-gray-600">Loading timetables...</p>
         </div>
 
-        <!-- Sessions Grid -->
-        <div id="sessionsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
-            <!-- Sessions will be populated here -->
+        <!-- Timetables Grid -->
+        <div id="timetablesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
+            <!-- Timetables will be populated here -->
         </div>
 
         <!-- Empty State -->
@@ -75,14 +75,14 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
             </svg>
-            <h3 class="mt-4 text-xl font-semibold text-gray-700">No Sessions Found</h3>
+            <h3 class="mt-4 text-xl font-semibold text-gray-700">No Timetables Found</h3>
             <p class="mt-2 text-gray-600">Try adjusting your filters or check back later</p>
         </div>
     </main>
 
     <script>
         const API_URL = 'http://localhost:3000/api';
-        let allSessions = [];
+        let allTimetables = [];
         let activities = [];
         let locations = [];
 
@@ -99,22 +99,22 @@
             window.location.href = '../guest/login.html';
         });
 
-        // Fetch sessions from API
-        async function fetchSessions() {
+        // Fetch timetables from API
+        async function fetchTimetables() {
             try {
-                const response = await fetch(`${API_URL}/sessions/upcoming`, {
+                const response = await fetch(`${API_URL}/timetables/upcoming`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
 
-                if (!response.ok) throw new Error('Failed to fetch sessions');
+                if (!response.ok) throw new Error('Failed to fetch timetables');
 
-                allSessions = await response.json();
-                displaySessions(allSessions);
+                allTimetables = await response.json();
+                displayTimetables(allTimetables);
             } catch (error) {
-                console.error('Error fetching sessions:', error);
-                showError('Failed to load sessions');
+                console.error('Error fetching timetables:', error);
+                showError('Failed to load timetables');
             }
         }
 
@@ -176,15 +176,15 @@
             });
         }
 
-        // Display sessions
-        function displaySessions(sessions) {
-            const grid = document.getElementById('sessionsGrid');
+        // Display timetables
+        function displayTimetables(timetables) {
+            const grid = document.getElementById('timetablesGrid');
             const loading = document.getElementById('loadingState');
             const empty = document.getElementById('emptyState');
 
             loading.classList.add('hidden');
 
-            if (sessions.length === 0) {
+            if (timetables.length === 0) {
                 grid.classList.add('hidden');
                 empty.classList.remove('hidden');
                 return;
@@ -194,26 +194,26 @@
             grid.classList.remove('hidden');
             grid.innerHTML = '';
 
-            sessions.forEach(session => {
-                const sessionCard = createSessionCard(session);
-                grid.appendChild(sessionCard);
+            timetables.forEach(timetable => {
+                const timetableCard = createTimetableCard(timetable);
+                grid.appendChild(timetableCard);
             });
         }
 
-        // Create session card element
-        function createSessionCard(session) {
+        // Create timetable card element
+        function createTimetableCard(timetable) {
             const card = document.createElement('div');
             card.className = 'bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow overflow-hidden';
 
-            const availableSpots = session.max_participants - session.current_participants;
+            const availableSpots = timetable.max_participants - timetable.current_participants;
             const isFull = availableSpots <= 0;
-            const sessionDate = new Date(session.session_date);
-            const formattedDate = sessionDate.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+            const timetableDate = new Date(timetable.timetable_date);
+            const formattedDate = timetableDate.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
 
             card.innerHTML = `
                 <div class="p-6">
                     <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-xl font-bold text-gray-800">${session.session_name}</h3>
+                        <h3 class="text-xl font-bold text-gray-800">${timetable.timetable_name}</h3>
                         ${isFull ? '<span class="px-3 py-1 bg-red-100 text-red-800 text-sm font-semibold rounded-full">Full</span>' : '<span class="px-3 py-1 bg-green-100 text-green-800 text-sm font-semibold rounded-full">Available</span>'}
                     </div>
 
@@ -222,7 +222,7 @@
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                             </svg>
-                            <span>${session.trainer_name}</span>
+                            <span>${timetable.trainer_name}</span>
                         </div>
                         <div class="flex items-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -234,14 +234,14 @@
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
-                            <span>${session.session_time} (${session.duration} mins)</span>
+                            <span>${timetable.timetable_time} (${timetable.duration} mins)</span>
                         </div>
                         <div class="flex items-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             </svg>
-                            <span>${session.location_name}</span>
+                            <span>${timetable.location_name}</span>
                         </div>
                         <div class="flex items-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -253,16 +253,16 @@
 
                     <div class="pt-4 border-t border-gray-200">
                         <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 text-sm font-semibold rounded-full">
-                            ${session.activity_name}
+                            ${timetable.activity_name}
                         </span>
                     </div>
 
                     <button 
-                        onclick="bookSession(${session.id || session.session_id})" 
+                        onclick="bookTimetable(${timetable.id || timetable.timetable_id})" 
                         ${isFull ? 'disabled' : ''}
                         class="w-full mt-4 px-6 py-3 ${isFull ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'} text-white font-semibold rounded-lg transition-colors"
                     >
-                        ${isFull ? 'Session Full' : 'Book Now'}
+                        ${isFull ? 'Timetable Full' : 'Book Now'}
                     </button>
                 </div>
             `;
@@ -270,8 +270,8 @@
             return card;
         }
 
-        // Book session
-        async function bookSession(sessionId) {
+        // Book timetable
+        async function bookTimetable(timetableId) {
             try {
                 const response = await fetch(`${API_URL}/bookings`, {
                     method: 'POST',
@@ -279,30 +279,30 @@
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ session_id: sessionId })
+                    body: JSON.stringify({ timetable_id: timetableId })
                 });
 
                 const data = await response.json();
 
                 if (!response.ok) {
-                    throw new Error(data.error || 'Failed to book session');
+                    throw new Error(data.error || 'Failed to book timetable');
                 }
 
-                alert('Session booked successfully!');
-                fetchSessions(); // Refresh the list
+                alert('Timetable booked successfully!');
+                fetchTimetables(); // Refresh the list
             } catch (error) {
-                console.error('Error booking session:', error);
+                console.error('Error booking timetable:', error);
                 alert(error.message);
             }
         }
 
-        // Filter sessions
-        function filterSessions() {
+        // Filter timetables
+        function filterTimetables() {
             const activityId = document.getElementById('activityFilter').value;
             const locationId = document.getElementById('locationFilter').value;
             const dateFilter = document.getElementById('dateFilter').value;
 
-            let filtered = allSessions;
+            let filtered = allTimetables;
 
             if (activityId) {
                 filtered = filtered.filter(s => (s.activity_id || s.activity_id) == activityId);
@@ -313,10 +313,10 @@
             }
 
             if (dateFilter) {
-                filtered = filtered.filter(s => s.session_date.startsWith(dateFilter));
+                filtered = filtered.filter(s => s.timetable_date.startsWith(dateFilter));
             }
 
-            displaySessions(filtered);
+            displayTimetables(filtered);
         }
 
         // Show error message
@@ -336,13 +336,13 @@
         }
 
         // Add event listeners for filters
-        document.getElementById('activityFilter').addEventListener('change', filterSessions);
-        document.getElementById('locationFilter').addEventListener('change', filterSessions);
-        document.getElementById('dateFilter').addEventListener('change', filterSessions);
+        document.getElementById('activityFilter').addEventListener('change', filterTimetables);
+        document.getElementById('locationFilter').addEventListener('change', filterTimetables);
+        document.getElementById('dateFilter').addEventListener('change', filterTimetables);
 
         // Initialize page
         Promise.all([
-            fetchSessions(),
+            fetchTimetables(),
             fetchActivities(),
             fetchLocations()
         ]);

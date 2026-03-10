@@ -1,5 +1,5 @@
-<!-- html-version/pages/trainer/create-session.html -->
-<!-- pages/trainer/create-session.html -->
+<!-- html-version/pages/trainer/create-timetable.html -->
+<!-- pages/trainer/create-timetable.html -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Session - High Street Gym</title>
+    <title>Create Timetable - High Street Gym</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="../../css/styles.css">
 </head>
@@ -19,8 +19,8 @@
                 <h1 class="text-2xl font-bold text-blue-600">High Street Gym</h1>
                 <div class="space-x-4">
                     <a href="dashboard.html" class="text-gray-700 hover:text-blue-600">Dashboard</a>
-                    <a href="sessions.html" class="text-gray-700 hover:text-blue-600">My Sessions</a>
-                    <a href="profile.html" class="text-gray-700 hover:text-blue-600">Profile</a>
+                    <a href="timetables.html" class="text-gray-700 hover:text-blue-600">My Timetables</a>
+                    <a href="blogs.html" class="text-gray-700 hover:text-blue-600">Blogs</a>
                     <button data-logout class="text-red-600 hover:text-red-800">Logout</button>
                 </div>
             </div>
@@ -29,18 +29,18 @@
 
     <main class="container mx-auto px-4 py-8 max-w-3xl">
         <div class="mb-6">
-            <h2 class="text-3xl font-bold text-gray-800">Create New Session</h2>
-            <p class="text-gray-600 mt-2">Set up a new training session for members</p>
+            <h2 class="text-3xl font-bold text-gray-800">Create New Timetable</h2>
+            <p class="text-gray-600 mt-2">Set up a new training timetable for members</p>
         </div>
 
         <div class="bg-white rounded-lg shadow-md p-6">
-            <form id="createSessionForm" class="space-y-6">
-                <!-- Session Name -->
+            <form id="createTimetableForm" class="space-y-6">
+                <!-- Timetable Name -->
                 <div>
-                    <label for="sessionName" class="block text-sm font-medium text-gray-700 mb-2">
-                        Session Name *
+                    <label for="timetableName" class="block text-sm font-medium text-gray-700 mb-2">
+                        Timetable Name *
                     </label>
-                    <input type="text" id="sessionName" required
+                    <input type="text" id="timetableName" required
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="e.g., Morning HIIT Training">
                 </div>
@@ -51,7 +51,7 @@
                         Activity Type *
                     </label>
                     <select id="activity" required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-auto cursor-pointer bg-white">
                         <option value="">Select an activity</option>
                     </select>
                 </div>
@@ -70,17 +70,17 @@
                 <!-- Date and Time -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label for="sessionDate" class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="timetableDate" class="block text-sm font-medium text-gray-700 mb-2">
                             Date *
                         </label>
-                        <input type="date" id="sessionDate" required
+                        <input type="date" id="timetableDate" required
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
                     <div>
-                        <label for="sessionTime" class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="timetableTime" class="block text-sm font-medium text-gray-700 mb-2">
                             Time *
                         </label>
-                        <input type="time" id="sessionTime" required
+                        <input type="time" id="timetableTime" required
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
                 </div>
@@ -110,7 +110,7 @@
                     </label>
                     <textarea id="description" rows="4"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="Add details about the session, what to bring, skill level, etc."></textarea>
+                        placeholder="Add details about the timetable, what to bring, skill level, etc."></textarea>
                 </div>
 
                 <!-- Error Message -->
@@ -121,13 +121,13 @@
 
                 <!-- Buttons -->
                 <div class="flex justify-end space-x-4 pt-4 border-t border-gray-200">
-                    <a href="sessions.html"
+                    <a href="timetables.html"
                         class="px-6 py-3 text-gray-700 bg-gray-100 font-semibold rounded-lg hover:bg-gray-200 transition-colors">
                         Cancel
                     </a>
                     <button type="submit" id="submitBtn"
                         class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
-                        Create Session
+                        Create Timetable
                     </button>
                 </div>
             </form>
@@ -154,7 +154,7 @@
 
         // Set minimum date to today
         const today = new Date().toISOString().split('T')[0];
-        document.getElementById('sessionDate').setAttribute('min', today);
+        document.getElementById('timetableDate').setAttribute('min', today);
 
         // Fetch activities
         async function fetchActivities() {
@@ -209,7 +209,7 @@
         }
 
         // Handle form submission
-        document.getElementById('createSessionForm').addEventListener('submit', async (e) => {
+        document.getElementById('createTimetableForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const submitBtn = document.getElementById('submitBtn');
@@ -217,18 +217,18 @@
             submitBtn.textContent = 'Creating...';
 
             const formData = {
-                session_name: document.getElementById('sessionName').value,
+                timetable_name: document.getElementById('timetableName').value,
                 activity_id: parseInt(document.getElementById('activity').value),
                 location_id: parseInt(document.getElementById('location').value),
-                session_date: document.getElementById('sessionDate').value,
-                session_time: document.getElementById('sessionTime').value,
+                timetable_date: document.getElementById('timetableDate').value,
+                timetable_time: document.getElementById('timetableTime').value,
                 duration: parseInt(document.getElementById('duration').value),
                 max_participants: parseInt(document.getElementById('maxParticipants').value),
                 description: document.getElementById('description').value || null
             };
 
             try {
-                const response = await fetch(`${API_URL}/sessions`, {
+                const response = await fetch(`${API_URL}/timetables`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -240,16 +240,16 @@
                 const data = await response.json();
 
                 if (!response.ok) {
-                    throw new Error(data.error || 'Failed to create session');
+                    throw new Error(data.error || 'Failed to create timetable');
                 }
 
-                alert('Session created successfully!');
-                window.location.href = 'sessions.html';
+                alert('Timetable created successfully!');
+                window.location.href = 'timetables.html';
             } catch (error) {
-                console.error('Error creating session:', error);
+                console.error('Error creating timetable:', error);
                 showError(error.message);
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Create Session';
+                submitBtn.textContent = 'Create Timetable';
             }
         });
 

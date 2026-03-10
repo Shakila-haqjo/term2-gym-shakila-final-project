@@ -1,5 +1,5 @@
-<!-- html-version/pages/trainer/sessions.html -->
-<!-- pages/trainer/sessions.html -->
+<!-- html-version/pages/trainer/timetables.html -->
+<!-- pages/trainer/timetables.html -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,9 +7,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Sessions - High Street Gym</title>
+    <title>My Timetables - High Street Gym</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="../../css/styles.css">
+    <script src="../../js/role-navigator.js"></script>
 </head>
 
 <body class="bg-gray-50">
@@ -19,8 +20,8 @@
                 <h1 class="text-2xl font-bold text-blue-600">High Street Gym</h1>
                 <div class="space-x-4">
                     <a href="dashboard.html" class="text-gray-700 hover:text-blue-600">Dashboard</a>
-                    <a href="create-session.html" class="text-gray-700 hover:text-blue-600">Create Session</a>
-                    <a href="profile.html" class="text-gray-700 hover:text-blue-600">Profile</a>
+                    <a href="create-timetable.html" class="text-gray-700 hover:text-blue-600">Create Timetable</a>
+                    <a href="blogs.html" class="text-gray-700 hover:text-blue-600">Blogs</a>
                     <button data-logout class="text-red-600 hover:text-red-800">Logout</button>
                 </div>
             </div>
@@ -30,12 +31,12 @@
     <main class="container mx-auto px-4 py-8">
         <div class="flex justify-between items-center mb-6">
             <div>
-                <h2 class="text-3xl font-bold text-gray-800">My Sessions</h2>
-                <p class="text-gray-600 mt-2">Manage your training sessions</p>
+                <h2 class="text-3xl font-bold text-gray-800">My Timetables</h2>
+                <p class="text-gray-600 mt-2">Manage your training timetables</p>
             </div>
-            <a href="create-session.html"
+            <a href="create-timetable.html"
                 class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
-                + Create New Session
+                + Create New Timetable
             </a>
         </div>
 
@@ -49,7 +50,7 @@
                     Past
                 </button>
                 <button id="allTab" class="px-6 py-4 font-semibold text-gray-600 hover:text-blue-600">
-                    All Sessions
+                    All Timetables
                 </button>
             </div>
         </div>
@@ -57,12 +58,12 @@
         <!-- Loading State -->
         <div id="loadingState" class="text-center py-12">
             <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            <p class="mt-4 text-gray-600">Loading sessions...</p>
+            <p class="mt-4 text-gray-600">Loading timetables...</p>
         </div>
 
-        <!-- Sessions List -->
-        <div id="sessionsList" class="space-y-4 hidden">
-            <!-- Sessions will be populated here -->
+        <!-- Timetables List -->
+        <div id="timetablesList" class="space-y-4 hidden">
+            <!-- Timetables will be populated here -->
         </div>
 
         <!-- Empty State -->
@@ -71,11 +72,11 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
             </svg>
-            <h3 class="mt-4 text-xl font-semibold text-gray-700">No Sessions Found</h3>
-            <p class="mt-2 text-gray-600">Start by creating your first session</p>
-            <a href="create-session.html"
+            <h3 class="mt-4 text-xl font-semibold text-gray-700">No Timetables Found</h3>
+            <p class="mt-2 text-gray-600">Start by creating your first timetable</p>
+            <a href="create-timetable.html"
                 class="mt-4 inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                Create Session
+                Create Timetable
             </a>
         </div>
     </main>
@@ -83,15 +84,15 @@
     <!-- Delete Confirmation Modal -->
     <div id="deleteModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 class="text-xl font-bold text-gray-800 mb-4">Delete Session</h3>
-            <p class="text-gray-600 mb-6">Are you sure you want to delete this session? All associated bookings will be
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Delete Timetable</h3>
+            <p class="text-gray-600 mb-6">Are you sure you want to delete this timetable? All associated bookings will be
                 cancelled.</p>
             <div class="flex justify-end space-x-4">
                 <button id="deleteModalClose" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
                     Cancel
                 </button>
                 <button id="confirmDelete" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
-                    Delete Session
+                    Delete Timetable
                 </button>
             </div>
         </div>
@@ -100,9 +101,9 @@
 
     <script>
         const API_URL = 'http://localhost:3000/api';
-        let allSessions = [];
+        let allTimetables = [];
         let currentTab = 'upcoming';
-        let sessionToDelete = null;
+        let timetableToDelete = null;
 
         const auth = RoleNavigator.protect(['trainer', 'admin']);
         if (!auth) return;
@@ -113,30 +114,30 @@
             RoleNavigator.logout();
         });
 
-        // Fetch trainer's sessions
-        async function fetchSessions() {
-            console.log('📡 Fetching sessions for trainer:', user.user_id);
+        // Fetch trainer's timetables
+        async function fetchTimetables() {
+            console.log('📡 Fetching timetables for trainer:', user.user_id);
             const loading = document.getElementById('loadingState');
-            const list = document.getElementById('sessionsList');
+            const list = document.getElementById('timetablesList');
             const empty = document.getElementById('emptyState');
             
             try {
-                const response = await fetch(`${API_URL}/sessions/trainer/${user.user_id}`, {
+                const response = await fetch(`${API_URL}/timetables/trainer/${user.user_id}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
 
                 if (!response.ok) {
-                    console.error('❌ Sessions fetch failed:', response.status);
-                    throw new Error('Failed to fetch sessions');
+                    console.error('❌ Timetables fetch failed:', response.status);
+                    throw new Error('Failed to fetch timetables');
                 }
 
-                allSessions = await response.json();
-                console.log('✅ Sessions loaded:', allSessions.length);
-                displaySessions();
+                allTimetables = await response.json();
+                console.log('✅ Timetables loaded:', allTimetables.length);
+                displayTimetables();
             } catch (error) {
-                console.error('💥 Error fetching sessions:', error);
+                console.error('💥 Error fetching timetables:', error);
                 loading.classList.add('hidden');
                 list.classList.add('hidden');
                 empty.classList.remove('hidden');
@@ -145,8 +146,8 @@
                         <svg class="mx-auto h-16 w-16 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <p class="mt-4 text-gray-600">Failed to load sessions</p>
-                        <button onclick="fetchSessions()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                        <p class="mt-4 text-gray-600">Failed to load timetables</p>
+                        <button onclick="fetchTimetables()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                             Try Again
                         </button>
                     </div>
@@ -154,32 +155,32 @@
             }
         }
 
-        // Display sessions based on current tab
-        function displaySessions() {
-            const list = document.getElementById('sessionsList');
+        // Display timetables based on current tab
+        function displayTimetables() {
+            const list = document.getElementById('timetablesList');
             const loading = document.getElementById('loadingState');
             const empty = document.getElementById('emptyState');
 
             loading.classList.add('hidden');
 
             const now = new Date();
-            let filteredSessions = [];
+            let filteredTimetables = [];
 
             if (currentTab === 'upcoming') {
-                filteredSessions = allSessions.filter(s => {
-                    const sessionDate = new Date(s.session_date);
-                    return sessionDate >= now;
+                filteredTimetables = allTimetables.filter(s => {
+                    const timetableDate = new Date(s.timetable_date);
+                    return timetableDate >= now;
                 });
             } else if (currentTab === 'past') {
-                filteredSessions = allSessions.filter(s => {
-                    const sessionDate = new Date(s.session_date);
-                    return sessionDate < now;
+                filteredTimetables = allTimetables.filter(s => {
+                    const timetableDate = new Date(s.timetable_date);
+                    return timetableDate < now;
                 });
             } else {
-                filteredSessions = allSessions;
+                filteredTimetables = allTimetables;
             }
 
-            if (filteredSessions.length === 0) {
+            if (filteredTimetables.length === 0) {
                 list.classList.add('hidden');
                 empty.classList.remove('hidden');
                 return;
@@ -189,26 +190,26 @@
             list.classList.remove('hidden');
             list.innerHTML = '';
 
-            filteredSessions.forEach(session => {
-                const sessionCard = createSessionCard(session);
-                list.appendChild(sessionCard);
+            filteredTimetables.forEach(timetable => {
+                const timetableCard = createTimetableCard(timetable);
+                list.appendChild(timetableCard);
             });
         }
 
-        // Create session card element
-        function createSessionCard(session) {
+        // Create timetable card element
+        function createTimetableCard(timetable) {
             const card = document.createElement('div');
             card.className = 'bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow';
 
-            const sessionDate = new Date(session.session_date);
-            const formattedDate = sessionDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-            const isPast = sessionDate < new Date();
-            const availableSpots = session.max_participants - session.current_participants;
+            const timetableDate = new Date(timetable.timetable_date);
+            const formattedDate = timetableDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const isPast = timetableDate < new Date();
+            const availableSpots = timetable.max_participants - timetable.current_participants;
 
             card.innerHTML = `
                 <div class="flex justify-between items-start mb-4">
                     <div>
-                        <h3 class="text-xl font-bold text-gray-800">${session.session_name}</h3>
+                        <h3 class="text-xl font-bold text-gray-800">${timetable.timetable_name}</h3>
                         <p class="text-sm text-gray-500 mt-1">${formattedDate}</p>
                     </div>
                     <div class="flex items-center space-x-2">
@@ -226,43 +227,43 @@
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span>${session.session_time} (${session.duration} mins)</span>
+                        <span>${timetable.timetable_time} (${timetable.duration} mins)</span>
                     </div>
                     <div class="flex items-center text-gray-600">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
-                        <span>${session.current_participants}/${session.max_participants} participants</span>
+                        <span>${timetable.current_participants}/${timetable.max_participants} participants</span>
                     </div>
                     <div class="flex items-center text-gray-600">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                         </svg>
-                        <span>${session.location_name}</span>
+                        <span>${timetable.location_name}</span>
                     </div>
                     <div class="flex items-center text-gray-600">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                         </svg>
-                        <span>${session.activity_name}</span>
+                        <span>${timetable.activity_name}</span>
                     </div>
                 </div>
 
-                ${session.description ? `
-                    <p class="text-gray-600 mb-4 text-sm">${session.description}</p>
+                ${timetable.description ? `
+                    <p class="text-gray-600 mb-4 text-sm">${timetable.description}</p>
                 ` : ''}
 
                 <div class="pt-4 border-t border-gray-200 flex flex-wrap gap-2">
-                    <a href="session-bookings.html?id=${session.id || session.session_id}" 
+                    <a href="timetable-bookings.html?id=${timetable.id || timetable.timetable_id}" 
                        class="flex-1 px-4 py-2 bg-blue-600 text-white text-center font-semibold rounded-lg hover:bg-blue-700 transition-colors">
-                        View Bookings (${session.current_participants})
+                        View Bookings (${timetable.current_participants})
                     </a>
                     ${!isPast ? `
-                        <a href="edit-session.html?id=${session.id || session.session_id}" 
+                        <a href="edit-timetable.html?id=${timetable.id || timetable.timetable_id}" 
                            class="flex-1 px-4 py-2 bg-gray-600 text-white text-center font-semibold rounded-lg hover:bg-gray-700 transition-colors">
                             Edit
                         </a>
-                        <button onclick="showDeleteModal(${session.id || session.session_id})" 
+                        <button onclick="showDeleteModal(${timetable.id || timetable.timetable_id})" 
                                 class="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors">
                             Delete
                         </button>
@@ -274,37 +275,37 @@
         }
 
         // Show delete confirmation modal
-        function showDeleteModal(sessionId) {
-            sessionToDelete = sessionId;
+        function showDeleteModal(timetableId) {
+            timetableToDelete = timetableId;
             document.getElementById('deleteModal').classList.remove('hidden');
         }
 
         // Hide delete modal
         function hideDeleteModal() {
-            sessionToDelete = null;
+            timetableToDelete = null;
             document.getElementById('deleteModal').classList.add('hidden');
         }
 
-        // Delete session
-        async function deleteSession() {
-            if (!sessionToDelete) return;
+        // Delete timetable
+        async function deleteTimetable() {
+            if (!timetableToDelete) return;
 
             try {
-                const response = await fetch(`${API_URL}/sessions/${sessionToDelete}`, {
+                const response = await fetch(`${API_URL}/timetables/${timetableToDelete}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
 
-                if (!response.ok) throw new Error('Failed to delete session');
+                if (!response.ok) throw new Error('Failed to delete timetable');
 
                 hideDeleteModal();
-                alert('Session deleted successfully');
-                fetchSessions();
+                alert('Timetable deleted successfully');
+                fetchTimetables();
             } catch (error) {
-                console.error('Error deleting session:', error);
-                alert('Failed to delete session');
+                console.error('Error deleting timetable:', error);
+                alert('Failed to delete timetable');
             }
         }
 
@@ -321,7 +322,7 @@
             document.getElementById(`${tab}Tab`).classList.remove('text-gray-600');
             document.getElementById(`${tab}Tab`).classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
 
-            displaySessions();
+            displayTimetables();
         }
 
         // Show error message
@@ -345,10 +346,10 @@
         document.getElementById('pastTab').addEventListener('click', () => switchTab('past'));
         document.getElementById('allTab').addEventListener('click', () => switchTab('all'));
         document.getElementById('deleteModalClose').addEventListener('click', hideDeleteModal);
-        document.getElementById('confirmDelete').addEventListener('click', deleteSession);
+        document.getElementById('confirmDelete').addEventListener('click', deleteTimetable);
 
         // Initialize
-        fetchSessions();
+        fetchTimetables();
     </script>
 </body>
 
