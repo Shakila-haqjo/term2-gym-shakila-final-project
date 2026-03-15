@@ -1,3 +1,5 @@
+// DEPRECATED — replaced by queries.mjs
+/*
 // queries.js
 // Single source of truth for all SQL queries used by the application.
 // Routes and middleware import from here instead of writing inline SQL.
@@ -166,3 +168,4 @@ const LOCATIONS = {
 };
 
 module.exports = { AUTH, USERS, SESSIONS, BOOKINGS, BLOGS, ACTIVITIES, LOCATIONS };
+*/

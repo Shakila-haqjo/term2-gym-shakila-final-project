@@ -1,3 +1,5 @@
+// DEPRECATED — replaced by routes/sessions.mjs
+/*
 const express = require('express');
 const router = express.Router();
 const db = require('../database');
@@ -136,3 +138,4 @@ router.get('/:id/bookings', authenticate, async (req, res) => {
 });
 
 module.exports = router;
+*/

@@ -1,3 +1,5 @@
+// DEPRECATED — replaced by routes/users.mjs
+/*
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
@@ -104,3 +106,4 @@ router.delete('/:id', requireRole('admin'), async (req, res) => {
 });
 
 module.exports = router;
+*/

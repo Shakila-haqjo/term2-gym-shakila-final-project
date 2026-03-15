@@ -40,34 +40,21 @@
         </div>
 
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-          <!-- Upcoming Bookings -->
+          <!-- Quick Actions -->
           <div class="card">
-            <div class="card-header">
-              <span class="card-title"><i class="fas fa-calendar-alt" style="color:var(--accent-gold)"></i> Upcoming Sessions</span>
-              <a href="/member/bookings.html" class="btn btn-sm btn-secondary">View All</a>
-            </div>
-            <div id="upcomingBookings" style="padding: 8px 0;">
-              <div class="loading-spinner"><div class="spinner"></div></div>
+            <div class="card-header"><span class="card-title"><i class="fas fa-bolt" style="color:var(--accent-gold)"></i> Quick Actions</span></div>
+            <div class="card-body" style="display:flex; flex-direction:column; gap:10px;">
+              <a href="/member/sessions.html" class="btn btn-primary"><i class="fas fa-search"></i> Find a Session</a>
+              <a href="/member/bookings.html" class="btn btn-secondary"><i class="fas fa-ticket-alt"></i> My Bookings</a>
+              <a href="/member/create-blog.html" class="btn btn-secondary"><i class="fas fa-pen"></i> Write Blog Post</a>
             </div>
           </div>
 
-          <!-- Quick Actions -->
-          <div>
-            <div class="card" style="margin-bottom:20px;">
-              <div class="card-header"><span class="card-title"><i class="fas fa-bolt" style="color:var(--accent-gold)"></i> Quick Actions</span></div>
-              <div class="card-body" style="display:flex; flex-direction:column; gap:10px;">
-                <a href="/member/sessions.html" class="btn btn-primary"><i class="fas fa-search"></i> Find a Session</a>
-                <a href="/member/bookings.html" class="btn btn-secondary"><i class="fas fa-ticket-alt"></i> My Bookings</a>
-                <a href="/member/create-blog.html" class="btn btn-secondary"><i class="fas fa-pen"></i> Write Blog Post</a>
-                <a href="/member/profile.html" class="btn btn-secondary"><i class="fas fa-user"></i> Edit Profile</a>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-header"><span class="card-title"><i class="fas fa-newspaper" style="color:var(--accent-gold)"></i> Latest Blog Posts</span></div>
-              <div id="latestBlogs" style="padding: 8px 0;">
-                <div class="loading-spinner"><div class="spinner"></div></div>
-              </div>
+          <!-- Latest Blog Posts -->
+          <div class="card">
+            <div class="card-header"><span class="card-title"><i class="fas fa-newspaper" style="color:var(--accent-gold)"></i> Latest Blog Posts</span></div>
+            <div id="latestBlogs" style="padding: 8px 0;">
+              <div class="loading-spinner"><div class="spinner"></div></div>
             </div>
           </div>
         </div>

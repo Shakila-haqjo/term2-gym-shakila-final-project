@@ -1,3 +1,5 @@
+// DEPRECATED — replaced by server.mjs
+/*
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -44,3 +46,4 @@ app.listen(PORT, () => {
   console.log(`  Trainer: sarah@gym.com / trainer123`);
   console.log(`  Member:  alice@gym.com / member123\n`);
 });
+*/

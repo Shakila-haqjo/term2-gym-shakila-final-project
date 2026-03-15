@@ -106,7 +106,7 @@ async function loadSessions() {
 function clearFilters() {
   document.getElementById('searchInput').value = '';
   document.getElementById('activityFilter').value = '';
-  document.getElementById('upcomingFilter').value = 'true';
+  document.getElementById('upcomingFilter').value = '';
   loadSessions();
 }
 

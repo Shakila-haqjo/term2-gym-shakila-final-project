@@ -9,26 +9,26 @@ function renderNav(activePage) {
 
   const memberLinks = [
     { href: '/member/dashboard.html', icon: 'fa-tachometer-alt', label: 'Dashboard', key: 'dashboard' },
-    { href: '/member/sessions.html', icon: 'fa-calendar-alt', label: 'Browse Sessions', key: 'sessions' },
-    { href: '/member/bookings.html', icon: 'fa-ticket-alt', label: 'My Bookings', key: 'bookings' },
-    { href: '/member/create-blog.html', icon: 'fa-pen', label: 'Write Blog', key: 'create-blog' },
-    { href: '/member/profile.html', icon: 'fa-user', label: 'My Profile', key: 'profile' },
+    { href: '/member/sessions.html',  icon: 'fa-calendar-alt',   label: 'Timetable',  key: 'sessions' },
+    { href: '/blog.html',             icon: 'fa-newspaper',      label: 'Blog',        key: 'blog' },
+    { href: '/member/bookings.html',  icon: 'fa-ticket-alt',     label: 'My Booking',  key: 'bookings' },
   ];
 
   const trainerLinks = [
-    { href: '/trainer/dashboard.html', icon: 'fa-tachometer-alt', label: 'Dashboard', key: 'dashboard' },
-    { href: '/trainer/sessions.html', icon: 'fa-dumbbell', label: 'My Sessions', key: 'sessions' },
-    { href: '/trainer/create-session.html', icon: 'fa-plus-circle', label: 'Create Session', key: 'create-session' },
-    { href: '/trainer/blog.html', icon: 'fa-blog', label: 'Blog', key: 'blog' },
+    { href: '/trainer/dashboard.html',       icon: 'fa-tachometer-alt', label: 'Dashboard',       key: 'dashboard' },
+    { href: '/timetable.html',               icon: 'fa-calendar-alt',   label: 'Timetable',        key: 'timetable' },
+    { href: '/trainer/blog.html',            icon: 'fa-newspaper',      label: 'Blog',             key: 'blog' },
+    { href: '/trainer/sessions.html',        icon: 'fa-dumbbell',       label: 'Manage Sessions',  key: 'sessions' },
   ];
 
   const adminLinks = [
-    { href: '/admin/dashboard.html', icon: 'fa-tachometer-alt', label: 'Dashboard', key: 'dashboard' },
-    { href: '/admin/users.html', icon: 'fa-users', label: 'Users', key: 'users' },
-    { href: '/admin/sessions.html', icon: 'fa-calendar-alt', label: 'Sessions', key: 'sessions' },
-    { href: '/admin/bookings.html', icon: 'fa-ticket-alt', label: 'Bookings', key: 'bookings' },
-    { href: '/admin/activities.html', icon: 'fa-running', label: 'Activities', key: 'activities' },
-    { href: '/admin/locations.html', icon: 'fa-map-marker-alt', label: 'Locations', key: 'locations' },
+    { href: '/admin/dashboard.html',   icon: 'fa-tachometer-alt',  label: 'Dashboard',     key: 'dashboard' },
+    { href: '/admin/sessions.html',    icon: 'fa-calendar-alt',    label: 'Sessions',       key: 'sessions' },
+    { href: '/admin/users.html',       icon: 'fa-users',           label: 'Users',          key: 'users' },
+    { href: '/admin/activities.html',  icon: 'fa-running',         label: 'Activities',     key: 'activities' },
+    { href: '/admin/locations.html',   icon: 'fa-map-marker-alt',  label: 'Locations',      key: 'locations' },
+    { href: '/admin/bookings.html',    icon: 'fa-ticket-alt',      label: 'Bookings',       key: 'bookings' },
+    { href: '/admin/blogs.html',       icon: 'fa-blog',            label: 'Blog Posts',     key: 'blogs' },
   ];
 
   let links;

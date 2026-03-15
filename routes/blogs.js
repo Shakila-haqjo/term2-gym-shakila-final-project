@@ -1,3 +1,5 @@
+// DEPRECATED — replaced by routes/blogs.mjs
+/*
 const express = require('express');
 const router = express.Router();
 const db = require('../database');
@@ -116,3 +118,4 @@ router.post('/:id/view', async (req, res) => {
 });
 
 module.exports = router;
+*/

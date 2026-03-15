@@ -1,3 +1,5 @@
+// DEPRECATED — replaced by routes/locations.mjs
+/*
 const express = require('express');
 const router = express.Router();
 const db = require('../database');
@@ -65,3 +67,4 @@ router.delete('/:id', requireRole('admin'), async (req, res) => {
 });
 
 module.exports = router;
+*/

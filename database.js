@@ -1,3 +1,5 @@
+// DEPRECATED — replaced by database.mjs
+/*
 const mysql = require('mysql2/promise');
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
@@ -151,3 +153,4 @@ async function initializeDatabase() {
 initializeDatabase().catch(console.error);
 
 module.exports = pool;
+*/

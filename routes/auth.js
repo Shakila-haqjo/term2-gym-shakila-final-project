@@ -1,3 +1,5 @@
+// DEPRECATED — replaced by routes/auth.mjs
+/*
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
@@ -103,3 +105,4 @@ router.put('/me', authenticate, async (req, res) => {
 });
 
 module.exports = router;
+*/

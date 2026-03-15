@@ -1,3 +1,5 @@
+// DEPRECATED — replaced by middleware/auth.mjs
+/*
 const jwt = require('jsonwebtoken');
 const db = require('../database');
 const { AUTH } = require('../queries');
@@ -36,3 +38,4 @@ function requireRole(...roles) {
 }
 
 module.exports = { authenticate, requireRole, JWT_SECRET };
+*/

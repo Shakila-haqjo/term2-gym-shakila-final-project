@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('welcomeName').textContent = user.name.split(' ')[0];
   document.getElementById('headerDate').textContent = new Date().toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
 
-  await Promise.all([loadStats(), loadUpcomingBookings(), loadLatestBlogs()]);
+  await Promise.all([loadStats(), loadLatestBlogs()]);
 });
 
 async function loadStats() {

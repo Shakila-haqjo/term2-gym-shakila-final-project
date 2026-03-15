@@ -4,10 +4,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderNav('create-session');
   await Promise.all([loadActivities(), loadLocations()]);
 
-  // Set default date to tomorrow
+  // Set min date to today and default to tomorrow
+  const today = new Date().toISOString().slice(0, 10);
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
-  document.getElementById('date').value = tomorrow.toISOString().slice(0, 10);
+  const dateInput = document.getElementById('date');
+  dateInput.min = today;
+  dateInput.value = tomorrow.toISOString().slice(0, 10);
   document.getElementById('time').value = '09:00';
 });
 
@@ -42,6 +45,12 @@ document.getElementById('createSessionForm').addEventListener('submit', async (e
 
   if (!name || !date || !time) {
     alertBox.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Name, date, and time are required.</div>`;
+    return;
+  }
+
+  const today = new Date().toISOString().slice(0, 10);
+  if (date < today) {
+    alertBox.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Session date cannot be in the past.</div>`;
     return;
   }
 
