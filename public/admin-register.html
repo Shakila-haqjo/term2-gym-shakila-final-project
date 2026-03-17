@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Registration - FitGym</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <script>tailwind.config = { corePlugins: { preflight: false } }</script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="auth-page">
+  <div class="auth-card shadow-2xl" style="max-width: 500px;">
+    <div class="auth-logo">
+      <div class="logo-icon" style="background: linear-gradient(135deg, #ef4444, #b91c1c);"><i class="fas fa-user-shield"></i></div>
+      <h1>Admin Registration</h1>
+      <p>Create a new administrator account</p>
+    </div>
+
+    <div id="alertBox"></div>
+
+    <form id="adminRegisterForm">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <div style="position:relative;">
+          <i class="fas fa-user" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#9ca3af;"></i>
+          <input type="text" id="name" class="form-control" style="padding-left: 38px;" placeholder="John Doe" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <div style="position:relative;">
+          <i class="fas fa-envelope" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#9ca3af;"></i>
+          <input type="email" id="email" class="form-control" style="padding-left: 38px;" placeholder="admin@gym.com" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="password" class="form-control" placeholder="Min. 6 characters" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <input type="password" id="confirmPassword" class="form-control" placeholder="Repeat password" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Phone (optional)</label>
+          <input type="tel" id="phone" class="form-control" placeholder="555-0100">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Address (optional)</label>
+          <input type="text" id="address" class="form-control" placeholder="123 Main St">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary w-100 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg" id="submitBtn" style="background: linear-gradient(135deg, #ef4444, #b91c1c); border-color: #ef4444;">
+        <i class="fas fa-user-shield"></i> Register as Admin
+      </button>
+    </form>
+
+    <div style="text-align:center; margin-top: 20px; font-size: 0.875rem; color: var(--text-secondary);">
+      Already have an account? <a href="/login.html" style="color: var(--accent-gold); font-weight: 600; text-decoration: none;">Sign in</a>
+    </div>
+    <div style="text-align:center; margin-top: 8px; font-size: 0.875rem; color: var(--text-secondary);">
+      Not an admin? <a href="/register.html" style="color: var(--accent-gold); font-weight: 600; text-decoration: none;">Regular registration</a>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/admin-register.js"></script>
+</body>
+</html>

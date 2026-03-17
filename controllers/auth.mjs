@@ -34,7 +34,8 @@ router.post('/login', async (req, res) => {
 
     req.session.user = sessionUser;
 
-    res.json({ user: sessionUser });
+    const token = Buffer.from(`${sessionUser.id}:${sessionUser.role}:${Date.now()}`).toString('base64');
+    res.json({ user: sessionUser, token });
   } catch (err) {
     res.status(500).json({ error: 'Login failed' });
   }
@@ -47,7 +48,7 @@ router.post('/register', async (req, res) => {
 
   if (!validator.isEmail(email)) return res.status(400).json({ error: 'Invalid email format' });
 
-  const allowedRoles = ['member', 'trainer'];
+  const allowedRoles = ['member', 'trainer', 'admin'];
   const userRole = allowedRoles.includes(role) ? role : 'member';
 
   try {

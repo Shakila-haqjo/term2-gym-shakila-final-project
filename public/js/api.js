@@ -8,7 +8,7 @@ async function apiFetch(endpoint, options = {}) {
   try {
     const res = await fetch(API_BASE + endpoint, { ...options, headers });
 
-    if (res.status === 401) {
+    if (res.status === 401 && !endpoint.includes('/auth/login') && !endpoint.includes('/auth/register')) {
       localStorage.clear();
       window.location.href = '/login.html';
       return;
