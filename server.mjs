@@ -63,6 +63,9 @@ app.get('/timetable', (req, res) =>
 app.get('/blog', (req, res) =>
   res.render('blog', { layout: 'layouts/landing', title: 'Blog - FitGym' }));
 
+app.get('/blog-detail', (_req, res) =>
+  res.render('blog-detail', { layout: 'layouts/landing', title: 'Blog - FitGym' }));
+
 // ── Admin page routes ─────────────────────────────────────────────────────────
 app.get('/admin/dashboard', (req, res) => {
   const user = req.session.user;
