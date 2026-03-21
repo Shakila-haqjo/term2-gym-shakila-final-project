@@ -59,6 +59,37 @@ router.post('/', requireRole('member'), async (req, res) => {
   }
 });
 
+// POST /api/bookings/admin-create - admin creates a booking for any member
+router.post('/admin-create', requireRole('admin'), async (req, res) => {
+  const { user_id, session_id } = req.body;
+  if (!user_id || !session_id) return res.status(400).json({ error: 'user_id and session_id are required' });
+
+  try {
+    const session = await Session.findRawById(session_id);
+    if (!session) return res.status(404).json({ error: 'Session not found' });
+
+    const booked = await Booking.countConfirmed(session_id);
+    if (booked >= session.max_participants)
+      return res.status(400).json({ error: 'Session is full' });
+
+    const existing = await Booking.findExisting(user_id, session_id);
+    if (existing) {
+      if (existing.status === 'cancelled') {
+        await Booking.reactivate(existing.id);
+        const booking = await Booking.findById(existing.id);
+        return res.json({ booking });
+      }
+      return res.status(409).json({ error: 'Member already booked this session' });
+    }
+
+    const insertId = await Booking.createBooking(user_id, session_id, 'confirmed');
+    const booking = await Booking.findById(insertId);
+    res.status(201).json({ booking });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to create booking' });
+  }
+});
+
 // PUT /api/bookings/:id/cancel
 router.put('/:id/cancel', authenticate, async (req, res) => {
   const booking = await Booking.findRawById(req.params.id);

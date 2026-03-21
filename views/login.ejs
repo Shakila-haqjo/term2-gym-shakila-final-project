@@ -75,6 +75,7 @@
         return;
       }
 
+      saveAuth(data.token, data.user);
       const role = data.user?.role;
       if (role === 'admin') {
         window.location.href = '/admin/dashboard';

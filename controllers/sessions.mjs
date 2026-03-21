@@ -23,8 +23,8 @@ router.get('/stats', authenticate, async (req, res) => {
 
 // GET /api/sessions
 router.get('/', authenticate, async (req, res) => {
-  const { search, activity_id, date, upcoming } = req.query;
-  const trainerId = req.user.role === 'trainer' ? req.user.id : undefined;
+  const { search, activity_id, date, upcoming, mine } = req.query;
+  const trainerId = (req.user.role === 'trainer' && mine === 'true') ? req.user.id : undefined;
   const sessions = await Session.listSessions({
     trainerId, search, activity_id, date,
     upcoming: upcoming === 'true'

@@ -22,6 +22,7 @@
       </select>
       <button class="btn btn-primary btn-sm" onclick="loadBookings()"><i class="fas fa-filter"></i> Filter</button>
       <button class="btn btn-secondary btn-sm" onclick="clearFilters()"><i class="fas fa-times"></i> Clear</button>
+      <button class="btn btn-primary btn-sm" onclick="openCreateModal()" style="margin-left:auto;"><i class="fas fa-plus"></i> Create Booking</button>
     </div>
   </div>
 </div>
@@ -39,6 +40,34 @@
           <tr><td colspan="8"><div class="loading-spinner"><div class="spinner"></div></div></td></tr>
         </tbody>
       </table>
+    </div>
+  </div>
+</div>
+
+<!-- Create Booking Modal -->
+<div class="modal-overlay" id="createBookingModal">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <span class="modal-title"><i class="fas fa-plus"></i> Create Booking</span>
+      <button class="modal-close" onclick="closeModal('createBookingModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Member *</label>
+        <select id="cbMember" class="form-control">
+          <option value="">Select member...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Session *</label>
+        <select id="cbSession" class="form-control">
+          <option value="">Select session...</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('createBookingModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveBooking()"><i class="fas fa-check"></i> Create</button>
     </div>
   </div>
 </div>

@@ -55,7 +55,8 @@ router.post('/register', async (req, res) => {
 
     const profile = await User.getProfile(insertId);
     req.session.user = profile;
-    res.status(201).json({ user: profile });
+    const token = Buffer.from(`${profile.id}:${profile.role}:${Date.now()}`).toString('base64');
+    res.status(201).json({ user: profile, token });
   } catch (err) {
     res.status(500).json({ error: 'Registration failed' });
   }

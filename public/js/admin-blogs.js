@@ -1,3 +1,5 @@
+let editingBlogId = null;
+
 document.addEventListener('DOMContentLoaded', () => {
   const user = requireAuth('admin');
   if (!user) return;
@@ -43,6 +45,7 @@ async function loadBlogs() {
         <td>
           <div style="display:flex;gap:6px;">
             <a href="/blog-detail?id=${b.id}" class="btn btn-sm btn-info" target="_blank" title="View"><i class="fas fa-eye"></i></a>
+            <button class="btn btn-sm btn-secondary" onclick="openEditModal(${b.id})" title="Edit"><i class="fas fa-edit"></i></button>
             <button class="btn btn-sm btn-danger" onclick="deleteBlog(${b.id})" title="Delete"><i class="fas fa-trash"></i></button>
           </div>
         </td>
@@ -50,6 +53,62 @@ async function loadBlogs() {
     `).join('');
   } catch (err) {
     tbody.innerHTML = `<tr><td colspan="7"><div class="alert alert-danger">${err.message}</div></td></tr>`;
+  }
+}
+
+function openCreateModal() {
+  editingBlogId = null;
+  document.getElementById('modalTitle').textContent = 'New Blog Post';
+  document.getElementById('blogTitle').value = '';
+  document.getElementById('blogCategory').value = '';
+  document.getElementById('blogContent').value = '';
+  document.getElementById('blogStatus').value = 'draft';
+  document.getElementById('blogModal').classList.add('active');
+}
+
+async function openEditModal(id) {
+  editingBlogId = id;
+  try {
+    const data = await apiFetch(`/blogs/${id}`);
+    const b = data.blog;
+    document.getElementById('modalTitle').textContent = 'Edit Blog Post';
+    document.getElementById('blogTitle').value = b.title;
+    document.getElementById('blogCategory').value = b.category || '';
+    document.getElementById('blogContent').value = b.content || '';
+    document.getElementById('blogStatus').value = b.status;
+    document.getElementById('blogModal').classList.add('active');
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+async function saveBlog() {
+  const title = document.getElementById('blogTitle').value.trim();
+  if (!title) { showToast('Title is required.', 'error'); return; }
+
+  const body = {
+    title,
+    category: document.getElementById('blogCategory').value,
+    content: document.getElementById('blogContent').value,
+    status: document.getElementById('blogStatus').value
+  };
+
+  try {
+    if (editingBlogId) {
+      await api.put(`/blogs/${editingBlogId}`, body);
+      showToast('Post updated!', 'success');
+    } else {
+      await api.post('/blogs', body);
+      showToast('Post created!', 'success');
+    }
+    closeModal('blogModal');
+    loadBlogs();
+  } catch (err) {
+    showToast(err.message, 'error');
   }
 }
 

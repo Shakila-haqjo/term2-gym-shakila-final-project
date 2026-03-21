@@ -36,7 +36,7 @@ async function loadSessions() {
   const search = document.getElementById('searchInput').value.trim();
   const upcoming = document.getElementById('upcomingFilter').value;
 
-  let url = '/sessions?';
+  let url = '/sessions?mine=true&';
   if (search) url += `search=${encodeURIComponent(search)}&`;
   if (upcoming) url += `upcoming=${upcoming}`;
 

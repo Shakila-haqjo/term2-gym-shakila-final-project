@@ -1,9 +1,10 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const user = requireAuth('admin');
   if (!user) return;
   renderNav('bookings');
   loadStats();
   loadBookings();
+  await Promise.all([loadMembersDropdown(), loadSessionsDropdown()]);
 
   document.getElementById('statusFilter').addEventListener('change', loadBookings);
   document.getElementById('timeFilter').addEventListener('change', loadBookings);
@@ -83,6 +84,52 @@ async function loadBookings() {
     `).join('');
   } catch (err) {
     tbody.innerHTML = `<tr><td colspan="8"><div class="alert alert-danger">${err.message}</div></td></tr>`;
+  }
+}
+
+async function loadMembersDropdown() {
+  try {
+    const data = await api.get('/users?role=member');
+    const sel = document.getElementById('cbMember');
+    (data.users || []).forEach(u => {
+      sel.innerHTML += `<option value="${u.id}">${u.name} (${u.email})</option>`;
+    });
+  } catch (e) {}
+}
+
+async function loadSessionsDropdown() {
+  try {
+    const data = await api.get('/sessions?upcoming=true');
+    const sel = document.getElementById('cbSession');
+    (data.sessions || []).forEach(s => {
+      sel.innerHTML += `<option value="${s.id}">${s.name} — ${s.date} ${s.time}</option>`;
+    });
+  } catch (e) {}
+}
+
+function openCreateModal() {
+  document.getElementById('cbMember').value = '';
+  document.getElementById('cbSession').value = '';
+  document.getElementById('createBookingModal').classList.add('active');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+async function saveBooking() {
+  const user_id = document.getElementById('cbMember').value;
+  const session_id = document.getElementById('cbSession').value;
+  if (!user_id || !session_id) { showToast('Select a member and a session.', 'error'); return; }
+
+  try {
+    await api.post('/bookings/admin-create', { user_id: parseInt(user_id), session_id: parseInt(session_id) });
+    showToast('Booking created!', 'success');
+    closeModal('createBookingModal');
+    loadBookings();
+    loadStats();
+  } catch (err) {
+    showToast(err.message, 'error');
   }
 }
 

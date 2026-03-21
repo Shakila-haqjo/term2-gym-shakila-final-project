@@ -10,57 +10,59 @@
 
     <% if (error) { %>
       <div class="alert alert-danger" style="margin-bottom: 20px;">
-        <i class="fas fa-exclamation-circle"></i> <%= error %>
+        <i class="fas fa-exclamation-circle"></i>
+        <%= error %>
       </div>
-    <% } %>
+      <% } %>
 
-    <form id="registerForm">
-      <div class="form-group">
-        <label class="form-label" for="name">Full Name</label>
-        <input type="text" id="name" name="name" placeholder="John Doe"
-          class="form-control" required autocomplete="name" />
-      </div>
+        <form id="registerForm">
+          <div class="form-group">
+            <label class="form-label" for="name">Full Name</label>
+            <input type="text" id="name" name="name" placeholder="John Doe" class="form-control" required
+              autocomplete="name" />
+          </div>
 
-      <div class="form-group">
-        <label class="form-label" for="email">Email Address</label>
-        <input type="email" id="email" name="email" placeholder="you@example.com"
-          class="form-control" required autocomplete="email" />
-      </div>
+          <div class="form-group">
+            <label class="form-label" for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" class="form-control" required
+              autocomplete="email" />
+          </div>
 
-      <div class="form-group">
-        <label class="form-label" for="password">Password</label>
-        <input type="password" id="password" name="password" placeholder="••••••••"
-          class="form-control" required minlength="6" autocomplete="new-password" />
-        <small style="color: var(--text-secondary); font-size: 0.8rem;">Minimum 6 characters</small>
-      </div>
+          <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="••••••••" class="form-control" required
+              minlength="6" autocomplete="new-password" />
+            <small style="color: var(--text-secondary); font-size: 0.8rem;">Minimum 6 characters</small>
+          </div>
 
-      <div class="form-group">
-        <label class="form-label" for="phone">Phone <span style="color: var(--text-secondary); font-weight: 400;">(optional)</span></label>
-        <input type="tel" id="phone" name="phone" placeholder="555-0100"
-          class="form-control" autocomplete="tel" />
-      </div>
+          <div class="form-group">
+            <label class="form-label" for="phone">Phone <span
+                style="color: var(--text-secondary); font-weight: 400;">(optional)</span></label>
+            <input type="tel" id="phone" name="phone" placeholder="555-0100" class="form-control" autocomplete="tel" />
+          </div>
 
-      <div class="form-group">
-        <label class="form-label" for="role">Account Type</label>
-        <select id="role" name="role" class="form-control">
-          <option value="member">Member</option>
-          <option value="trainer">Trainer</option>
-        </select>
-      </div>
+          <div class="form-group">
+            <label class="form-label" for="role">Account Type</label>
+            <select id="role" name="role" class="form-control">
+              <option value="member">Member</option>
+              <option value="trainer">Trainer</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
 
-      <div id="registerError" class="alert alert-danger" style="display:none; margin-bottom: 16px;">
-        <i class="fas fa-exclamation-circle"></i> <span id="registerErrorMsg"></span>
-      </div>
+          <div id="registerError" class="alert alert-danger" style="display:none; margin-bottom: 16px;">
+            <i class="fas fa-exclamation-circle"></i> <span id="registerErrorMsg"></span>
+          </div>
 
-      <button type="submit" class="btn btn-primary" style="width:100%; margin-top: 8px;" id="registerBtn">
-        <i class="fas fa-user-plus"></i> Create Account
-      </button>
-    </form>
+          <button type="submit" class="btn btn-primary" style="width:100%; margin-top: 8px;" id="registerBtn">
+            <i class="fas fa-user-plus"></i> Create Account
+          </button>
+        </form>
 
-    <p style="text-align:center; margin-top: 20px; color: var(--text-secondary); font-size: 0.875rem;">
-      Already have an account?
-      <a href="/login" style="color: var(--accent-gold); font-weight: 600; text-decoration: none;">Sign in</a>
-    </p>
+        <p style="text-align:center; margin-top: 20px; color: var(--text-secondary); font-size: 0.875rem;">
+          Already have an account?
+          <a href="/login" style="color: var(--accent-gold); font-weight: 600; text-decoration: none;">Sign in</a>
+        </p>
   </div>
 </div>
 
@@ -99,8 +101,11 @@
         return;
       }
 
+      saveAuth(data.token, data.user);
       const userRole = data.user?.role;
-      if (userRole === 'trainer') {
+      if (userRole === 'admin') {
+        window.location.href = '/admin/dashboard';
+      } else if (userRole === 'trainer') {
         window.location.href = '/trainer/dashboard';
       } else {
         window.location.href = '/member/dashboard';
