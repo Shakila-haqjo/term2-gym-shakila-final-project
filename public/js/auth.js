@@ -10,14 +10,14 @@ function requireAuth(role) {
   const user = getUser();
   const token = getToken();
   if (!user || !token) {
-    window.location.href = '/login.html';
+    window.location.href = '/login';
     return null;
   }
   if (role && user.role !== role) {
     // Redirect to appropriate dashboard
-    if (user.role === 'admin') window.location.href = '/admin/dashboard.html';
-    else if (user.role === 'trainer') window.location.href = '/trainer/dashboard.html';
-    else window.location.href = '/member/dashboard.html';
+    if (user.role === 'admin') window.location.href = '/admin/dashboard';
+    else if (user.role === 'trainer') window.location.href = '/trainer/dashboard';
+    else window.location.href = '/member/dashboard';
     return null;
   }
   return user;
@@ -27,7 +27,7 @@ function requireAnyAuth() {
   const user = getUser();
   const token = getToken();
   if (!user || !token) {
-    window.location.href = '/login.html';
+    window.location.href = '/login';
     return null;
   }
   return user;
@@ -35,7 +35,7 @@ function requireAnyAuth() {
 
 function logout() {
   localStorage.clear();
-  window.location.href = '/login.html';
+  window.location.href = '/login';
 }
 
 function saveAuth(token, user) {
@@ -44,9 +44,9 @@ function saveAuth(token, user) {
 }
 
 function getDashboardUrl(role) {
-  if (role === 'admin') return '/admin/dashboard.html';
-  if (role === 'trainer') return '/trainer/dashboard.html';
-  return '/member/dashboard.html';
+  if (role === 'admin') return '/admin/dashboard';
+  if (role === 'trainer') return '/trainer/dashboard';
+  return '/member/dashboard';
 }
 
 // Redirect logged-in users away from auth pages

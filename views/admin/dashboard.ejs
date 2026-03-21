@@ -1,0 +1,45 @@
+<!-- Stats -->
+<div class="stats-grid" id="statsGrid">
+  <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-users"></i></div><div class="stat-info"><div class="stat-value" id="statUsers">-</div><div class="stat-label">Total Users</div></div></div>
+  <div class="stat-card"><div class="stat-icon gold"><i class="fas fa-calendar-alt"></i></div><div class="stat-info"><div class="stat-value" id="statSessions">-</div><div class="stat-label">Total Sessions</div></div></div>
+  <div class="stat-card"><div class="stat-icon green"><i class="fas fa-ticket-alt"></i></div><div class="stat-info"><div class="stat-value" id="statBookings">-</div><div class="stat-label">Total Bookings</div></div></div>
+  <div class="stat-card"><div class="stat-icon purple"><i class="fas fa-blog"></i></div><div class="stat-info"><div class="stat-value" id="statBlogs">-</div><div class="stat-label">Blog Posts</div></div></div>
+</div>
+
+<!-- Secondary Stats -->
+<div class="stats-grid" style="margin-bottom:24px;">
+  <div class="stat-card"><div class="stat-icon green"><i class="fas fa-user-check"></i></div><div class="stat-info"><div class="stat-value" id="statMembers">-</div><div class="stat-label">Members</div></div></div>
+  <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-user-tie"></i></div><div class="stat-info"><div class="stat-value" id="statTrainers">-</div><div class="stat-label">Trainers</div></div></div>
+  <div class="stat-card"><div class="stat-icon gold"><i class="fas fa-check-circle"></i></div><div class="stat-info"><div class="stat-value" id="statConfirmed">-</div><div class="stat-label">Confirmed Bookings</div></div></div>
+  <div class="stat-card"><div class="stat-icon red"><i class="fas fa-times-circle"></i></div><div class="stat-info"><div class="stat-value" id="statCancelled">-</div><div class="stat-label">Cancelled</div></div></div>
+</div>
+
+<!-- Bookings Chart -->
+<div class="card" style="margin-bottom:20px;">
+  <div class="card-header">
+    <span class="card-title"><i class="fas fa-chart-bar" style="color:var(--accent-gold)"></i> Bookings (Last 7 Days)</span>
+  </div>
+  <div class="card-body">
+    <canvas id="bookingsChart" height="120"></canvas>
+  </div>
+</div>
+
+<!-- Recent Bookings -->
+<div class="card">
+  <div class="card-header">
+    <span class="card-title"><i class="fas fa-history" style="color:var(--accent-gold)"></i> Recent Bookings</span>
+    <a href="/admin/bookings" class="btn btn-sm btn-secondary">View All</a>
+  </div>
+  <div class="card-body" style="padding:0;">
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr><th>Member</th><th>Session</th><th>Date</th><th>Status</th><th>Booked</th></tr>
+        </thead>
+        <tbody id="recentBookings">
+          <tr><td colspan="5"><div class="loading-spinner"><div class="spinner"></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

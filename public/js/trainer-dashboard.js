@@ -34,7 +34,7 @@ async function loadUpcomingSessions() {
     const sessions = (data.sessions || []).slice(0, 5);
 
     if (sessions.length === 0) {
-      container.innerHTML = `<div class="empty-state"><i class="fas fa-calendar-times"></i><p>No upcoming sessions.<br><a href="/trainer/create-session.html" style="color:var(--accent-gold)">Create one</a></p></div>`;
+      container.innerHTML = `<div class="empty-state"><i class="fas fa-calendar-times"></i><p>No upcoming sessions.<br><a href="/trainer/create-session" style="color:var(--accent-gold)">Create one</a></p></div>`;
       return;
     }
 
@@ -49,7 +49,7 @@ async function loadUpcomingSessions() {
             ${formatDate(s.date)} at ${formatTime(s.time)} &bull; ${s.booked_count}/${s.max_participants} booked
           </div>
         </div>
-        <a href="/trainer/session-bookings.html?id=${s.id}" class="btn btn-sm btn-secondary"><i class="fas fa-users"></i></a>
+        <a href="/trainer/session-bookings?id=${s.id}" class="btn btn-sm btn-secondary"><i class="fas fa-users"></i></a>
       </div>
     `).join('');
   } catch (err) {

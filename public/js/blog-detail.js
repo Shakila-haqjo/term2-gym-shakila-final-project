@@ -58,7 +58,7 @@ async function loadBlog(id) {
           ${blog.content || '<p style="color:var(--text-secondary);">No content available.</p>'}
         </div>
         <div style="margin-top:32px; padding-top:24px; border-top:1px solid var(--border-color); display:flex; gap:12px;">
-          <a href="/blog.html" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+          <a href="/blog" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Blog</a>
         </div>
       </article>
     `;

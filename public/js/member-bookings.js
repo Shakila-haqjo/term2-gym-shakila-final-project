@@ -27,7 +27,7 @@ async function loadBookings() {
     const bookings = data.bookings || [];
 
     if (bookings.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="fas fa-ticket-alt"></i><p>No bookings found.<br><a href="/member/sessions.html" style="color:var(--accent-gold);">Browse sessions</a></p></div></td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="fas fa-ticket-alt"></i><p>No bookings found.<br><a href="/member/sessions" style="color:var(--accent-gold);">Browse sessions</a></p></div></td></tr>`;
       return;
     }
 

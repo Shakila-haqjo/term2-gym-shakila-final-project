@@ -10,7 +10,7 @@ async function apiFetch(endpoint, options = {}) {
 
     if (res.status === 401 && !endpoint.includes('/auth/login') && !endpoint.includes('/auth/register')) {
       localStorage.clear();
-      window.location.href = '/login.html';
+      window.location.href = '/login';
       return;
     }
 

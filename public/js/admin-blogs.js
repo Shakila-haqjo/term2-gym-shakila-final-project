@@ -42,7 +42,7 @@ async function loadBlogs() {
         <td style="font-size:0.82rem;color:var(--text-secondary);">${formatDate(b.created_at)}</td>
         <td>
           <div style="display:flex;gap:6px;">
-            <a href="/blog-detail.html?id=${b.id}" class="btn btn-sm btn-info" target="_blank" title="View"><i class="fas fa-eye"></i></a>
+            <a href="/blog-detail?id=${b.id}" class="btn btn-sm btn-info" target="_blank" title="View"><i class="fas fa-eye"></i></a>
             <button class="btn btn-sm btn-danger" onclick="deleteBlog(${b.id})" title="Delete"><i class="fas fa-trash"></i></button>
           </div>
         </td>

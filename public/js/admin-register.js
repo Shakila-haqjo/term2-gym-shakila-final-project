@@ -41,7 +41,7 @@ document.getElementById('adminRegisterForm').addEventListener('submit', async (e
     alertBox.innerHTML = `<div class="alert alert-success"><i class="fas fa-check-circle"></i> Admin account created! Redirecting to dashboard...</div>`;
 
     setTimeout(() => {
-      window.location.href = '/admin/dashboard.html';
+      window.location.href = '/admin/dashboard';
     }, 1000);
   } catch (err) {
     alertBox.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> ${err.message}</div>`;

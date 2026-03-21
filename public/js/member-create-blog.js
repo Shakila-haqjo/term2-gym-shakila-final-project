@@ -28,7 +28,7 @@ async function submitBlog(statusOverride) {
     alertBox.innerHTML = `<div class="alert alert-success">
       <i class="fas fa-check-circle"></i>
       Blog post ${status === 'published' ? 'published' : 'saved as draft'} successfully!
-      <a href="/blog-detail.html?id=${data.blog.id}" style="color:var(--accent-gold);text-decoration:none;"> View post</a>
+      <a href="/blog-detail?id=${data.blog.id}" style="color:var(--accent-gold);text-decoration:none;"> View post</a>
     </div>`;
 
     // Clear form

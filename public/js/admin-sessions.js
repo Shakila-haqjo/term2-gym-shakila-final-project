@@ -103,7 +103,6 @@ async function loadSessions() {
 }
 
 function clearModalForm() {
-  document.getElementById('sName').value = '';
   document.getElementById('sActivity').value = '';
   document.getElementById('sLocation').value = '';
   document.getElementById('sTrainer').value = '';
@@ -129,7 +128,6 @@ async function openEditModal(id) {
     const data = await api.get(`/sessions/${id}`);
     const s = data.session;
     document.getElementById('sessionModalTitle').textContent = 'Edit Session';
-    document.getElementById('sName').value = s.name;
     document.getElementById('sActivity').value = s.activity_id || '';
     document.getElementById('sLocation').value = s.location_id || '';
     document.getElementById('sTrainer').value = s.trainer_id || '';
@@ -151,12 +149,13 @@ function closeModal(id) {
 
 async function saveSession() {
   const editId = document.getElementById('editSessionId').value;
-  const name = document.getElementById('sName').value.trim();
+  const actSelect = document.getElementById('sActivity');
+  const name = actSelect.options[actSelect.selectedIndex]?.text || 'Session';
   const date = document.getElementById('sDate').value;
   const time = document.getElementById('sTime').value;
 
-  if (!name || !date || !time) {
-    showToast('Name, date, and time are required.', 'error');
+  if (!date || !time) {
+    showToast('Date and time are required.', 'error');
     return;
   }
 

@@ -1,0 +1,54 @@
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-body" style="padding:12px 20px;display:flex;justify-content:flex-end;">
+    <button class="btn btn-primary btn-sm" onclick="openCreateModal()"><i class="fas fa-plus"></i> Add Activity</button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body" style="padding:0;">
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Activity Name</th><th>Description</th><th>Status</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="activitiesTable">
+          <tr><td colspan="5"><div class="loading-spinner"><div class="spinner"></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="activityModal">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <span class="modal-title" id="actModalTitle">Add Activity</span>
+      <button class="modal-close" onclick="closeModal('activityModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Activity Name *</label>
+        <input type="text" id="actName" class="form-control" placeholder="e.g., Yoga, CrossFit...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea id="actDescription" class="form-control" placeholder="Brief description..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select id="actStatus" class="form-control">
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+      <input type="hidden" id="editActId">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('activityModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveActivity()"><i class="fas fa-save"></i> Save</button>
+    </div>
+  </div>
+</div>

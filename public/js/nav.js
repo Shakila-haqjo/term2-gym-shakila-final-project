@@ -4,31 +4,38 @@
  */
 
 function renderNav(activePage) {
+  // If sidebar already rendered server-side by EJS layout, just wire up hamburger
+  if (document.getElementById('sidebar')) {
+    const hamburger = document.getElementById('hamburgerBtn');
+    if (hamburger) hamburger.addEventListener('click', toggleSidebar);
+    return;
+  }
+
   const user = getUser();
   if (!user) return;
 
   const memberLinks = [
-    { href: '/member/dashboard.html', icon: 'fa-tachometer-alt', label: 'Dashboard', key: 'dashboard' },
-    { href: '/member/sessions.html',  icon: 'fa-calendar-alt',   label: 'Timetable',  key: 'sessions' },
-    { href: '/blog.html',             icon: 'fa-newspaper',      label: 'Blog',        key: 'blog' },
-    { href: '/member/bookings.html',  icon: 'fa-ticket-alt',     label: 'My Booking',  key: 'bookings' },
+    { href: '/member/dashboard', icon: 'fa-tachometer-alt', label: 'Dashboard', key: 'dashboard' },
+    { href: '/member/sessions',  icon: 'fa-calendar-alt',   label: 'Timetable',  key: 'sessions' },
+    { href: '/blog',             icon: 'fa-newspaper',      label: 'Blog',        key: 'blog' },
+    { href: '/member/bookings',  icon: 'fa-ticket-alt',     label: 'My Bookings', key: 'bookings' },
   ];
 
   const trainerLinks = [
-    { href: '/trainer/dashboard.html',       icon: 'fa-tachometer-alt', label: 'Dashboard',       key: 'dashboard' },
-    { href: '/timetable.html',               icon: 'fa-calendar-alt',   label: 'Timetable',        key: 'timetable' },
-    { href: '/trainer/blog.html',            icon: 'fa-newspaper',      label: 'Blog',             key: 'blog' },
-    { href: '/trainer/sessions.html',        icon: 'fa-dumbbell',       label: 'Manage Sessions',  key: 'sessions' },
+    { href: '/trainer/dashboard',       icon: 'fa-tachometer-alt', label: 'Dashboard',       key: 'dashboard' },
+    { href: '/timetable',               icon: 'fa-calendar-alt',   label: 'Timetable',        key: 'timetable' },
+    { href: '/trainer/blog',            icon: 'fa-newspaper',      label: 'Blog',             key: 'blog' },
+    { href: '/trainer/sessions',        icon: 'fa-dumbbell',       label: 'Manage Sessions',  key: 'sessions' },
   ];
 
   const adminLinks = [
-    { href: '/admin/dashboard.html',   icon: 'fa-tachometer-alt',  label: 'Dashboard',     key: 'dashboard' },
-    { href: '/admin/sessions.html',    icon: 'fa-calendar-alt',    label: 'Sessions',       key: 'sessions' },
-    { href: '/admin/users.html',       icon: 'fa-users',           label: 'Users',          key: 'users' },
-    { href: '/admin/activities.html',  icon: 'fa-running',         label: 'Activities',     key: 'activities' },
-    { href: '/admin/locations.html',   icon: 'fa-map-marker-alt',  label: 'Locations',      key: 'locations' },
-    { href: '/admin/bookings.html',    icon: 'fa-ticket-alt',      label: 'Bookings',       key: 'bookings' },
-    { href: '/admin/blogs.html',       icon: 'fa-blog',            label: 'Blog Posts',     key: 'blogs' },
+    { href: '/admin/dashboard',   icon: 'fa-tachometer-alt',  label: 'Dashboard',   key: 'dashboard'  },
+    { href: '/admin/sessions',    icon: 'fa-calendar-alt',    label: 'Sessions',     key: 'sessions'   },
+    { href: '/admin/users',       icon: 'fa-users',           label: 'Users',        key: 'users'      },
+    { href: '/admin/activities',  icon: 'fa-running',         label: 'Activities',   key: 'activities' },
+    { href: '/admin/locations',   icon: 'fa-map-marker-alt',  label: 'Locations',    key: 'locations'  },
+    { href: '/admin/bookings',    icon: 'fa-ticket-alt',      label: 'Bookings',     key: 'bookings'   },
+    { href: '/admin/blogs',       icon: 'fa-blog',            label: 'Blog Posts',   key: 'blogs'      },
   ];
 
   let links;
@@ -56,7 +63,7 @@ function renderNav(activePage) {
           </a>
         `).join('')}
         <div class="nav-section-title" style="margin-top:8px;">Public</div>
-        <a href="/blog.html" class="${activePage === 'public-blog' ? 'active' : ''}">
+        <a href="/blog" class="${activePage === 'public-blog' ? 'active' : ''}">
           <i class="fas fa-newspaper"></i> Blog
         </a>
         <a href="/" class="">

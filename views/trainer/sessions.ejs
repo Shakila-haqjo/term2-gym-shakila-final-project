@@ -1,0 +1,48 @@
+<div class="card" style="margin-bottom:20px;">
+  <div class="card-body" style="padding:16px 20px;">
+    <div class="search-bar" style="margin-bottom:0;">
+      <div class="search-input-wrap">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" class="form-control" placeholder="Search sessions...">
+      </div>
+      <select id="upcomingFilter" class="form-control" style="max-width:180px;">
+        <option value="">All Sessions</option>
+        <option value="true">Upcoming Only</option>
+      </select>
+      <button class="btn btn-primary btn-sm" onclick="loadSessions()"><i class="fas fa-filter"></i> Filter</button>
+      <a href="/trainer/create-session" class="btn btn-sm btn-primary" style="margin-left:auto;"><i class="fas fa-plus"></i> Create Session</a>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body" style="padding:0;">
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Session</th><th>Activity</th><th>Date & Time</th><th>Location</th><th>Bookings</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="sessionsTable">
+          <tr><td colspan="6"><div class="loading-spinner"><div class="spinner"></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Edit Session</span>
+      <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
+    </div>
+    <div class="modal-body" id="editModalBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('editModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSession()"><i class="fas fa-save"></i> Save</button>
+    </div>
+  </div>
+</div>

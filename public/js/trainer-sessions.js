@@ -47,7 +47,7 @@ async function loadSessions() {
     const sessions = data.sessions || [];
 
     if (sessions.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-calendar-times"></i><p>No sessions found. <a href="/trainer/create-session.html" style="color:var(--accent-gold)">Create one</a></p></div></td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-calendar-times"></i><p>No sessions found. <a href="/trainer/create-session" style="color:var(--accent-gold)">Create one</a></p></div></td></tr>`;
       return;
     }
 
@@ -71,7 +71,7 @@ async function loadSessions() {
         </td>
         <td>
           <div style="display:flex;gap:6px;flex-wrap:wrap;">
-            <a href="/trainer/session-bookings.html?id=${s.id}" class="btn btn-sm btn-info"><i class="fas fa-users"></i></a>
+            <a href="/trainer/session-bookings?id=${s.id}" class="btn btn-sm btn-info"><i class="fas fa-users"></i></a>
             <button class="btn btn-sm btn-secondary" onclick="openEditModal(${s.id})"><i class="fas fa-edit"></i></button>
             <button class="btn btn-sm btn-danger" onclick="deleteSession(${s.id})"><i class="fas fa-trash"></i></button>
           </div>

@@ -39,12 +39,13 @@ document.getElementById('createSessionForm').addEventListener('submit', async (e
   const alertBox = document.getElementById('alertBox');
   alertBox.innerHTML = '';
 
-  const name = document.getElementById('name').value.trim();
+  const actSelect = document.getElementById('activity_id');
+  const name = actSelect.options[actSelect.selectedIndex]?.text || 'Session';
   const date = document.getElementById('date').value;
   const time = document.getElementById('time').value;
 
-  if (!name || !date || !time) {
-    alertBox.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Name, date, and time are required.</div>`;
+  if (!date || !time) {
+    alertBox.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Date and time are required.</div>`;
     return;
   }
 
@@ -73,7 +74,7 @@ document.getElementById('createSessionForm').addEventListener('submit', async (e
     const data = await api.post('/sessions', body);
     alertBox.innerHTML = `<div class="alert alert-success">
       <i class="fas fa-check-circle"></i> Session "${data.session.name}" created!
-      <a href="/trainer/sessions.html" style="color:var(--accent-gold);text-decoration:none;"> View sessions</a>
+      <a href="/trainer/sessions" style="color:var(--accent-gold);text-decoration:none;"> View sessions</a>
     </div>`;
     document.getElementById('createSessionForm').reset();
     const tomorrow = new Date();

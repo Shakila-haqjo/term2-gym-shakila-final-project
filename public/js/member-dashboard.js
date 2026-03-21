@@ -38,7 +38,7 @@ async function loadUpcomingBookings() {
       container.innerHTML = `
         <div class="empty-state">
           <i class="fas fa-calendar-times"></i>
-          <p>No upcoming sessions.<br><a href="/member/sessions.html" style="color:var(--accent-gold)">Book one now!</a></p>
+          <p>No upcoming sessions.<br><a href="/member/sessions" style="color:var(--accent-gold)">Book one now!</a></p>
         </div>`;
       return;
     }
@@ -76,7 +76,7 @@ async function loadLatestBlogs() {
 
     container.innerHTML = blogs.map(b => `
       <div style="padding:10px 20px; border-bottom:1px solid var(--border-color);">
-        <a href="/blog-detail.html?id=${b.id}" style="text-decoration:none;">
+        <a href="/blog-detail?id=${b.id}" style="text-decoration:none;">
           <div style="font-size:0.875rem; font-weight:500; color:var(--text-primary); margin-bottom:2px;">${b.title}</div>
           <div style="font-size:0.75rem; color:var(--text-secondary);">
             ${b.author_name} &bull; ${formatDate(b.created_at)}

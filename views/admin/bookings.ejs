@@ -1,0 +1,44 @@
+<!-- Stats -->
+<div class="stats-grid" style="margin-bottom:20px;">
+  <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-ticket-alt"></i></div><div class="stat-info"><div class="stat-value" id="statTotal">-</div><div class="stat-label">Total</div></div></div>
+  <div class="stat-card"><div class="stat-icon green"><i class="fas fa-check-circle"></i></div><div class="stat-info"><div class="stat-value" id="statConfirmed">-</div><div class="stat-label">Confirmed</div></div></div>
+  <div class="stat-card"><div class="stat-icon red"><i class="fas fa-times-circle"></i></div><div class="stat-info"><div class="stat-value" id="statCancelled">-</div><div class="stat-label">Cancelled</div></div></div>
+  <div class="stat-card"><div class="stat-icon gold"><i class="fas fa-trophy"></i></div><div class="stat-info"><div class="stat-value" id="statCompleted">-</div><div class="stat-label">Completed</div></div></div>
+</div>
+
+<div class="card" style="margin-bottom:20px;">
+  <div class="card-body" style="padding:16px 20px;">
+    <div class="search-bar" style="margin-bottom:0;">
+      <select id="statusFilter" class="form-control" style="max-width:180px;">
+        <option value="">All Status</option>
+        <option value="confirmed">Confirmed</option>
+        <option value="cancelled">Cancelled</option>
+        <option value="completed">Completed</option>
+      </select>
+      <select id="timeFilter" class="form-control" style="max-width:180px;">
+        <option value="">All Time</option>
+        <option value="upcoming">Upcoming</option>
+        <option value="past">Past</option>
+      </select>
+      <button class="btn btn-primary btn-sm" onclick="loadBookings()"><i class="fas fa-filter"></i> Filter</button>
+      <button class="btn btn-secondary btn-sm" onclick="clearFilters()"><i class="fas fa-times"></i> Clear</button>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body" style="padding:0;">
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Member</th><th>Session</th><th>Activity</th><th>Date & Time</th><th>Trainer</th><th>Status</th><th>Booked On</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="bookingsTable">
+          <tr><td colspan="8"><div class="loading-spinner"><div class="spinner"></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

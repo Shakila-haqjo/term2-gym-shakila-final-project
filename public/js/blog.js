@@ -51,7 +51,7 @@ async function loadBlogs() {
           <div class="blog-card-body">
             <div class="blog-category">${blog.category || 'General'}</div>
             <h3 class="blog-card-title">
-              <a href="/blog-detail.html?id=${blog.id}">${blog.title}</a>
+              <a href="/blog-detail?id=${blog.id}">${blog.title}</a>
             </h3>
             <div class="blog-card-meta">
               <span><i class="fas fa-user"></i> ${blog.author_name}</span>

@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const id = params.get('id');
   if (!id) {
     showToast('No session ID specified.', 'error');
-    setTimeout(() => window.location.href = '/trainer/sessions.html', 1500);
+    setTimeout(() => window.location.href = '/trainer/sessions', 1500);
     return;
   }
 
@@ -36,7 +36,7 @@ async function loadSessionBookings(id) {
             <div class="session-meta-item"><i class="fas fa-map-marker-alt"></i> ${session.location_name || 'TBD'}</div>
             <div class="session-meta-item"><i class="fas fa-users"></i> ${session.booked_count}/${session.max_participants} spots</div>
           </div>
-          <a href="/trainer/sessions.html" class="btn btn-sm btn-secondary" style="margin-left:auto;"><i class="fas fa-arrow-left"></i> Back</a>
+          <a href="/trainer/sessions" class="btn btn-sm btn-secondary" style="margin-left:auto;"><i class="fas fa-arrow-left"></i> Back</a>
         </div>
       </div>
     `;

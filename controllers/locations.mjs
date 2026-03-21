@@ -1,14 +1,13 @@
 import express from 'express';
-import db from '../database.mjs';
 import { authenticate, requireRole } from '../middleware/auth.mjs';
-import { LOCATIONS } from '../queries.mjs';
+import * as Location from '../models/LocationModel.mjs';
 
 const router = express.Router();
 
 // GET /api/locations
 router.get('/', authenticate, async (req, res) => {
-  const sql = req.user.role === 'member' ? LOCATIONS.LIST_ACTIVE : LOCATIONS.LIST_ALL;
-  const [locations] = await db.execute(sql);
+  const activeOnly = req.user.role === 'member';
+  const locations = await Location.listLocations(activeOnly);
   res.json({ locations });
 });
 
@@ -19,8 +18,8 @@ router.post('/', requireRole('admin'), async (req, res) => {
 
   const locStatus = ['active','inactive'].includes(status) ? status : 'active';
   try {
-    const [result] = await db.execute(LOCATIONS.INSERT, [name.trim(), address || null, capacity || 20, locStatus]);
-    const [[location]] = await db.execute(LOCATIONS.GET_BY_ID, [result.insertId]);
+    const insertId = await Location.createLocation(name.trim(), address || null, capacity || 20, locStatus);
+    const location = await Location.findById(insertId);
     res.status(201).json({ location });
   } catch (err) {
     res.status(500).json({ error: 'Failed to create location' });
@@ -29,39 +28,35 @@ router.post('/', requireRole('admin'), async (req, res) => {
 
 // PUT /api/locations/:id - admin only
 router.put('/:id', requireRole('admin'), async (req, res) => {
-  const [[location]] = await db.execute(LOCATIONS.GET_BY_ID, [req.params.id]);
+  const location = await Location.findById(req.params.id);
   if (!location) return res.status(404).json({ error: 'Location not found' });
 
   const { name, address, capacity, status } = req.body;
-  const updates = [];
-  const params = [];
+  const fields = {};
+  if (name)                  fields.name     = name.trim();
+  if (address !== undefined) fields.address  = address;
+  if (capacity !== undefined) fields.capacity = capacity;
+  if (status && ['active','inactive'].includes(status)) fields.status = status;
 
-  if (name)                  { updates.push('name = ?');     params.push(name.trim()); }
-  if (address !== undefined) { updates.push('address = ?');  params.push(address); }
-  if (capacity !== undefined){ updates.push('capacity = ?'); params.push(capacity); }
-  if (status && ['active','inactive'].includes(status)) { updates.push('status = ?'); params.push(status); }
+  if (Object.keys(fields).length === 0) return res.status(400).json({ error: 'No fields to update' });
 
-  if (updates.length === 0) return res.status(400).json({ error: 'No fields to update' });
-
-  params.push(req.params.id);
-  await db.execute(`UPDATE locations SET ${updates.join(', ')} WHERE id = ?`, params);
-
-  const [[updated]] = await db.execute(LOCATIONS.GET_BY_ID, [req.params.id]);
+  await Location.updateLocation(req.params.id, fields);
+  const updated = await Location.findById(req.params.id);
   res.json({ location: updated });
 });
 
 // DELETE /api/locations/:id - admin only
 router.delete('/:id', requireRole('admin'), async (req, res) => {
-  const [[location]] = await db.execute(LOCATIONS.GET_BY_ID, [req.params.id]);
+  const location = await Location.findById(req.params.id);
   if (!location) return res.status(404).json({ error: 'Location not found' });
 
-  const [[{ used }]] = await db.execute(LOCATIONS.CHECK_IN_USE, [req.params.id]);
+  const used = await Location.countUsage(req.params.id);
   if (used > 0) {
-    await db.execute(LOCATIONS.DEACTIVATE, [req.params.id]);
+    await Location.deactivateLocation(req.params.id);
     return res.json({ message: 'Location deactivated (used in sessions)' });
   }
 
-  await db.execute(LOCATIONS.DELETE, [req.params.id]);
+  await Location.deleteLocation(req.params.id);
   res.json({ message: 'Location deleted' });
 });
 

@@ -1,0 +1,24 @@
+<div class="card" style="margin-bottom:20px;">
+  <div class="card-body" style="padding:16px 20px;">
+    <div class="search-bar" style="margin-bottom:0;">
+      <div class="search-input-wrap">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" class="form-control" placeholder="Search sessions...">
+      </div>
+      <select id="activityFilter" class="form-control" style="max-width:200px;">
+        <option value="">All Activities</option>
+      </select>
+      <select id="upcomingFilter" class="form-control" style="max-width:180px;">
+        <option value="">All Sessions</option>
+        <option value="true">Upcoming Only</option>
+      </select>
+      <button class="btn btn-primary btn-sm" onclick="loadSessions()"><i class="fas fa-filter"></i> Filter</button>
+      <button class="btn btn-secondary btn-sm" onclick="clearFilters()"><i class="fas fa-times"></i> Clear</button>
+      <a href="/member/bookings" class="btn btn-sm btn-secondary" style="margin-left:auto;"><i class="fas fa-ticket-alt"></i> My Bookings</a>
+    </div>
+  </div>
+</div>
+
+<div id="sessionGrid" class="session-grid">
+  <div class="loading-spinner" style="grid-column:1/-1;"><div class="spinner"></div></div>
+</div>

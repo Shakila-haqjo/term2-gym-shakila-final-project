@@ -1,71 +1,45 @@
-<%- include('partials/header', { title: 'Login - GymFit' }) %>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="logo-icon">
+        <i class="fas fa-dumbbell"></i>
+      </div>
+      <h1>Welcome Back</h1>
+      <p>Sign in to your FitGym account</p>
+    </div>
 
-<%- include('partials/navbar') %>
+    <% if (error) { %>
+      <div class="alert alert-danger" style="margin-bottom: 20px;">
+        <i class="fas fa-exclamation-circle"></i> <%= error %>
+      </div>
+    <% } %>
 
-<div class="flex items-center justify-center min-h-[calc(100vh-4rem)] py-12 px-4">
-  <div class="card w-full max-w-md bg-base-100 shadow-xl">
-    <div class="card-body">
-      <div class="text-center mb-6">
-        <h1 class="text-3xl font-bold text-primary">Welcome Back</h1>
-        <p class="text-base-content/60 mt-1">Sign in to your account</p>
+    <form id="loginForm">
+      <div class="form-group">
+        <label class="form-label" for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com"
+          class="form-control" required autocomplete="email" />
       </div>
 
-      <% if (error) { %>
-        <div class="alert alert-error mb-4">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-          </svg>
-          <span><%= error %></span>
-        </div>
-      <% } %>
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="••••••••"
+          class="form-control" required autocomplete="current-password" />
+      </div>
 
-      <form id="loginForm" class="space-y-4">
-        <div class="form-control">
-          <label class="label" for="email">
-            <span class="label-text font-medium">Email Address</span>
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="you@example.com"
-            class="input input-bordered w-full"
-            required
-            autocomplete="email"
-          />
-        </div>
+      <div id="loginError" class="alert alert-danger" style="display:none; margin-bottom: 16px;">
+        <i class="fas fa-exclamation-circle"></i> <span id="loginErrorMsg"></span>
+      </div>
 
-        <div class="form-control">
-          <label class="label" for="password">
-            <span class="label-text font-medium">Password</span>
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="••••••••"
-            class="input input-bordered w-full"
-            required
-            autocomplete="current-password"
-          />
-        </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; margin-top: 8px;" id="loginBtn">
+        <i class="fas fa-sign-in-alt"></i> Sign In
+      </button>
+    </form>
 
-        <div id="loginError" class="alert alert-error hidden">
-          <span id="loginErrorMsg"></span>
-        </div>
-
-        <button type="submit" class="btn btn-primary w-full mt-2" id="loginBtn">
-          Sign In
-        </button>
-      </form>
-
-      <div class="divider">OR</div>
-
-      <p class="text-center text-sm text-base-content/60">
-        Don't have an account?
-        <a href="/register" class="link link-primary font-medium">Create one</a>
-      </p>
-    </div>
+    <p style="text-align:center; margin-top: 20px; color: var(--text-secondary); font-size: 0.875rem;">
+      Don't have an account?
+      <a href="/register" style="color: var(--accent-gold); font-weight: 600; text-decoration: none;">Create one</a>
+    </p>
   </div>
 </div>
 
@@ -77,8 +51,8 @@
     const errorMsg = document.getElementById('loginErrorMsg');
 
     btn.disabled = true;
-    btn.innerHTML = '<span class="loading loading-spinner loading-sm"></span> Signing in...';
-    errorDiv.classList.add('hidden');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
+    errorDiv.style.display = 'none';
 
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -95,27 +69,25 @@
 
       if (!res.ok) {
         errorMsg.textContent = data.error || 'Login failed';
-        errorDiv.classList.remove('hidden');
+        errorDiv.style.display = 'block';
         btn.disabled = false;
-        btn.innerHTML = 'Sign In';
+        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
         return;
       }
 
-      // Redirect based on role
       const role = data.user?.role;
-      if (role === 'admin' || role === 'trainer') {
-        window.location.href = '/dashboard.html';
+      if (role === 'admin') {
+        window.location.href = '/admin/dashboard';
+      } else if (role === 'trainer') {
+        window.location.href = '/trainer/dashboard';
       } else {
-        window.location.href = '/index.html';
+        window.location.href = '/member/dashboard';
       }
     } catch (err) {
       errorMsg.textContent = 'Network error. Please try again.';
-      errorDiv.classList.remove('hidden');
+      errorDiv.style.display = 'block';
       btn.disabled = false;
-      btn.innerHTML = 'Sign In';
+      btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
     }
   });
 </script>
-
-</body>
-</html>

@@ -1,0 +1,32 @@
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-body" style="padding:12px 20px;display:flex;justify-content:flex-end;">
+    <a href="/trainer/sessions" class="btn btn-sm btn-secondary"><i class="fas fa-arrow-left"></i> Back to Sessions</a>
+  </div>
+</div>
+
+<!-- Session Info -->
+<div id="sessionInfo" class="card" style="margin-bottom:20px;">
+  <div class="loading-spinner"><div class="spinner"></div></div>
+</div>
+
+<!-- Bookings Table -->
+<div class="card">
+  <div class="card-header">
+    <span class="card-title"><i class="fas fa-users" style="color:var(--accent-gold)"></i> Enrolled Members</span>
+    <span id="bookingCount" class="badge badge-info">-</span>
+  </div>
+  <div class="card-body" style="padding:0;">
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Member</th><th>Email</th><th>Phone</th><th>Status</th><th>Booked On</th>
+          </tr>
+        </thead>
+        <tbody id="bookingsTable">
+          <tr><td colspan="6"><div class="loading-spinner"><div class="spinner"></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

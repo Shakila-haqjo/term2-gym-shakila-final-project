@@ -1,20 +1,10 @@
-import mysql from 'mysql2/promise';
 import bcrypt from 'bcryptjs';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import pool from './DatabaseModel.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'gym_fitness_db_shakila',
-  waitForConnections: true,
-  connectionLimit: 10,
-  multipleStatements: false,
-});
 
 // Read CREATE TABLE IF NOT EXISTS statements from database.sql
 // (the section between -- [SCHEMA:START] and -- [SCHEMA:END])

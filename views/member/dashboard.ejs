@@ -1,0 +1,35 @@
+<div id="welcomeBanner" style="background:linear-gradient(135deg,#1e2537,#2d3748);border-radius:12px;padding:24px 28px;color:white;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+  <div>
+    <h2 style="font-size:1.4rem;font-weight:700;margin-bottom:4px;">Welcome back, <span id="welcomeName" style="color:var(--accent-gold)"></span>!</h2>
+    <p style="color:#94a3b8;font-size:0.9rem;">Ready for your next workout? Check out available sessions below.</p>
+  </div>
+  <a href="/member/sessions" class="btn btn-primary"><i class="fas fa-search"></i> Browse Sessions</a>
+</div>
+
+<!-- Stats -->
+<div class="stats-grid" id="statsGrid">
+  <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-ticket-alt"></i></div><div class="stat-info"><div class="stat-value" id="statTotal">-</div><div class="stat-label">Total Bookings</div></div></div>
+  <div class="stat-card"><div class="stat-icon green"><i class="fas fa-calendar-check"></i></div><div class="stat-info"><div class="stat-value" id="statUpcoming">-</div><div class="stat-label">Upcoming Sessions</div></div></div>
+  <div class="stat-card"><div class="stat-icon gold"><i class="fas fa-check-circle"></i></div><div class="stat-info"><div class="stat-value" id="statConfirmed">-</div><div class="stat-label">Confirmed</div></div></div>
+  <div class="stat-card"><div class="stat-icon red"><i class="fas fa-times-circle"></i></div><div class="stat-info"><div class="stat-value" id="statCancelled">-</div><div class="stat-label">Cancelled</div></div></div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+  <!-- Quick Actions -->
+  <div class="card">
+    <div class="card-header"><span class="card-title"><i class="fas fa-bolt" style="color:var(--accent-gold)"></i> Quick Actions</span></div>
+    <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
+      <a href="/member/sessions" class="btn btn-primary"><i class="fas fa-search"></i> Find a Session</a>
+      <a href="/member/bookings" class="btn btn-secondary"><i class="fas fa-ticket-alt"></i> My Bookings</a>
+      <a href="/member/create-blog" class="btn btn-secondary"><i class="fas fa-pen"></i> Write Blog Post</a>
+    </div>
+  </div>
+
+  <!-- Latest Blog Posts -->
+  <div class="card">
+    <div class="card-header"><span class="card-title"><i class="fas fa-newspaper" style="color:var(--accent-gold)"></i> Latest Blog Posts</span></div>
+    <div id="latestBlogs" style="padding:8px 0;">
+      <div class="loading-spinner"><div class="spinner"></div></div>
+    </div>
+  </div>
+</div>
