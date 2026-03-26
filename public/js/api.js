@@ -2,7 +2,7 @@ const API_BASE = '/api';
 
 async function apiFetch(endpoint, options = {}) {
   const token = localStorage.getItem('token');
-  const headers = { 'Content-Type': 'application/json', ...options.headers };
+  const headers = { 'Content-Type': 'application/json', 'Accept': 'application/json', ...options.headers };
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
   try {

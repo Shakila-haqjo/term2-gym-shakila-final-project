@@ -70,7 +70,8 @@ async function loadBookings() {
         <td>${statusBadge(b.status)}</td>
         <td style="font-size:0.78rem;color:var(--text-secondary);">${formatDate(b.created_at)}</td>
         <td>
-          <div style="display:flex;gap:6px;">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button class="btn btn-sm btn-secondary" onclick="openEditBookingModal(${b.id})" title="Change session"><i class="fas fa-edit"></i></button>
             ${b.status === 'confirmed'
               ? `<button class="btn btn-sm btn-warning" onclick="cancelBooking(${b.id})" style="background:rgba(245,158,11,0.1);color:var(--warning);border:1px solid rgba(245,158,11,0.3);">
                   <i class="fas fa-ban"></i> Cancel
@@ -99,10 +100,12 @@ async function loadMembersDropdown() {
 
 async function loadSessionsDropdown() {
   try {
-    const data = await api.get('/sessions?upcoming=true');
+    const data = await api.get('/sessions');
     const sel = document.getElementById('cbSession');
     (data.sessions || []).forEach(s => {
-      sel.innerHTML += `<option value="${s.id}">${s.name} — ${s.date} ${s.time}</option>`;
+      const dateStr = s.date ? String(s.date).slice(0, 10) : '';
+      const timeStr = s.time ? String(s.time).slice(0, 5) : '';
+      sel.innerHTML += `<option value="${s.id}">${s.name} — ${formatDate(dateStr)} at ${formatTime(timeStr)}</option>`;
     });
   } catch (e) {}
 }
@@ -111,6 +114,35 @@ function openCreateModal() {
   document.getElementById('cbMember').value = '';
   document.getElementById('cbSession').value = '';
   document.getElementById('createBookingModal').classList.add('active');
+}
+
+async function openEditBookingModal(id) {
+  document.getElementById('editBookingId').value = id;
+  // Populate the session dropdown (reuse already-loaded sessions)
+  const sel = document.getElementById('ebSession');
+  sel.innerHTML = '<option value="">Select new session...</option>';
+  const data = await api.get('/sessions?upcoming=true');
+  (data.sessions || []).forEach(s => {
+    const dateStr = s.date ? String(s.date).slice(0, 10) : '';
+    const timeStr = s.time ? String(s.time).slice(0, 5) : '';
+    sel.innerHTML += `<option value="${s.id}">${s.name} — ${formatDate(dateStr)} at ${formatTime(timeStr)}</option>`;
+  });
+  document.getElementById('editBookingModal').classList.add('active');
+}
+
+async function updateBooking() {
+  const id = document.getElementById('editBookingId').value;
+  const session_id = document.getElementById('ebSession').value;
+  if (!session_id) { showToast('Please select a session.', 'error'); return; }
+  try {
+    await api.put(`/bookings/${id}`, { session_id: parseInt(session_id) });
+    showToast('Booking updated!', 'success');
+    closeModal('editBookingModal');
+    loadBookings();
+    loadStats();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
 }
 
 function closeModal(id) {

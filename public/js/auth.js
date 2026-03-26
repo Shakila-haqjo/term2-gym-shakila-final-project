@@ -33,7 +33,14 @@ function requireAnyAuth() {
   return user;
 }
 
-function logout() {
+async function logout() {
+  try {
+    await fetch('/api/auth/logout', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+    });
+  } catch (e) { /* ignore network errors */ }
   localStorage.clear();
   window.location.href = '/login';
 }

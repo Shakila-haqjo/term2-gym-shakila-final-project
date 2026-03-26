@@ -45,7 +45,6 @@ async function loadBlogs() {
         <td>
           <div style="display:flex;gap:6px;">
             <a href="/blog-detail?id=${b.id}" class="btn btn-sm btn-info" target="_blank" title="View"><i class="fas fa-eye"></i></a>
-            <button class="btn btn-sm btn-secondary" onclick="openEditModal(${b.id})" title="Edit"><i class="fas fa-edit"></i></button>
             <button class="btn btn-sm btn-danger" onclick="deleteBlog(${b.id})" title="Delete"><i class="fas fa-trash"></i></button>
           </div>
         </td>

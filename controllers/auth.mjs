@@ -35,13 +35,12 @@ router.post('/login', async (req, res) => {
 
 // POST /api/auth/register
 router.post('/register', async (req, res) => {
-  const { name, email, password, phone, address, role } = req.body;
+  const { name, email, password, phone, address } = req.body;
   if (!name || !email || !password) return res.status(400).json({ error: 'Name, email, and password are required' });
   if (!validator.isEmail(email)) return res.status(400).json({ error: 'Invalid email format' });
   if (password.length < 6) return res.status(400).json({ error: 'Password must be at least 6 characters' });
 
-  const allowedRoles = ['member', 'trainer', 'admin'];
-  const userRole = allowedRoles.includes(role) ? role : 'member';
+  const userRole = 'member'; // new registrations are always members
 
   try {
     const existing = await User.checkEmailExists(email.toLowerCase().trim());

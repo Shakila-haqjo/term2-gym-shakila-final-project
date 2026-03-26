@@ -1,6 +1,7 @@
 import express from 'express';
 import { authenticate, requireRole } from '../middleware/auth.mjs';
 import * as Session from '../models/SessionModel.mjs';
+import * as User from '../models/UserModel.mjs';
 
 const router = express.Router();
 
@@ -49,6 +50,12 @@ router.post('/', requireRole('trainer', 'admin'), async (req, res) => {
     : req.user.id;
 
   try {
+    // Ensure the assigned trainer is active
+    const trainer = await User.findById(trainer_id);
+    if (!trainer || trainer.status !== 'active') {
+      return res.status(400).json({ error: 'Cannot create a session with an inactive trainer. Please select an active trainer.' });
+    }
+
     const insertId = await Session.createSession(
       name.trim(), activity_id || null, location_id || null, trainer_id,
       date, time, duration_minutes || 60, max_participants || 20, description || null
@@ -73,7 +80,13 @@ router.put('/:id', authenticate, async (req, res) => {
   if (name)                      fields.name             = name.trim();
   if (activity_id !== undefined) fields.activity_id      = activity_id;
   if (location_id !== undefined) fields.location_id      = location_id;
-  if (req.user.role === 'admin' && trainer_id) fields.trainer_id = trainer_id;
+  if (req.user.role === 'admin' && trainer_id) {
+    const trainer = await User.findById(trainer_id);
+    if (!trainer || trainer.status !== 'active') {
+      return res.status(400).json({ error: 'Cannot assign an inactive trainer to a session.' });
+    }
+    fields.trainer_id = trainer_id;
+  }
   if (date)              fields.date             = date;
   if (time)              fields.time             = time;
   if (duration_minutes)  fields.duration_minutes = duration_minutes;

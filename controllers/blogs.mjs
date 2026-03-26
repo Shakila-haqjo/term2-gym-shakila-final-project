@@ -14,11 +14,16 @@ router.get('/', async (req, res) => {
   let statusFilter;
 
   if (!currentUser) {
+    // Unauthenticated: only published posts
     publishedOnly = true;
   } else if (currentUser.role === 'admin') {
+    // Admin: see all posts, optionally filtered by status
     statusFilter = status || undefined;
+  } else if (status === 'published') {
+    // Member/trainer viewing public blog: see ALL published posts (not just own)
+    statusFilter = 'published';
   } else {
-    // member/trainer: can see published + own drafts
+    // Member/trainer in their own management view: see only their own posts
     authorId = currentUser.id;
     statusFilter = status || undefined;
   }

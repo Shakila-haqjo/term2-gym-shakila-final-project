@@ -1,3 +1,12 @@
 Admin:   admin@gym.com / admin123
   Trainer: sarah@gym.com / trainer123
   Member:  alice@gym.com / member123
+
+
+1. When admin/trainer/member(can also create post) post a blog everyone should be able to see 
+2. Make sure Admin is created for the first time 
+3. Without Logout in the admin view the user should not come to Home page without logout, this is bug
+4. For the Admin there should be a delete button for the Admin 
+5. Check if Database.mjs or DatabaseModel.ms differences with sample project mean the strucutre or style----sample project is here /Users/TAYAB/Downloads/high_street_gym1
+
+6. Fix the Mobile View-----When someone is deleted 

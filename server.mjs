@@ -48,8 +48,16 @@ app.use('/api/activities', activitiesRouter);
 app.use('/api/locations',  locationsRouter);
 
 // ── Public page routes (no auth required) ────────────────────────────────────
-app.get('/', (req, res) =>
-  res.render('home', { layout: 'layouts/landing', title: 'FitGym - Premium Fitness Management' }));
+app.get('/', (req, res) => {
+  // Redirect logged-in users to their dashboard instead of showing the public landing page
+  const user = req.session.user;
+  if (user) {
+    if (user.role === 'admin')   return res.redirect('/admin/dashboard');
+    if (user.role === 'trainer') return res.redirect('/trainer/dashboard');
+    return res.redirect('/member/dashboard');
+  }
+  res.render('home', { layout: 'layouts/landing', title: 'FitGym - Premium Fitness Management' });
+});
 
 app.get('/login', (req, res) =>
   res.render('login', { layout: 'layouts/public', title: 'Login - FitGym', error: null }));
@@ -174,7 +182,7 @@ app.get('/member/create-blog', (req, res) => {
   if (!user || user.role !== 'member') return res.redirect('/login');
   res.render('member/create-blog', {
     layout: 'layouts/app', title: 'Write Blog Post - FitGym',
-    pageTitle: 'Write Blog Post', activePage: 'blog', user,
+    pageTitle: 'Write Blog Post', activePage: 'create-blog', user,
     pageScript: '/js/member-create-blog.js'
   });
 });

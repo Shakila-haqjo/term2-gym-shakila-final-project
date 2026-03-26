@@ -90,6 +90,31 @@ router.post('/admin-create', requireRole('admin'), async (req, res) => {
   }
 });
 
+// PUT /api/bookings/:id - admin updates the session on a booking
+router.put('/:id', requireRole('admin'), async (req, res) => {
+  const { session_id } = req.body;
+  if (!session_id) return res.status(400).json({ error: 'session_id is required' });
+
+  try {
+    const booking = await Booking.findRawById(req.params.id);
+    if (!booking) return res.status(404).json({ error: 'Booking not found' });
+
+    const session = await Session.findRawById(session_id);
+    if (!session) return res.status(404).json({ error: 'Session not found' });
+
+    // Check capacity on the new session (excluding this booking itself)
+    const booked = await Booking.countConfirmed(session_id);
+    if (booked >= session.max_participants)
+      return res.status(400).json({ error: 'The selected session is full' });
+
+    await Booking.updateBookingSession(req.params.id, session_id);
+    const updated = await Booking.findById(req.params.id);
+    res.json({ booking: updated });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update booking' });
+  }
+});
+
 // PUT /api/bookings/:id/cancel
 router.put('/:id/cancel', authenticate, async (req, res) => {
   const booking = await Booking.findRawById(req.params.id);

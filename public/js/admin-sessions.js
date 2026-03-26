@@ -22,7 +22,7 @@ async function loadFormData() {
     const [actData, locData, userdata] = await Promise.all([
       api.get('/activities'),
       api.get('/locations'),
-      api.get('/users?role=trainer')
+      api.get('/users?role=trainer&status=active')
     ]);
     activities = actData.activities || [];
     locations = locData.locations || [];
@@ -131,8 +131,8 @@ async function openEditModal(id) {
     document.getElementById('sActivity').value = s.activity_id || '';
     document.getElementById('sLocation').value = s.location_id || '';
     document.getElementById('sTrainer').value = s.trainer_id || '';
-    document.getElementById('sDate').value = s.date;
-    document.getElementById('sTime').value = s.time;
+    document.getElementById('sDate').value = s.date ? String(s.date).slice(0, 10) : '';
+    document.getElementById('sTime').value = s.time ? String(s.time).slice(0, 5) : '';
     document.getElementById('sDuration').value = s.duration_minutes;
     document.getElementById('sMaxP').value = s.max_participants;
     document.getElementById('sDescription').value = s.description || '';

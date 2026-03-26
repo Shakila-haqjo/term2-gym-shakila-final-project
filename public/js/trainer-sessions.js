@@ -105,11 +105,11 @@ function buildSessionForm(session) {
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">Date *</label>
-        <input type="date" id="eDate" class="form-control" value="${session ? session.date : ''}">
+        <input type="date" id="eDate" class="form-control" value="${session ? String(session.date).slice(0, 10) : ''}">
       </div>
       <div class="form-group">
         <label class="form-label">Time *</label>
-        <input type="time" id="eTime" class="form-control" value="${session ? session.time : ''}">
+        <input type="time" id="eTime" class="form-control" value="${session ? String(session.time).slice(0, 5) : ''}">
       </div>
     </div>
     <div class="form-row">

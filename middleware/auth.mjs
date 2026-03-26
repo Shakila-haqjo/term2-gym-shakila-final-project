@@ -3,8 +3,12 @@
 
 export function authenticate(req, res, next) {
   if (!req.session.user) {
-    // For API requests return 401, for page requests redirect to login
-    if (req.xhr || req.headers.accept?.includes('application/json')) {
+    // Detect API / JSON requests (XHR, fetch with Accept or Content-Type: application/json)
+    const isApiRequest = req.xhr
+      || req.headers.accept?.includes('application/json')
+      || req.headers['content-type']?.includes('application/json')
+      || req.path.startsWith('/api/');
+    if (isApiRequest) {
       return res.status(401).json({ error: 'Not authenticated' });
     }
     return res.redirect('/login');

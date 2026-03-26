@@ -28,21 +28,26 @@ router.post('/', requireRole('admin'), async (req, res) => {
 
 // PUT /api/locations/:id - admin only
 router.put('/:id', requireRole('admin'), async (req, res) => {
-  const location = await Location.findById(req.params.id);
-  if (!location) return res.status(404).json({ error: 'Location not found' });
+  try {
+    const location = await Location.findById(req.params.id);
+    if (!location) return res.status(404).json({ error: 'Location not found' });
 
-  const { name, address, capacity, status } = req.body;
-  const fields = {};
-  if (name)                  fields.name     = name.trim();
-  if (address !== undefined) fields.address  = address;
-  if (capacity !== undefined) fields.capacity = capacity;
-  if (status && ['active','inactive'].includes(status)) fields.status = status;
+    const { name, address, capacity, status } = req.body;
+    const fields = {};
+    if (name)                   fields.name     = name.trim();
+    if (address !== undefined)  fields.address  = address;
+    if (capacity !== undefined) fields.capacity = capacity;
+    if (status && ['active','inactive'].includes(status)) fields.status = status;
 
-  if (Object.keys(fields).length === 0) return res.status(400).json({ error: 'No fields to update' });
+    if (Object.keys(fields).length === 0) return res.status(400).json({ error: 'No fields to update' });
 
-  await Location.updateLocation(req.params.id, fields);
-  const updated = await Location.findById(req.params.id);
-  res.json({ location: updated });
+    await Location.updateLocation(req.params.id, fields);
+    const updated = await Location.findById(req.params.id);
+    res.json({ location: updated });
+  } catch (err) {
+    console.error('Location update error:', err);
+    res.status(500).json({ error: `Failed to update location: ${err.message || 'database error'}` });
+  }
 });
 
 // DELETE /api/locations/:id - admin only

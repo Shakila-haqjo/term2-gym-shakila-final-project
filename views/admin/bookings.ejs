@@ -44,6 +44,29 @@
   </div>
 </div>
 
+<!-- Edit Booking Modal -->
+<div class="modal-overlay" id="editBookingModal">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <span class="modal-title"><i class="fas fa-edit"></i> Update Booking</span>
+      <button class="modal-close" onclick="closeModal('editBookingModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">New Session *</label>
+        <select id="ebSession" class="form-control">
+          <option value="">Select session...</option>
+        </select>
+      </div>
+      <input type="hidden" id="editBookingId">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('editBookingModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="updateBooking()"><i class="fas fa-save"></i> Update</button>
+    </div>
+  </div>
+</div>
+
 <!-- Create Booking Modal -->
 <div class="modal-overlay" id="createBookingModal">
   <div class="modal" style="max-width:480px;">

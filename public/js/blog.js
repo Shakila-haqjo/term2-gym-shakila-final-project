@@ -46,6 +46,8 @@ async function loadBlogs() {
 
     grid.innerHTML = blogs.map(blog => {
       const isOwner = currentUser && currentUser.id === blog.author_id;
+      const isAdmin = currentUser && currentUser.role === 'admin';
+      const canDelete = isOwner || isAdmin;
       return `
         <div class="blog-card">
           <div class="blog-card-body">
@@ -58,7 +60,7 @@ async function loadBlogs() {
               <span><i class="fas fa-eye"></i> ${blog.views || 0}</span>
               <span><i class="fas fa-calendar"></i> ${formatDate(blog.created_at)}</span>
             </div>
-            ${isOwner ? `
+            ${canDelete ? `
               <button class="btn btn-danger btn-sm" style="margin-top:10px;width:100%;" onclick="deleteBlog(${blog.id})">
                 <i class="fas fa-trash"></i> Delete
               </button>` : ''}
@@ -72,11 +74,13 @@ async function loadBlogs() {
 }
 
 async function deleteBlog(id) {
-  if (!confirm('Delete this blog post? This cannot be undone.')) return;
-  try {
-    await api.delete(`/blogs/${id}`);
-    loadBlogs();
-  } catch (err) {
-    alert(err.message);
-  }
+  showConfirm('Delete Blog Post', 'Are you sure you want to delete this blog post? This cannot be undone.', async () => {
+    try {
+      await api.delete(`/blogs/${id}`);
+      showToast('Blog post deleted.', 'success');
+      loadBlogs();
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  });
 }

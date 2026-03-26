@@ -41,15 +41,6 @@
             <input type="tel" id="phone" name="phone" placeholder="555-0100" class="form-control" autocomplete="tel" />
           </div>
 
-          <div class="form-group">
-            <label class="form-label" for="role">Account Type</label>
-            <select id="role" name="role" class="form-control">
-              <option value="member">Member</option>
-              <option value="trainer">Trainer</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
-
           <div id="registerError" class="alert alert-danger" style="display:none; margin-bottom: 16px;">
             <i class="fas fa-exclamation-circle"></i> <span id="registerErrorMsg"></span>
           </div>
@@ -81,14 +72,13 @@
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const phone = document.getElementById('phone').value;
-    const role = document.getElementById('role').value;
 
     try {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ name, email, password, phone: phone || undefined, role })
+        body: JSON.stringify({ name, email, password, phone: phone || undefined })
       });
 
       const data = await res.json();

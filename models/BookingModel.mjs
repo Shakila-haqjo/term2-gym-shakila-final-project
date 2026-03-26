@@ -124,6 +124,16 @@ export async function reactivate(bookingId) {
 }
 
 /**
+ * Update the session assigned to a booking (admin use).
+ * @param {number} bookingId  - Booking ID to update.
+ * @param {number} sessionId  - New session ID.
+ * @returns {Promise<void>}
+ */
+export async function updateBookingSession(bookingId, sessionId) {
+  await db.execute('UPDATE bookings SET session_id = ? WHERE id = ?', [sessionId, bookingId]);
+}
+
+/**
  * Cancel a booking by setting its status to 'cancelled'.
  * @param {number} bookingId - Booking ID to cancel.
  * @returns {Promise<void>}
