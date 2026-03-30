@@ -12,9 +12,8 @@ async function loadBlogs() {
   tbody.innerHTML = `<tr><td colspan="6"><div class="loading-spinner"><div class="spinner"></div></div></td></tr>`;
 
   try {
-    const data = await apiFetch('/blogs');
-    const user = getUser();
-    const blogs = (data.blogs || []).filter(b => b.author_id === user.id || b.author_name === user.name);
+    const data = await api.get('/blogs?mine=true');
+    const blogs = data.blogs || [];
 
     if (blogs.length === 0) {
       tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-blog"></i><p>No posts yet. <button onclick="openCreateModal()" style="color:var(--accent-gold);background:none;border:none;cursor:pointer;">Write your first post</button></p></div></td></tr>`;

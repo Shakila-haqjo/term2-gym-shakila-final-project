@@ -1,6 +1,7 @@
 import express from 'express';
 import { AuthController } from './AuthController.mjs';
 import { BlogModel } from '../models/BlogModel.mjs';
+import { UserModel } from '../models/UserModel.mjs';
 
 export class BlogController {
   static routes = express.Router();
@@ -51,11 +52,19 @@ export class BlogController {
   }
 
   static async createBlog(req, res) {
+    if (req.user.role === 'admin') return res.status(403).json({ error: 'Admins cannot create blog posts.' });
+
     const { title, category, content, featured_image, status } = req.body;
     if (!title) return res.status(400).json({ error: 'Title is required' });
 
     const blogStatus = status === 'published' ? 'published' : 'draft';
     try {
+      if (req.user.role === 'trainer') {
+        const trainer = await UserModel.findById(req.user.id);
+        if (!trainer || trainer.status !== 'active') {
+          return res.status(403).json({ error: 'Inactive trainers cannot create blog posts.' });
+        }
+      }
       const insertId = await BlogModel.createBlog(
         req.user.id, title.trim(), category || null,
         content || null, featured_image || null, blogStatus
@@ -68,9 +77,11 @@ export class BlogController {
   }
 
   static async updateBlog(req, res) {
+    if (req.user.role === 'admin') return res.status(403).json({ error: 'Admins cannot edit blog posts.' });
+
     const raw = await BlogModel.findRawById(req.params.id);
     if (!raw) return res.status(404).json({ error: 'Blog not found' });
-    if (raw.author_id !== req.user.id && req.user.role !== 'admin')
+    if (raw.author_id !== req.user.id)
       return res.status(403).json({ error: "Cannot edit another author's blog" });
 
     const { title, category, content, featured_image, status } = req.body;

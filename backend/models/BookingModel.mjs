@@ -75,6 +75,10 @@ export class BookingModel extends DatabaseModel {
     await this.execute('UPDATE bookings SET session_id = ? WHERE id = ?', [sessionId, bookingId]);
   }
 
+  static async updateBookingStatus(bookingId, status) {
+    await this.execute('UPDATE bookings SET status = ? WHERE id = ?', [status, bookingId]);
+  }
+
   static async cancelBooking(bookingId) {
     await this.execute("UPDATE bookings SET status = 'cancelled' WHERE id = ?", [bookingId]);
   }

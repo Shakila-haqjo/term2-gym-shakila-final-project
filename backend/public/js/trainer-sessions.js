@@ -14,13 +14,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     clearTimeout(timer);
     timer = setTimeout(loadSessions, 400);
   });
+  document.getElementById('activityFilter').addEventListener('change', loadSessions);
   document.getElementById('upcomingFilter').addEventListener('change', loadSessions);
+  document.getElementById('dateFilter').addEventListener('change', loadSessions);
 });
 
 async function loadActivities() {
   try {
     const data = await api.get('/activities');
     activities = data.activities || [];
+    const sel = document.getElementById('activityFilter');
+    activities.forEach(a => sel.innerHTML += `<option value="${a.id}">${a.name}</option>`);
   } catch (e) {}
 }
 
@@ -31,14 +35,26 @@ async function loadLocations() {
   } catch (e) {}
 }
 
+function clearFilters() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('activityFilter').value = '';
+  document.getElementById('upcomingFilter').value = '';
+  document.getElementById('dateFilter').value = '';
+  loadSessions();
+}
+
 async function loadSessions() {
   const tbody = document.getElementById('sessionsTable');
   const search = document.getElementById('searchInput').value.trim();
+  const activity_id = document.getElementById('activityFilter').value;
   const upcoming = document.getElementById('upcomingFilter').value;
+  const date = document.getElementById('dateFilter').value;
 
   let url = '/sessions?mine=true&';
   if (search) url += `search=${encodeURIComponent(search)}&`;
-  if (upcoming) url += `upcoming=${upcoming}`;
+  if (activity_id) url += `activity_id=${activity_id}&`;
+  if (upcoming) url += `upcoming=${upcoming}&`;
+  if (date) url += `date=${date}`;
 
   tbody.innerHTML = `<tr><td colspan="6"><div class="loading-spinner"><div class="spinner"></div></div></td></tr>`;
 

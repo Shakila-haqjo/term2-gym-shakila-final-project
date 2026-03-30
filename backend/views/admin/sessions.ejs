@@ -8,6 +8,14 @@
       <select id="activityFilter" class="form-control" style="max-width:180px;">
         <option value="">All Activities</option>
       </select>
+      <select id="trainerFilter" class="form-control" style="max-width:180px;">
+        <option value="">All Trainers</option>
+      </select>
+      <select id="upcomingFilter" class="form-control" style="max-width:160px;">
+        <option value="">All Time</option>
+        <option value="true">Upcoming</option>
+      </select>
+      <input type="date" id="dateFilter" class="form-control" style="max-width:160px;" title="Filter by date">
       <button class="btn btn-primary btn-sm" onclick="loadSessions()"><i class="fas fa-filter"></i> Filter</button>
       <button class="btn btn-secondary btn-sm" onclick="clearFilters()"><i class="fas fa-times"></i> Clear</button>
       <button class="btn btn-primary btn-sm" onclick="openCreateModal()" style="margin-left:auto;"><i class="fas fa-plus"></i> Add Session</button>

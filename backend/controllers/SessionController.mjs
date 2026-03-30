@@ -33,8 +33,13 @@ export class SessionController {
   }
 
   static async listSessions(req, res) {
-    const { search, activity_id, date, upcoming, mine } = req.query;
-    const trainerId = (req.user.role === 'trainer' && mine === 'true') ? req.user.id : undefined;
+    const { search, activity_id, date, upcoming, mine, trainer_id } = req.query;
+    let trainerId;
+    if (req.user.role === 'trainer' && mine === 'true') {
+      trainerId = req.user.id;
+    } else if (req.user.role === 'admin' && trainer_id) {
+      trainerId = trainer_id;
+    }
     const sessions = await SessionModel.listSessions({ trainerId, search, activity_id, date, upcoming: upcoming === 'true' });
     res.json({ sessions });
   }
@@ -48,6 +53,9 @@ export class SessionController {
   static async createSession(req, res) {
     const { name, activity_id, location_id, date, time, duration_minutes, max_participants, description } = req.body;
     if (!name || !date || !time) return res.status(400).json({ error: 'Name, date, and time are required' });
+
+    const today = new Date().toISOString().slice(0, 10);
+    if (date < today) return res.status(400).json({ error: 'Session date cannot be in the past.' });
 
     const trainer_id = req.user.role === 'admin'
       ? (req.body.trainer_id || req.user.id)

@@ -39,10 +39,10 @@ export class LocationController {
 
       const { name, address, capacity, status } = req.body;
       const fields = {};
-      if (name)                   fields.name     = name.trim();
-      if (address !== undefined)  fields.address  = address;
-      if (capacity !== undefined) fields.capacity = capacity;
-      if (status && ['active', 'inactive'].includes(status)) fields.status = status;
+      if (name)                                              fields.name     = name.trim();
+      if (address !== undefined)                             fields.address  = address || null;
+      if (capacity !== undefined && capacity !== null && capacity !== '') fields.capacity = parseInt(capacity);
+      if (status && ['active', 'inactive'].includes(status)) fields.status  = status;
 
       if (Object.keys(fields).length === 0) return res.status(400).json({ error: 'No fields to update' });
 

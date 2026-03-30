@@ -84,13 +84,14 @@
     }
   })();
 
-  async function deletePost(id) {
-    if (!confirm('Delete this blog post? This cannot be undone.')) return;
-    try {
-      await api.delete(`/blogs/${id}`);
-      window.location.href = '/blog';
-    } catch (err) {
-      alert(err.message);
-    }
+  function deletePost(id) {
+    showConfirm('Delete Blog Post', 'Are you sure you want to delete this post? This cannot be undone.', async () => {
+      try {
+        await api.delete(`/blogs/${id}`);
+        window.location.href = '/blog';
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    });
   }
 </script>

@@ -9,15 +9,28 @@ Admin:   admin@gym.com / admin123
 4. For the Admin there should be a delete button for the Admin 
 5. Check if Database.mjs or DatabaseModel.ms differences with sample project mean the strucutre or style----sample project is here /Users/TAYAB/Downloads/high_street_gym1
 
-6. Fix the Mobile View-----When someone is deleted 
+6. [DONE] Fix the Mobile View-----When someone is deleted
 
 
 ================= New feedback ==============
-1. Member should be able to create blog, must show delete button if created but memeber or for correct user, correct user. The blog created by any user is publicaly visible to all other users like social app where one user post other user can see it
-2. In mobile view delete blog post shows defualt localhost dialog instead of the formated one 
-3. When any trainer is inactive, should not be able to create any blog, make sure trainer or memeber or admin can not create session for future date
-4. Fix Failed to update location: Bind parameters must not contain undefined. To pass SQL NULL specify JS null+ Add Location as admin tries to update the location
-5. Update Booking on admin is not working 
-6. New user should be member by default 
-6. Logout is broken
-7. After logout every user must land in http://localhost:3000/
+1. [DONE] Member should be able to create blog, must show delete button if created but memeber or for correct user, correct user. The blog created by any user is publicaly visible to all other users like social app where one user post other user can see it
+2. [DONE] In mobile view delete blog post shows defualt localhost dialog instead of the formated one
+3. [DONE] When any trainer is inactive, should not be able to create any blog, make sure trainer or memeber or admin can not create session for future date
+4. [DONE] Fix Failed to update location: Bind parameters must not contain undefined. To pass SQL NULL specify JS null+ Add Location as admin tries to update the location
+5. [DONE] Update Booking on admin is not working
+6. [DONE] Logout is broken
+7. [DONE] After logout every user must land in http://localhost:3000/
+
+
+guest. done 
+memeber:
+can see session or timetable, view blog, create blog, delete own blog and view blog
+book session, view own booking, can cancel booking
+
+trainer:
+can view the blog, create the blog, delete own blog, crud a session own data,
+filter fileds in session
+
+
+Admin:
+View blogs all blogs, can delete any blog post, admin can crud all sessions, admin can crud activities, admin can crud locations, admin can crud bookings, can crud the users, can not update create, delete, and read blogs post no update blog post. Must be filtering by fields

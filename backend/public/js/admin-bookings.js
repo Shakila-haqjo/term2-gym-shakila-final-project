@@ -118,24 +118,30 @@ function openCreateModal() {
 
 async function openEditBookingModal(id) {
   document.getElementById('editBookingId').value = id;
-  // Populate the session dropdown (reuse already-loaded sessions)
+  document.getElementById('ebStatus').value = '';
   const sel = document.getElementById('ebSession');
-  sel.innerHTML = '<option value="">Select new session...</option>';
-  const data = await api.get('/sessions?upcoming=true');
-  (data.sessions || []).forEach(s => {
-    const dateStr = s.date ? String(s.date).slice(0, 10) : '';
-    const timeStr = s.time ? String(s.time).slice(0, 5) : '';
-    sel.innerHTML += `<option value="${s.id}">${s.name} — ${formatDate(dateStr)} at ${formatTime(timeStr)}</option>`;
-  });
+  sel.innerHTML = '<option value="">— keep current —</option>';
+  try {
+    const data = await api.get('/sessions');
+    (data.sessions || []).forEach(s => {
+      const dateStr = s.date ? String(s.date).slice(0, 10) : '';
+      const timeStr = s.time ? String(s.time).slice(0, 5) : '';
+      sel.innerHTML += `<option value="${s.id}">${s.name} — ${formatDate(dateStr)} at ${formatTime(timeStr)}</option>`;
+    });
+  } catch (e) {}
   document.getElementById('editBookingModal').classList.add('active');
 }
 
 async function updateBooking() {
   const id = document.getElementById('editBookingId').value;
   const session_id = document.getElementById('ebSession').value;
-  if (!session_id) { showToast('Please select a session.', 'error'); return; }
+  const status = document.getElementById('ebStatus').value;
+  if (!session_id && !status) { showToast('Select a new session or status to update.', 'error'); return; }
   try {
-    await api.put(`/bookings/${id}`, { session_id: parseInt(session_id) });
+    const body = {};
+    if (session_id) body.session_id = parseInt(session_id);
+    if (status) body.status = status;
+    await api.put(`/bookings/${id}`, body);
     showToast('Booking updated!', 'success');
     closeModal('editBookingModal');
     loadBookings();

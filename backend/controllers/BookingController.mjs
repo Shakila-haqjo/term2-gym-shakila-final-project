@@ -98,21 +98,32 @@ export class BookingController {
   }
 
   static async updateBooking(req, res) {
-    const { session_id } = req.body;
-    if (!session_id) return res.status(400).json({ error: 'session_id is required' });
+    const { session_id, status } = req.body;
+    if (!session_id && !status) return res.status(400).json({ error: 'Provide session_id or status to update' });
+
+    const VALID_STATUSES = ['confirmed', 'cancelled', 'completed'];
+    if (status && !VALID_STATUSES.includes(status))
+      return res.status(400).json({ error: 'Invalid status value' });
 
     try {
       const booking = await BookingModel.findRawById(req.params.id);
       if (!booking) return res.status(404).json({ error: 'Booking not found' });
 
-      const session = await SessionModel.findRawById(session_id);
-      if (!session) return res.status(404).json({ error: 'Session not found' });
+      if (session_id) {
+        const session = await SessionModel.findRawById(session_id);
+        if (!session) return res.status(404).json({ error: 'Session not found' });
 
-      const booked = await BookingModel.countConfirmed(session_id);
-      if (booked >= session.max_participants)
-        return res.status(400).json({ error: 'The selected session is full' });
+        const booked = await BookingModel.countConfirmed(session_id);
+        if (booked >= session.max_participants)
+          return res.status(400).json({ error: 'The selected session is full' });
 
-      await BookingModel.updateBookingSession(req.params.id, session_id);
+        await BookingModel.updateBookingSession(req.params.id, session_id);
+      }
+
+      if (status) {
+        await BookingModel.updateBookingStatus(req.params.id, status);
+      }
+
       const updated = await BookingModel.findById(req.params.id);
       res.json({ booking: updated });
     } catch {

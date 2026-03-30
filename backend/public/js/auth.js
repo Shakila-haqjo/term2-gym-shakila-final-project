@@ -42,7 +42,7 @@ async function logout() {
     });
   } catch (e) { /* ignore network errors */ }
   localStorage.clear();
-  window.location.href = '/login';
+  window.location.href = '/';
 }
 
 function saveAuth(token, user) {
