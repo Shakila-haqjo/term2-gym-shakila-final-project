@@ -7,6 +7,11 @@ export class SessionController {
   static routes = express.Router();
 
   static {
+    this.routes.param('id', (_req, res, next, id) => {
+      if (!/^\d+$/.test(id)) return res.status(400).json({ error: 'Invalid ID' });
+      next();
+    });
+
     // Public — no auth required
     this.routes.get('/public', SessionController.listPublic);
 
@@ -67,9 +72,16 @@ export class SessionController {
         return res.status(400).json({ error: 'Cannot create a session with an inactive trainer. Please select an active trainer.' });
       }
 
+      const parsedDuration = duration_minutes ? parseInt(duration_minutes) : 60;
+      const parsedMax      = max_participants  ? parseInt(max_participants)  : 20;
+      if (isNaN(parsedDuration) || parsedDuration <= 0)
+        return res.status(400).json({ error: 'duration_minutes must be a positive number' });
+      if (isNaN(parsedMax) || parsedMax <= 0)
+        return res.status(400).json({ error: 'max_participants must be a positive number' });
+
       const insertId = await SessionModel.createSession(
         name.trim(), activity_id || null, location_id || null, trainer_id,
-        date, time, duration_minutes || 60, max_participants || 20, description || null
+        date, time, parsedDuration, parsedMax, description || null
       );
       const session = await SessionModel.findById(insertId);
       res.status(201).json({ session });
@@ -99,8 +111,16 @@ export class SessionController {
     }
     if (date)              fields.date             = date;
     if (time)              fields.time             = time;
-    if (duration_minutes)  fields.duration_minutes = duration_minutes;
-    if (max_participants)  fields.max_participants = max_participants;
+    if (duration_minutes) {
+      const parsed = parseInt(duration_minutes);
+      if (isNaN(parsed) || parsed <= 0) return res.status(400).json({ error: 'duration_minutes must be a positive number' });
+      fields.duration_minutes = parsed;
+    }
+    if (max_participants) {
+      const parsed = parseInt(max_participants);
+      if (isNaN(parsed) || parsed <= 0) return res.status(400).json({ error: 'max_participants must be a positive number' });
+      fields.max_participants = parsed;
+    }
     if (description !== undefined) fields.description = description;
 
     if (Object.keys(fields).length === 0) return res.status(400).json({ error: 'No fields to update' });

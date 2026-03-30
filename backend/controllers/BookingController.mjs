@@ -7,6 +7,11 @@ export class BookingController {
   static routes = express.Router();
 
   static {
+    this.routes.param('id', (_req, res, next, id) => {
+      if (!/^\d+$/.test(id)) return res.status(400).json({ error: 'Invalid ID' });
+      next();
+    });
+
     this.routes.get('/stats',         AuthController.restrict(['admin']), BookingController.getStats);
     this.routes.get('/',              AuthController.restrict(),          BookingController.listBookings);
     this.routes.post('/',             AuthController.restrict(['member']), BookingController.createBooking);

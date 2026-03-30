@@ -7,6 +7,11 @@ export class UserController {
   static routes = express.Router();
 
   static {
+    this.routes.param('id', (_req, res, next, id) => {
+      if (!/^\d+$/.test(id)) return res.status(400).json({ error: 'Invalid ID' });
+      next();
+    });
+
     this.routes.get('/stats', AuthController.restrict(['admin']), UserController.getStats);
     this.routes.get('/',      AuthController.restrict(['admin']), UserController.listUsers);
     this.routes.get('/:id',   AuthController.restrict(['admin']), UserController.getUser);

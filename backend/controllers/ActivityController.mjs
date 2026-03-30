@@ -6,6 +6,11 @@ export class ActivityController {
   static routes = express.Router();
 
   static {
+    this.routes.param('id', (_req, res, next, id) => {
+      if (!/^\d+$/.test(id)) return res.status(400).json({ error: 'Invalid ID' });
+      next();
+    });
+
     this.routes.get('/',      AuthController.restrict(),          ActivityController.listActivities);
     this.routes.post('/',     AuthController.restrict(['admin']), ActivityController.createActivity);
     this.routes.put('/:id',   AuthController.restrict(['admin']), ActivityController.updateActivity);

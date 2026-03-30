@@ -17,7 +17,7 @@ function renderNav(activePage) {
   const memberLinks = [
     { href: '/member/dashboard',    icon: 'fa-tachometer-alt', label: 'Dashboard',       key: 'dashboard' },
     { href: '/member/sessions',     icon: 'fa-calendar-alt',   label: 'Timetable',        key: 'sessions' },
-    { href: '/blog',                icon: 'fa-newspaper',      label: 'Blog',             key: 'blog' },
+    { href: '/member/blog',         icon: 'fa-newspaper',      label: 'Blog',             key: 'blog' },
     { href: '/member/create-blog',  icon: 'fa-pen',            label: 'Write Blog Post',  key: 'create-blog' },
     { href: '/member/bookings',     icon: 'fa-ticket-alt',     label: 'My Bookings',      key: 'bookings' },
   ];
@@ -143,6 +143,17 @@ function showToast(message, type = 'info') {
     toast.style.transition = 'opacity 0.3s';
     setTimeout(() => toast.remove(), 300);
   }, 3500);
+}
+
+// HTML escape helper — prevents XSS when inserting user content into innerHTML
+function escapeHtml(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 // Format date helper

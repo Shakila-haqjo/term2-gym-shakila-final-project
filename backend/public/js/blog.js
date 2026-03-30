@@ -43,18 +43,22 @@ async function loadBlogs() {
     grid.innerHTML = blogs.map(blog => {
       const isOwner = currentUser && currentUser.id === blog.author_id;
       const isAdmin = currentUser && currentUser.role === 'admin';
-      const canEdit = isOwner || isAdmin;
+      const canEdit = isOwner;
       const canDelete = isOwner || isAdmin;
+
+      const safeTitle    = escapeHtml(blog.title);
+      const safeCategory = escapeHtml(blog.category || 'General');
+      const safeAuthor   = escapeHtml(blog.author_name);
 
       return `
         <div class="blog-card">
           <div class="blog-card-body">
-            <div class="blog-category">${blog.category || 'General'}</div>
+            <div class="blog-category">${safeCategory}</div>
             <h3 class="blog-card-title">
-              <a href="/blog-detail?id=${blog.id}">${blog.title}</a>
+              <a href="/blog-detail?id=${blog.id}">${safeTitle}</a>
             </h3>
             <div class="blog-card-meta">
-              <span><i class="fas fa-user"></i> ${blog.author_name}</span>
+              <span><i class="fas fa-user"></i> ${safeAuthor}</span>
               <span><i class="fas fa-eye"></i> ${blog.views || 0}</span>
               <span><i class="fas fa-calendar"></i> ${formatDate(blog.created_at)}</span>
             </div>

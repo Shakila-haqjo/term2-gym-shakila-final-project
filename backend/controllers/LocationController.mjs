@@ -6,6 +6,11 @@ export class LocationController {
   static routes = express.Router();
 
   static {
+    this.routes.param('id', (_req, res, next, id) => {
+      if (!/^\d+$/.test(id)) return res.status(400).json({ error: 'Invalid ID' });
+      next();
+    });
+
     this.routes.get('/',      AuthController.restrict(),          LocationController.listLocations);
     this.routes.post('/',     AuthController.restrict(['admin']), LocationController.createLocation);
     this.routes.put('/:id',   AuthController.restrict(['admin']), LocationController.updateLocation);
@@ -27,8 +32,9 @@ export class LocationController {
       const insertId = await LocationModel.createLocation(name.trim(), address || null, capacity || 20, locStatus);
       const location = await LocationModel.findById(insertId);
       res.status(201).json({ location });
-    } catch {
-      res.status(500).json({ error: 'Failed to create location' });
+    } catch (err) {
+      if (err.code === 'ER_DUP_ENTRY') return res.status(409).json({ error: `A location named "${name.trim()}" already exists.` });
+      res.status(500).json({ error: `Failed to create location: ${err.message || 'database error'}` });
     }
   }
 
@@ -50,6 +56,7 @@ export class LocationController {
       const updated = await LocationModel.findById(req.params.id);
       res.json({ location: updated });
     } catch (err) {
+      if (err.code === 'ER_DUP_ENTRY') return res.status(409).json({ error: `A location with that name already exists.` });
       res.status(500).json({ error: `Failed to update location: ${err.message || 'database error'}` });
     }
   }

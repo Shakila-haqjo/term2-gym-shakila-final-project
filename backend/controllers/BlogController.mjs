@@ -7,6 +7,11 @@ export class BlogController {
   static routes = express.Router();
 
   static {
+    this.routes.param('id', (_req, res, next, id) => {
+      if (!/^\d+$/.test(id)) return res.status(400).json({ error: 'Invalid ID' });
+      next();
+    });
+
     // Public reads — no auth required
     this.routes.get('/',       BlogController.listBlogs);
     this.routes.get('/:id',    BlogController.getBlog);

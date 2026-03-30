@@ -158,6 +158,16 @@ app.get('/member/bookings', (req, res) => {
   });
 });
 
+app.get('/member/blog', (req, res) => {
+  const user = req.session.user;
+  if (!user || user.role !== 'member') return res.redirect('/login');
+  res.render('member/blog', {
+    layout: 'layouts/app', title: 'Blog - FitGym',
+    pageTitle: 'Blog', activePage: 'blog', user,
+    pageScript: '/js/blog.js',
+  });
+});
+
 app.get('/member/create-blog', (req, res) => {
   const user = req.session.user;
   if (!user || user.role !== 'member') return res.redirect('/login');
