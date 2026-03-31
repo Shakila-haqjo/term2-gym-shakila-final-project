@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   const user = getUser();
 
-  // Show "Write a Post" button for logged-in users
-  if (user) {
+  // Show "Write a Post" button for members only
+  if (user && user.role === 'member') {
     const writeBtn = document.getElementById('writePostBtn');
     if (writeBtn) writeBtn.style.display = 'inline-flex';
   }
@@ -87,7 +87,12 @@ async function loadBlogs() {
 }
 
 function editBlog(id) {
-  window.location.href = `/member/create-blog?id=${id}`;
+  const user = getUser();
+  if (user && user.role === 'trainer') {
+    window.location.href = `/trainer/blog`;
+  } else {
+    window.location.href = `/member/create-blog?id=${id}`;
+  }
 }
 
 async function deleteBlog(id) {

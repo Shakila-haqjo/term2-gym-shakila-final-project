@@ -1,7 +1,7 @@
 let editingId = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const user = requireAuth();
+  const user = requireAuth('member');
   if (!user) return;
 
   // Check if we're in edit mode
