@@ -1,110 +1,40 @@
-<div class="auth-page">
-  <div class="auth-card">
-    <div class="auth-logo">
-      <div class="logo-icon">
-        <i class="fas fa-dumbbell"></i>
-      </div>
-      <h1>Create Account</h1>
-      <p>Join the FitGym community today</p>
-    </div>
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include("partials/head.ejs") %>
+    <title>FitGym - Register</title>
+  </head>
+  <body>
+    <main>
+      <%- include("partials/header.ejs") %>
+      <section class="page-content">
+        <form action="/authenticate/register" method="post" class="form-grid responsive-half margin-auto">
+          <h2 class="two-col">Create Member Account</h2>
 
-    <% if (error) { %>
-      <div class="alert alert-danger" style="margin-bottom: 20px;">
-        <i class="fas fa-exclamation-circle"></i>
-        <%= error %>
-      </div>
-      <% } %>
+          <% if (error) { %>
+            <p class="two-col" style="color:darkred;"><%= error %></p>
+          <% } %>
 
-        <form id="registerForm">
-          <div class="form-group">
-            <label class="form-label" for="name">Full Name</label>
-            <input type="text" id="name" name="name" placeholder="John Doe" class="form-control" required
-              autocomplete="name" />
-          </div>
+          <label for="name">Full Name:</label>
+          <input type="text" name="name" id="name" required />
 
-          <div class="form-group">
-            <label class="form-label" for="email">Email Address</label>
-            <input type="email" id="email" name="email" placeholder="you@example.com" class="form-control" required
-              autocomplete="email" />
-          </div>
+          <label for="email">Email:</label>
+          <input type="email" name="email" id="email" required />
 
-          <div class="form-group">
-            <label class="form-label" for="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="••••••••" class="form-control" required
-              minlength="6" autocomplete="new-password" />
-            <small style="color: var(--text-secondary); font-size: 0.8rem;">Minimum 6 characters</small>
-          </div>
+          <label for="password">Password:</label>
+          <input type="password" name="password" id="password" minlength="6" required />
 
-          <div class="form-group">
-            <label class="form-label" for="phone">Phone <span
-                style="color: var(--text-secondary); font-weight: 400;">(optional)</span></label>
-            <input type="tel" id="phone" name="phone" placeholder="555-0100" class="form-control" autocomplete="tel" />
-          </div>
+          <label for="phone">Phone:</label>
+          <input type="text" name="phone" id="phone" />
 
-          <div id="registerError" class="alert alert-danger" style="display:none; margin-bottom: 16px;">
-            <i class="fas fa-exclamation-circle"></i> <span id="registerErrorMsg"></span>
-          </div>
+          <label for="address">Address:</label>
+          <input type="text" name="address" id="address" />
 
-          <button type="submit" class="btn btn-primary" style="width:100%; margin-top: 8px;" id="registerBtn">
-            <i class="fas fa-user-plus"></i> Create Account
-          </button>
+          <a href="/authenticate" class="link-button two-col">Back to Login</a>
+          <input type="submit" value="Register" class="two-col" />
         </form>
-
-        <p style="text-align:center; margin-top: 20px; color: var(--text-secondary); font-size: 0.875rem;">
-          Already have an account?
-          <a href="/login" style="color: var(--accent-gold); font-weight: 600; text-decoration: none;">Sign in</a>
-        </p>
-  </div>
-</div>
-
-<script>
-  document.getElementById('registerForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = document.getElementById('registerBtn');
-    const errorDiv = document.getElementById('registerError');
-    const errorMsg = document.getElementById('registerErrorMsg');
-
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
-    errorDiv.style.display = 'none';
-
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const phone = document.getElementById('phone').value;
-
-    try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ name, email, password, phone: phone || undefined })
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        errorMsg.textContent = data.error || 'Registration failed';
-        errorDiv.style.display = 'block';
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
-        return;
-      }
-
-      saveAuth(data.token, data.user);
-      const userRole = data.user?.role;
-      if (userRole === 'admin') {
-        window.location.href = '/admin/dashboard';
-      } else if (userRole === 'trainer') {
-        window.location.href = '/trainer/dashboard';
-      } else {
-        window.location.href = '/member/dashboard';
-      }
-    } catch (err) {
-      errorMsg.textContent = 'Network error. Please try again.';
-      errorDiv.style.display = 'block';
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
-    }
-  });
-</script>
+      </section>
+      <%- include("partials/footer.ejs") %>
+    </main>
+  </body>
+</html>

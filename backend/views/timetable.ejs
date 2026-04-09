@@ -1,127 +1,35 @@
-<nav class="landing-nav" id="publicNav">
-  <a href="/" class="logo"><i class="fas fa-dumbbell"></i> FitGym</a>
-  <div class="landing-nav-links">
-    <a href="/timetable" style="color:var(--accent-gold);"><i class="fas fa-calendar-alt"></i> Timetable</a>
-    <a href="/blog"><i class="fas fa-blog"></i> Blog</a>
-    <a href="/login" class="btn" style="border:1.5px solid var(--accent-gold);color:var(--accent-gold);padding:7px 16px;border-radius:7px;">Login</a>
-    <a href="/register" class="btn btn-primary" style="padding:7px 16px;">Join Now</a>
-  </div>
-</nav>
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include("partials/head.ejs") %>
+    <title>FitGym - Timetable</title>
+  </head>
+  <body>
+    <main>
+      <%- include("partials/header.ejs") %>
+      <section class="page-content">
+        <h2 class="section-heading">Upcoming Sessions</h2>
 
-<div style="max-width:1100px;margin:0 auto;padding:40px 24px;">
-  <div style="margin-bottom:32px;">
-    <h1 style="font-size:2rem;font-weight:700;margin-bottom:8px;">Session Timetable</h1>
-    <p style="color:var(--text-secondary);">Browse all upcoming sessions — <a href="/register" style="color:var(--accent-gold);text-decoration:none;">Sign up</a> to book your spot</p>
-  </div>
-
-  <div class="search-bar" style="margin-bottom:32px;">
-    <div class="search-input-wrap">
-      <i class="fas fa-search"></i>
-      <input type="text" id="searchInput" class="form-control" placeholder="Search sessions...">
-    </div>
-    <select id="upcomingFilter" class="form-control" style="max-width:180px;">
-      <option value="true">Upcoming Only</option>
-      <option value="">All Sessions</option>
-    </select>
-  </div>
-
-  <div id="sessionGrid" class="session-grid">
-    <div class="loading-spinner" style="grid-column:1/-1;"><div class="spinner"></div></div>
-  </div>
-</div>
-
-<script src="/js/auth.js"></script>
-<script>
-  const _user = getUser();
-  if (_user) {
-    const nav = document.getElementById('publicNav');
-    if (nav) {
-      nav.querySelector('.landing-nav-links').innerHTML = `
-        <a href="/timetable" style="color:var(--accent-gold);"><i class="fas fa-calendar-alt"></i> Timetable</a>
-        <a href="/blog"><i class="fas fa-blog"></i> Blog</a>
-        <a href="${getDashboardUrl(_user.role)}" class="btn btn-primary" style="padding:7px 16px;">
-          <i class="fas fa-tachometer-alt"></i> Dashboard
-        </a>
-      `;
-    }
-  }
-
-  function formatDate(dateStr) {
-    if (!dateStr) return '-';
-    const d = new Date(dateStr + (dateStr.includes('T') ? '' : 'T00:00:00'));
-    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-  }
-  function formatTime(timeStr) {
-    if (!timeStr) return '-';
-    const [h, m] = timeStr.split(':');
-    const hour = parseInt(h);
-    const ampm = hour >= 12 ? 'PM' : 'AM';
-    const hour12 = hour % 12 || 12;
-    return `${hour12}:${m} ${ampm}`;
-  }
-
-  async function loadSessions() {
-    const grid = document.getElementById('sessionGrid');
-    const search = document.getElementById('searchInput').value.trim();
-    const upcoming = document.getElementById('upcomingFilter').value;
-
-    let url = '/api/sessions/public?';
-    if (search) url += `search=${encodeURIComponent(search)}&`;
-    if (upcoming) url += `upcoming=${upcoming}`;
-
-    grid.innerHTML = '<div class="loading-spinner" style="grid-column:1/-1;"><div class="spinner"></div></div>';
-
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      const sessions = data.sessions || [];
-
-      if (sessions.length === 0) {
-        grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-calendar-times"></i><p>No sessions found.</p></div>';
-        return;
-      }
-
-      grid.innerHTML = sessions.map(s => {
-        const pct = Math.round((s.booked_count / s.max_participants) * 100);
-        const fillClass = pct >= 90 ? 'danger' : pct >= 70 ? 'warning' : '';
-        return `
-          <div class="session-card">
-            <div class="session-card-header">
-              <div class="activity-badge">${s.activity_name || 'General'}</div>
-              <h3>${s.name}</h3>
-            </div>
-            <div class="session-card-body">
-              <div class="session-meta">
-                <div class="session-meta-item"><i class="fas fa-calendar"></i> ${formatDate(s.date)}</div>
-                <div class="session-meta-item"><i class="fas fa-clock"></i> ${formatTime(s.time)} (${s.duration_minutes} min)</div>
-                <div class="session-meta-item"><i class="fas fa-map-marker-alt"></i> ${s.location_name || 'TBD'}</div>
-                <div class="session-meta-item"><i class="fas fa-user-tie"></i> ${s.trainer_name || 'TBD'}</div>
-              </div>
-              ${s.description ? `<p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:12px;">${s.description}</p>` : ''}
-              <div class="session-capacity">
-                <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text-secondary);">
-                  <span><i class="fas fa-users"></i> ${s.booked_count}/${s.max_participants} booked</span>
-                  <span>${s.max_participants - s.booked_count} spots left</span>
-                </div>
-                <div class="capacity-bar"><div class="capacity-fill ${fillClass}" style="width:${pct}%"></div></div>
-              </div>
-              <a href="/register" class="btn btn-primary w-100" style="margin-top:12px;">
-                <i class="fas fa-user-plus"></i> Sign Up to Book
-              </a>
-            </div>
+        <% if (sessions.length === 0) { %>
+          <p>No upcoming sessions scheduled.</p>
+        <% } else { %>
+          <div class="card-list">
+            <% for (const session of sessions) { %>
+              <article class="card">
+                <h3><%= session.name %></h3>
+                <p>Date: <strong><%= session.date %></strong> at <strong><%= session.time ? session.time.slice(0,5) : '' %></strong></p>
+                <p>Activity: <%= session.activity_name || 'N/A' %></p>
+                <p>Location: <%= session.location_name || 'N/A' %></p>
+                <p>Trainer: <%= session.trainer_name || 'N/A' %></p>
+                <p>Duration: <%= session.duration_minutes %> min &nbsp;|&nbsp; Spots: <%= session.max_participants %></p>
+                <% if (session.description) { %><p><%= session.description %></p><% } %>
+                <a href="/authenticate/register" class="link-button">Join to Book</a>
+              </article>
+            <% } %>
           </div>
-        `;
-      }).join('');
-    } catch (err) {
-      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-exclamation-circle"></i><p>Failed to load sessions.</p></div>';
-    }
-  }
-
-  document.getElementById('searchInput').addEventListener('input', () => {
-    clearTimeout(window._searchTimer);
-    window._searchTimer = setTimeout(loadSessions, 400);
-  });
-  document.getElementById('upcomingFilter').addEventListener('change', loadSessions);
-
-  loadSessions();
-</script>
+        <% } %>
+      </section>
+      <%- include("partials/footer.ejs") %>
+    </main>
+  </body>
+</html>

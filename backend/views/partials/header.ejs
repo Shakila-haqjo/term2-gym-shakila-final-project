@@ -1,0 +1,39 @@
+<header>
+  <div class="header-inner">
+    <a href="/">
+      <h1>FitGym</h1>
+      <span class="tagline">Premium Fitness Management</span>
+    </a>
+  </div>
+</header>
+<nav>
+  <div class="nav-inner">
+    <% if (authenticatedUser) { %>
+      <% if (authenticatedUser.role === 'admin') { %>
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/users">Users</a>
+        <a href="/admin/sessions">Sessions</a>
+        <a href="/admin/bookings">Bookings</a>
+        <a href="/admin/activities">Activities</a>
+        <a href="/admin/locations">Locations</a>
+        <a href="/admin/blogs">Blogs</a>
+      <% } else if (authenticatedUser.role === 'trainer') { %>
+        <a href="/trainer/dashboard">Dashboard</a>
+        <a href="/trainer/sessions">My Sessions</a>
+        <a href="/trainer/blog">Blog</a>
+      <% } else { %>
+        <a href="/member/dashboard">Dashboard</a>
+        <a href="/member/sessions">Browse Sessions</a>
+        <a href="/member/bookings">My Bookings</a>
+        <a href="/member/blog">Blog</a>
+      <% } %>
+      <a href="/authenticate/logout" class="logout">Logout (<%= authenticatedUser.name %>)</a>
+    <% } else { %>
+      <a href="/">Home</a>
+      <a href="/timetable">Timetable</a>
+      <a href="/blog">Blog</a>
+      <a href="/authenticate">Login</a>
+      <a href="/authenticate/register">Register</a>
+    <% } %>
+  </div>
+</nav>

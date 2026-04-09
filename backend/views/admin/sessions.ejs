@@ -1,96 +1,96 @@
-<div class="card" style="margin-bottom:20px;">
-  <div class="card-body" style="padding:16px 20px;">
-    <div class="search-bar" style="margin-bottom:0;">
-      <div class="search-input-wrap">
-        <i class="fas fa-search"></i>
-        <input type="text" id="searchInput" class="form-control" placeholder="Search sessions...">
-      </div>
-      <select id="activityFilter" class="form-control" style="max-width:180px;">
-        <option value="">All Activities</option>
-      </select>
-      <select id="trainerFilter" class="form-control" style="max-width:180px;">
-        <option value="">All Trainers</option>
-      </select>
-      <select id="upcomingFilter" class="form-control" style="max-width:160px;">
-        <option value="">All Time</option>
-        <option value="true">Upcoming</option>
-      </select>
-      <input type="date" id="dateFilter" class="form-control" style="max-width:160px;" title="Filter by date">
-      <button class="btn btn-primary btn-sm" onclick="loadSessions()"><i class="fas fa-filter"></i> Filter</button>
-      <button class="btn btn-secondary btn-sm" onclick="clearFilters()"><i class="fas fa-times"></i> Clear</button>
-      <button class="btn btn-primary btn-sm" onclick="openCreateModal()" style="margin-left:auto;"><i class="fas fa-plus"></i> Add Session</button>
-    </div>
-  </div>
-</div>
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include("../partials/head.ejs") %>
+    <title>FitGym - Sessions Management</title>
+  </head>
+  <body>
+    <main>
+      <%- include("../partials/header.ejs") %>
+      <section class="page-content">
+        <h2 class="section-heading">Sessions Management</h2>
 
-<div class="card">
-  <div class="card-body" style="padding:0;">
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Session</th><th>Activity</th><th>Trainer</th><th>Date & Time</th><th>Location</th><th>Spots</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="sessionsTable">
-          <tr><td colspan="7"><div class="loading-spinner"><div class="spinner"></div></div></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
+        <form action="/admin/sessions" method="get" class="search-form">
+          <input type="text" name="search" placeholder="Search sessions..." value="<%= search %>" />
+          <input type="date" name="date" value="<%= dateFilter %>" />
+          <input type="submit" value="Filter" style="width:auto;" />
+          <a href="/admin/sessions" class="link-button" style="width:auto;">Clear</a>
+        </form>
 
-<!-- Create/Edit Modal -->
-<div class="modal-overlay" id="sessionModal">
-  <div class="modal" style="max-width:640px;">
-    <div class="modal-header">
-      <span class="modal-title" id="sessionModalTitle">Add Session</span>
-      <button class="modal-close" onclick="closeModal('sessionModal')">&times;</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Activity</label>
-          <select id="sActivity" class="form-control"><option value="">Select...</option></select>
+        <div class="half-half-layout">
+          <!-- Session list -->
+          <section class="data-list cols-4">
+            <span class="data-list-heading">Name</span>
+            <span class="data-list-heading">Date</span>
+            <span class="data-list-heading">Trainer</span>
+            <span class="data-list-heading"></span>
+            <% for (const session of sessions) { %>
+              <span><%= session.name %></span>
+              <span><%= session.date %></span>
+              <span><%= session.trainer_name || 'N/A' %></span>
+              <a href="/admin/sessions/<%= session.id %>" class="link-button">Edit</a>
+            <% } %>
+          </section>
+
+          <!-- Create / Edit form -->
+          <% const editSession = selected; %>
+          <form action="/admin/sessions/<%= editSession ? editSession.id : '' %>" method="post" class="form-grid">
+            <h3 class="two-col"><%= editSession ? 'Edit Session' : 'Create New Session' %></h3>
+
+            <label for="name">Name:</label>
+            <input type="text" name="name" id="name" value="<%= editSession ? editSession.name : '' %>" required />
+
+            <label for="activity_id">Activity:</label>
+            <select name="activity_id" id="activity_id">
+              <option value="">-- None --</option>
+              <% for (const a of activities) { %>
+                <option value="<%= a.id %>" <%= editSession && editSession.activity_id == a.id ? 'selected' : '' %>><%= a.name %></option>
+              <% } %>
+            </select>
+
+            <label for="location_id">Location:</label>
+            <select name="location_id" id="location_id">
+              <option value="">-- None --</option>
+              <% for (const l of locations) { %>
+                <option value="<%= l.id %>" <%= editSession && editSession.location_id == l.id ? 'selected' : '' %>><%= l.name %></option>
+              <% } %>
+            </select>
+
+            <label for="trainer_id">Trainer:</label>
+            <select name="trainer_id" id="trainer_id">
+              <option value="">-- None --</option>
+              <% for (const t of trainers) { %>
+                <option value="<%= t.id %>" <%= editSession && editSession.trainer_id == t.id ? 'selected' : '' %>><%= t.name %></option>
+              <% } %>
+            </select>
+
+            <label for="date">Date:</label>
+            <input type="date" name="date" id="date" value="<%= editSession ? editSession.date : '' %>" required />
+
+            <label for="time">Time:</label>
+            <input type="time" name="time" id="time" value="<%= editSession ? (editSession.time ? editSession.time.slice(0,5) : '') : '' %>" required />
+
+            <label for="duration_minutes">Duration (min):</label>
+            <input type="number" name="duration_minutes" id="duration_minutes" value="<%= editSession ? editSession.duration_minutes : 60 %>" min="1" />
+
+            <label for="max_participants">Max Participants:</label>
+            <input type="number" name="max_participants" id="max_participants" value="<%= editSession ? editSession.max_participants : 20 %>" min="1" />
+
+            <label for="description">Description:</label>
+            <textarea name="description" id="description"><%= editSession ? (editSession.description || '') : '' %></textarea>
+
+            <a href="/admin/sessions" class="link-button two-col">Clear</a>
+
+            <% if (!editSession) { %>
+              <input type="submit" name="action" value="create" class="two-col" />
+            <% } else { %>
+              <input type="submit" name="action" value="update" class="two-col" />
+              <input type="submit" name="action" value="delete" class="two-col danger" />
+            <% } %>
+          </form>
         </div>
-        <div class="form-group">
-          <label class="form-label">Location</label>
-          <select id="sLocation" class="form-control"><option value="">Select...</option></select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Trainer</label>
-        <select id="sTrainer" class="form-control"><option value="">Select trainer...</option></select>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Date *</label>
-          <input type="date" id="sDate" class="form-control">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Time *</label>
-          <input type="time" id="sTime" class="form-control">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Duration (min)</label>
-          <input type="number" id="sDuration" class="form-control" value="60" min="15">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Max Participants</label>
-          <input type="number" id="sMaxP" class="form-control" value="20" min="1">
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Description</label>
-        <textarea id="sDescription" class="form-control" placeholder="Session description..."></textarea>
-      </div>
-      <input type="hidden" id="editSessionId">
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('sessionModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveSession()"><i class="fas fa-save"></i> Save</button>
-    </div>
-  </div>
-</div>
+      </section>
+      <%- include("../partials/footer.ejs") %>
+    </main>
+  </body>
+</html>

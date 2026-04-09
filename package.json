@@ -4,8 +4,7 @@
   "main": "backend/server.mjs",
   "scripts": {
     "dev": "nodemon",
-    "tailwind": "npx @tailwindcss/cli -i ./backend/public/css/tailwind-input.css -o ./backend/dist/css/tailwind.css --watch",
-    "start": "node --env-file=.env backend/server.mjs",
+    "start": "node backend/server.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

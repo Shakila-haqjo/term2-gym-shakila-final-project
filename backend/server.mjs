@@ -1,248 +1,98 @@
 import express from 'express';
-import ejsLayouts from 'express-ejs-layouts';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { DatabaseModel }      from './models/DatabaseModel.mjs';
-import { AuthController }     from './controllers/AuthController.mjs';
-import { UserController }     from './controllers/UserController.mjs';
-import { SessionController }  from './controllers/SessionController.mjs';
-import { BookingController }  from './controllers/BookingController.mjs';
-import { BlogController }     from './controllers/BlogController.mjs';
-import { ActivityController } from './controllers/ActivityController.mjs';
-import { LocationController } from './controllers/LocationController.mjs';
+import { AuthController }  from './controllers/AuthController.mjs';
+import { AdminController } from './controllers/AdminController.mjs';
+import { MemberController } from './controllers/MemberController.mjs';
+import { TrainerController } from './controllers/TrainerController.mjs';
+import { SessionModel } from './models/SessionModel.mjs';
+import { BlogModel } from './models/BlogModel.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// View engine
+// View engine — plain EJS, no layout library
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-app.use(ejsLayouts);
-app.set('layout', 'layouts/app');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/dist', express.static(path.join(__dirname, 'dist')));
 
-// Session + req.user population (must come before routes)
+// Session middleware + load req.authenticatedUser on every request
 app.use(AuthController.middleware);
 
-// ── API routes ────────────────────────────────────────────────────────────────
-app.use('/api/auth',       AuthController.routes);
-app.use('/api/users',      UserController.routes);
-app.use('/api/sessions',   SessionController.routes);
-app.use('/api/bookings',   BookingController.routes);
-app.use('/api/blogs',      BlogController.routes);
-app.use('/api/activities', ActivityController.routes);
-app.use('/api/locations',  LocationController.routes);
+// Make authenticatedUser available in every EJS template automatically
+app.use((req, res, next) => {
+  res.locals.authenticatedUser = req.authenticatedUser || null;
+  next();
+});
 
-// ── Public page routes (no auth required) ────────────────────────────────────
+// ── Auth routes ───────────────────────────────────────────────────────────────
+app.use('/authenticate', AuthController.routes);
+
+// ── Admin routes ──────────────────────────────────────────────────────────────
+app.use('/admin', AdminController.routes);
+
+// ── Member routes ─────────────────────────────────────────────────────────────
+app.use('/member', MemberController.routes);
+
+// ── Trainer routes ────────────────────────────────────────────────────────────
+app.use('/trainer', TrainerController.routes);
+
+// ── Public pages ──────────────────────────────────────────────────────────────
 app.get('/', (req, res) => {
-  const user = req.session.user;
-  if (user) {
-    if (user.role === 'admin')   return res.redirect('/admin/dashboard');
-    if (user.role === 'trainer') return res.redirect('/trainer/dashboard');
+  if (req.authenticatedUser) {
+    const role = req.authenticatedUser.role;
+    if (role === 'admin')   return res.redirect('/admin/dashboard');
+    if (role === 'trainer') return res.redirect('/trainer/dashboard');
     return res.redirect('/member/dashboard');
   }
-  res.render('home', { layout: 'layouts/landing', title: 'FitGym - Premium Fitness Management' });
+  res.render('home');
 });
 
-app.get('/login',    (req, res) => res.render('login',    { layout: 'layouts/public', title: 'Login - FitGym',    error: null }));
-app.get('/register', (req, res) => res.render('register', { layout: 'layouts/public', title: 'Register - FitGym', error: null }));
-app.get('/timetable', (req, res) => res.render('timetable',   { layout: 'layouts/landing', title: 'Timetable - FitGym' }));
-app.get('/blog',      (req, res) => res.render('blog',        { layout: 'layouts/landing', title: 'Blog - FitGym' }));
-app.get('/blog-detail', (_req, res) => res.render('blog-detail', { layout: 'layouts/landing', title: 'Blog - FitGym' }));
-
-// ── Admin page routes ─────────────────────────────────────────────────────────
-app.get('/admin/dashboard', (req, res) => {
-  const user = req.session.user;
-  if (!user || user.role !== 'admin') return res.redirect('/login');
-  res.render('admin/dashboard', {
-    layout: 'layouts/app', title: 'Admin Dashboard - FitGym',
-    pageTitle: 'Admin Dashboard', activePage: 'dashboard', user,
-    pageScript: '/js/admin-dashboard.js',
-    extraHead: '<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>',
-  });
+app.get('/timetable', async (req, res) => {
+  try {
+    const sessions = await SessionModel.listSessions({ upcoming: true });
+    res.render('timetable', { sessions });
+  } catch (err) {
+    console.error(err);
+    res.render('timetable', { sessions: [] });
+  }
 });
 
-app.get('/admin/users', (req, res) => {
-  const user = req.session.user;
-  if (!user || user.role !== 'admin') return res.redirect('/login');
-  res.render('admin/users', {
-    layout: 'layouts/app', title: 'Users - FitGym Admin',
-    pageTitle: 'User Management', activePage: 'users', user,
-    pageScript: '/js/admin-users.js',
-  });
+app.get('/blog', async (req, res) => {
+  try {
+    const blogs = await BlogModel.listBlogs({ publishedOnly: true });
+    res.render('blog', { blogs });
+  } catch (err) {
+    console.error(err);
+    res.render('blog', { blogs: [] });
+  }
 });
 
-app.get('/admin/sessions', (req, res) => {
-  const user = req.session.user;
-  if (!user || user.role !== 'admin') return res.redirect('/login');
-  res.render('admin/sessions', {
-    layout: 'layouts/app', title: 'Sessions - FitGym Admin',
-    pageTitle: 'Sessions Management', activePage: 'sessions', user,
-    pageScript: '/js/admin-sessions.js',
-  });
+app.get('/blog/:id', async (req, res) => {
+  try {
+    const blog = await BlogModel.findById(req.params.id);
+    if (!blog) return res.status(404).render('status', { status: 'Not Found', message: 'Blog post not found.' });
+    await BlogModel.incrementViews(req.params.id);
+    res.render('blog_detail', { blog });
+  } catch (err) {
+    console.error(err);
+    res.status(500).render('status', { status: 'Error', message: 'Could not load blog post.' });
+  }
 });
-
-app.get('/admin/bookings', (req, res) => {
-  const user = req.session.user;
-  if (!user || user.role !== 'admin') return res.redirect('/login');
-  res.render('admin/bookings', {
-    layout: 'layouts/app', title: 'Bookings - FitGym Admin',
-    pageTitle: 'Bookings Management', activePage: 'bookings', user,
-    pageScript: '/js/admin-bookings.js',
-  });
-});
-
-app.get('/admin/activities', (req, res) => {
-  const user = req.session.user;
-  if (!user || user.role !== 'admin') return res.redirect('/login');
-  res.render('admin/activities', {
-    layout: 'layouts/app', title: 'Activities - FitGym Admin',
-    pageTitle: 'Activities Management', activePage: 'activities', user,
-    pageScript: '/js/admin-activities.js',
-  });
-});
-
-app.get('/admin/locations', (req, res) => {
-  const user = req.session.user;
-  if (!user || user.role !== 'admin') return res.redirect('/login');
-  res.render('admin/locations', {
-    layout: 'layouts/app', title: 'Locations - FitGym Admin',
-    pageTitle: 'Locations Management', activePage: 'locations', user,
-    pageScript: '/js/admin-locations.js',
-  });
-});
-
-app.get('/admin/blogs', (req, res) => {
-  const user = req.session.user;
-  if (!user || user.role !== 'admin') return res.redirect('/login');
-  res.render('admin/blogs', {
-    layout: 'layouts/app', title: 'Blog Posts - FitGym Admin',
-    pageTitle: 'Blog Posts', activePage: 'blogs', user,
-    pageScript: '/js/admin-blogs.js',
-  });
-});
-
-// ── Member page routes ────────────────────────────────────────────────────────
-app.get('/member/dashboard', (req, res) => {
-  const user = req.session.user;
-  if (!user || user.role !== 'member') return res.redirect('/login');
-  res.render('member/dashboard', {
-    layout: 'layouts/app', title: 'Member Dashboard - FitGym',
-    pageTitle: 'Member Dashboard', activePage: 'dashboard', user,
-    pageScript: '/js/member-dashboard.js',
-  });
-});
-
-app.get('/member/sessions', (req, res) => {
-  const user = req.session.user;
-  if (!user || user.role !== 'member') return res.redirect('/login');
-  res.render('member/sessions', {
-    layout: 'layouts/app', title: 'Browse Sessions - FitGym',
-    pageTitle: 'Browse Sessions', activePage: 'sessions', user,
-    pageScript: '/js/member-sessions.js',
-  });
-});
-
-app.get('/member/bookings', (req, res) => {
-  const user = req.session.user;
-  if (!user || user.role !== 'member') return res.redirect('/login');
-  res.render('member/bookings', {
-    layout: 'layouts/app', title: 'My Bookings - FitGym',
-    pageTitle: 'My Bookings', activePage: 'bookings', user,
-    pageScript: '/js/member-bookings.js',
-  });
-});
-
-app.get('/member/blog', (req, res) => {
-  const user = req.session.user;
-  if (!user || user.role !== 'member') return res.redirect('/login');
-  res.render('member/blog', {
-    layout: 'layouts/app', title: 'Blog - FitGym',
-    pageTitle: 'Blog', activePage: 'blog', user,
-    pageScript: '/js/blog.js',
-  });
-});
-
-app.get('/member/create-blog', (req, res) => {
-  const user = req.session.user;
-  if (!user || user.role !== 'member') return res.redirect('/login');
-  res.render('member/create-blog', {
-    layout: 'layouts/app', title: 'Write Blog Post - FitGym',
-    pageTitle: 'Write Blog Post', activePage: 'create-blog', user,
-    pageScript: '/js/member-create-blog.js',
-  });
-});
-
-// ── Trainer page routes ───────────────────────────────────────────────────────
-app.get('/trainer/dashboard', (req, res) => {
-  const user = req.session.user;
-  if (!user || user.role !== 'trainer') return res.redirect('/login');
-  res.render('trainer/dashboard', {
-    layout: 'layouts/app', title: 'Trainer Dashboard - FitGym',
-    pageTitle: 'Trainer Dashboard', activePage: 'dashboard', user,
-    pageScript: '/js/trainer-dashboard.js',
-  });
-});
-
-app.get('/trainer/sessions', (req, res) => {
-  const user = req.session.user;
-  if (!user || user.role !== 'trainer') return res.redirect('/login');
-  res.render('trainer/sessions', {
-    layout: 'layouts/app', title: 'My Sessions - FitGym',
-    pageTitle: 'My Sessions', activePage: 'sessions', user,
-    pageScript: '/js/trainer-sessions.js',
-  });
-});
-
-app.get('/trainer/create-session', (req, res) => {
-  const user = req.session.user;
-  if (!user || user.role !== 'trainer') return res.redirect('/login');
-  res.render('trainer/create-session', {
-    layout: 'layouts/app', title: 'Create Session - FitGym',
-    pageTitle: 'Create Session', activePage: 'sessions', user,
-    pageScript: '/js/trainer-create-session.js',
-  });
-});
-
-app.get('/trainer/session-bookings', (req, res) => {
-  const user = req.session.user;
-  if (!user || user.role !== 'trainer') return res.redirect('/login');
-  res.render('trainer/session-bookings', {
-    layout: 'layouts/app', title: 'Session Bookings - FitGym',
-    pageTitle: 'Session Bookings', activePage: 'sessions', user,
-    pageScript: '/js/trainer-session-bookings.js',
-  });
-});
-
-app.get('/trainer/blog', (req, res) => {
-  const user = req.session.user;
-  if (!user || user.role !== 'trainer') return res.redirect('/login');
-  res.render('trainer/blog', {
-    layout: 'layouts/app', title: 'Blog Management - FitGym',
-    pageTitle: 'Blog Management', activePage: 'blog', user,
-    pageScript: '/js/trainer-blog.js',
-  });
-});
-
-// ── Health check ──────────────────────────────────────────────────────────────
-app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 
 // ── Error handler ─────────────────────────────────────────────────────────────
 app.use((err, _req, res, _next) => {
   console.error(err.stack);
-  res.status(500).json({ error: 'Internal server error' });
+  res.status(500).render('status', { status: 'Server Error', message: 'Something went wrong.' });
 });
 
-DatabaseModel.initialize().catch(console.error);
-
 app.listen(PORT, () => {
-  console.log(`\nGym Management Server running at http://localhost:${PORT}`);
+  console.log(`Gym Management running at http://localhost:${PORT}`);
   console.log(`  Admin:   admin@gym.com / admin123`);
   console.log(`  Trainer: sarah@gym.com / trainer123`);
-  console.log(`  Member:  alice@gym.com / member123\n`);
+  console.log(`  Member:  alice@gym.com / member123`);
 });

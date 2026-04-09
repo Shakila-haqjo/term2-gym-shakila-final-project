@@ -1,99 +1,95 @@
-<div class="card" style="margin-bottom:20px;">
-  <div class="card-body" style="padding:16px 20px;">
-    <div class="search-bar" style="margin-bottom:0;">
-      <div class="search-input-wrap">
-        <i class="fas fa-search"></i>
-        <input type="text" id="searchInput" class="form-control" placeholder="Search by name or email...">
-      </div>
-      <select id="roleFilter" class="form-control" style="max-width:160px;">
-        <option value="">All Roles</option>
-        <option value="member">Member</option>
-        <option value="trainer">Trainer</option>
-        <option value="admin">Admin</option>
-      </select>
-      <select id="statusFilter" class="form-control" style="max-width:160px;">
-        <option value="">All Status</option>
-        <option value="active">Active</option>
-        <option value="inactive">Inactive</option>
-      </select>
-      <button class="btn btn-primary btn-sm" onclick="loadUsers()"><i class="fas fa-filter"></i> Filter</button>
-      <button class="btn btn-secondary btn-sm" onclick="clearFilters()"><i class="fas fa-times"></i> Clear</button>
-      <button class="btn btn-primary btn-sm" onclick="openCreateModal()" style="margin-left:auto;"><i class="fas fa-user-plus"></i> Add User</button>
-    </div>
-  </div>
-</div>
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include("../partials/head.ejs") %>
+    <title>FitGym - User Management</title>
+  </head>
+  <body>
+    <main>
+      <%- include("../partials/header.ejs") %>
+      <section class="page-content">
+        <h2 class="section-heading">User Management</h2>
 
-<div class="card">
-  <div class="card-body" style="padding:0;">
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>User</th><th>Email</th><th>Phone</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="usersTable">
-          <tr><td colspan="7"><div class="loading-spinner"><div class="spinner"></div></div></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
+        <!-- Search / filter -->
+        <form action="/admin/users" method="get" class="search-form">
+          <input type="text" name="search" placeholder="Search name or email..." value="<%= search %>" />
+          <select name="role">
+            <option value="">All roles</option>
+            <option value="admin"   <%= roleFilter === 'admin'   ? 'selected' : '' %>>Admin</option>
+            <option value="trainer" <%= roleFilter === 'trainer' ? 'selected' : '' %>>Trainer</option>
+            <option value="member"  <%= roleFilter === 'member'  ? 'selected' : '' %>>Member</option>
+          </select>
+          <select name="status">
+            <option value="">All statuses</option>
+            <option value="active"   <%= statusFilter === 'active'   ? 'selected' : '' %>>Active</option>
+            <option value="inactive" <%= statusFilter === 'inactive' ? 'selected' : '' %>>Inactive</option>
+          </select>
+          <input type="submit" value="Filter" style="width:auto;" />
+          <a href="/admin/users" class="link-button" style="width:auto;">Clear</a>
+        </form>
 
-<!-- Create/Edit Modal -->
-<div class="modal-overlay" id="userModal">
-  <div class="modal">
-    <div class="modal-header">
-      <span class="modal-title" id="userModalTitle">Add User</span>
-      <button class="modal-close" onclick="closeModal('userModal')">&times;</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Full Name *</label>
-          <input type="text" id="uName" class="form-control" placeholder="John Doe">
+        <div class="half-half-layout">
+          <!-- User list -->
+          <section class="data-list cols-5">
+            <span class="data-list-heading">Name</span>
+            <span class="data-list-heading">Email</span>
+            <span class="data-list-heading">Role</span>
+            <span class="data-list-heading">Status</span>
+            <span class="data-list-heading"></span>
+            <% for (const user of users) { %>
+              <span><%= user.name %></span>
+              <span><%= user.email %></span>
+              <span><%= user.role %></span>
+              <span class="badge <%= user.status %>"><%= user.status %></span>
+              <a href="/admin/users/<%= user.id %>" class="link-button">Edit</a>
+            <% } %>
+          </section>
+
+          <!-- Create / Edit form -->
+          <% const editUser = selected; %>
+          <form action="/admin/users/<%= editUser ? editUser.id : '' %>" method="post" class="form-grid">
+            <h3 class="two-col"><%= editUser ? 'Edit User' : 'Create New User' %></h3>
+
+            <label for="name">Name:</label>
+            <input type="text" name="name" id="name" value="<%= editUser ? editUser.name : '' %>" />
+
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email" value="<%= editUser ? editUser.email : '' %>" />
+
+            <label for="phone">Phone:</label>
+            <input type="text" name="phone" id="phone" value="<%= editUser ? (editUser.phone || '') : '' %>" />
+
+            <label for="address">Address:</label>
+            <input type="text" name="address" id="address" value="<%= editUser ? (editUser.address || '') : '' %>" />
+
+            <label for="role">Role:</label>
+            <select name="role" id="role">
+              <option value="member"  <%= editUser && editUser.role === 'member'  ? 'selected' : '' %>>Member</option>
+              <option value="trainer" <%= editUser && editUser.role === 'trainer' ? 'selected' : '' %>>Trainer</option>
+              <option value="admin"   <%= editUser && editUser.role === 'admin'   ? 'selected' : '' %>>Admin</option>
+            </select>
+
+            <label for="status">Status:</label>
+            <select name="status" id="status">
+              <option value="active"   <%= !editUser || editUser.status === 'active'   ? 'selected' : '' %>>Active</option>
+              <option value="inactive" <%= editUser && editUser.status === 'inactive' ? 'selected' : '' %>>Inactive</option>
+            </select>
+
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" placeholder="<%= editUser ? 'Leave blank to keep current' : 'Required' %>" <%= editUser ? '' : 'required' %> />
+
+            <a href="/admin/users" class="link-button two-col">Clear</a>
+
+            <% if (!editUser) { %>
+              <input type="submit" name="action" value="create" class="two-col" />
+            <% } else { %>
+              <input type="submit" name="action" value="update" class="two-col" />
+              <input type="submit" name="action" value="delete" class="two-col danger" />
+            <% } %>
+          </form>
         </div>
-        <div class="form-group">
-          <label class="form-label">Email *</label>
-          <input type="email" id="uEmail" class="form-control" placeholder="email@example.com">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Password <span id="passHint" style="font-size:0.78rem;color:var(--text-secondary);">(required for new)</span></label>
-          <input type="password" id="uPassword" class="form-control" placeholder="••••••••">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Phone</label>
-          <input type="tel" id="uPhone" class="form-control" placeholder="555-0100">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Role</label>
-          <select id="uRole" class="form-control">
-            <option value="member">Member</option>
-            <option value="trainer">Trainer</option>
-            <option value="admin">Admin</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Status</label>
-          <select id="uStatus" class="form-control">
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Address</label>
-        <input type="text" id="uAddress" class="form-control" placeholder="123 Main St">
-      </div>
-      <input type="hidden" id="editUserId">
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('userModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveUser()"><i class="fas fa-save"></i> Save</button>
-    </div>
-  </div>
-</div>
+      </section>
+      <%- include("../partials/footer.ejs") %>
+    </main>
+  </body>
+</html>

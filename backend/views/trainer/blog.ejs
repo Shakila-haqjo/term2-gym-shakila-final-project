@@ -1,67 +1,36 @@
-<div class="card" style="margin-bottom:16px;">
-  <div class="card-body" style="padding:12px 20px;display:flex;justify-content:flex-end;">
-    <button class="btn btn-primary btn-sm" onclick="openCreateModal()"><i class="fas fa-plus"></i> New Post</button>
-  </div>
-</div>
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include("../partials/head.ejs") %>
+    <title>FitGym - My Blog Posts</title>
+  </head>
+  <body>
+    <main>
+      <%- include("../partials/header.ejs") %>
+      <section class="page-content">
+        <h2 class="section-heading">My Blog Posts</h2>
+        <a href="/trainer/blog/create" class="link-button" style="width:auto; padding:8px 20px; margin-bottom:15px; display:inline-block;">Write a Post</a>
 
-<div class="card">
-  <div class="card-body" style="padding:0;">
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Title</th><th>Category</th><th>Status</th><th>Views</th><th>Date</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="blogsTable">
-          <tr><td colspan="6"><div class="loading-spinner"><div class="spinner"></div></div></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- Create/Edit Modal -->
-<div class="modal-overlay" id="blogModal">
-  <div class="modal" style="max-width:680px;">
-    <div class="modal-header">
-      <span class="modal-title" id="modalTitle">New Blog Post</span>
-      <button class="modal-close" onclick="closeModal('blogModal')">&times;</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-group">
-        <label class="form-label">Title *</label>
-        <input type="text" id="blogTitle" class="form-control" placeholder="Enter title...">
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Category</label>
-          <select id="blogCategory" class="form-control">
-            <option value="">Select...</option>
-            <option value="Fitness Tips">Fitness Tips</option>
-            <option value="Nutrition">Nutrition</option>
-            <option value="Wellness">Wellness</option>
-            <option value="Science">Science</option>
-            <option value="Motivation">Motivation</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Status</label>
-          <select id="blogStatus" class="form-control">
-            <option value="draft">Draft</option>
-            <option value="published">Published</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Content</label>
-        <textarea id="blogContent" class="form-control" style="min-height:220px;" placeholder="Write your content here (HTML supported)..."></textarea>
-      </div>
-      <input type="hidden" id="editBlogId">
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('blogModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveBlog()"><i class="fas fa-save"></i> Save Post</button>
-    </div>
-  </div>
-</div>
+        <% if (blogs.length === 0) { %>
+          <p>No blog posts yet.</p>
+        <% } else { %>
+          <div class="data-list cols-5" style="margin-top:15px;">
+            <span class="data-list-heading">Title</span>
+            <span class="data-list-heading">Category</span>
+            <span class="data-list-heading">Status</span>
+            <span class="data-list-heading">Created</span>
+            <span class="data-list-heading">Actions</span>
+            <% for (const blog of blogs) { %>
+              <span><%= blog.title %></span>
+              <span><%= blog.category || 'N/A' %></span>
+              <span class="badge <%= blog.status %>"><%= blog.status %></span>
+              <span><%= blog.created_at ? blog.created_at.slice(0,10) : '' %></span>
+              <a href="/trainer/blog/<%= blog.id %>/edit" class="link-button">Edit</a>
+            <% } %>
+          </div>
+        <% } %>
+      </section>
+      <%- include("../partials/footer.ejs") %>
+    </main>
+  </body>
+</html>
