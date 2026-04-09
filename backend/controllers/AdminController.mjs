@@ -49,6 +49,8 @@ export class AdminController {
 
     // Blogs
     r.get('/blogs',        adminOnly, AdminController.viewBlogs);
+    r.get('/blogs/:id',    adminOnly, AdminController.viewBlogs);
+    r.post('/blogs',       adminOnly, AdminController.handleBlogs);
     r.post('/blogs/:id',   adminOnly, AdminController.handleBlogs);
   }
 
@@ -229,6 +231,21 @@ export class AdminController {
     const id     = req.params.id;
     const action = req.body.action;
 
+    if (action === 'update') {
+      const { status } = req.body;
+      const allowed = ['confirmed', 'cancelled', 'completed'];
+      if (!allowed.includes(status)) {
+        return res.status(400).render('status', { status: 'Validation Error', message: 'Invalid booking status.' });
+      }
+      try {
+        await BookingModel.updateBookingStatus(id, status);
+        return res.redirect('/admin/bookings');
+      } catch (err) {
+        console.error(err);
+        return res.status(500).render('status', { status: 'Database Error', message: 'Could not update booking.' });
+      }
+    }
+
     if (action === 'delete') {
       try {
         await BookingModel.deleteBooking(id);
@@ -236,16 +253,6 @@ export class AdminController {
       } catch (err) {
         console.error(err);
         return res.status(500).render('status', { status: 'Database Error', message: 'Could not delete booking.' });
-      }
-    }
-
-    if (action === 'cancel') {
-      try {
-        await BookingModel.cancelBooking(id);
-        return res.redirect('/admin/bookings');
-      } catch (err) {
-        console.error(err);
-        return res.status(500).render('status', { status: 'Database Error', message: 'Could not cancel booking.' });
       }
     }
 
@@ -371,8 +378,9 @@ export class AdminController {
   static async viewBlogs(req, res) {
     try {
       const { status, search } = req.query;
-      const blogs = await BlogModel.listBlogs({ status, search });
-      res.render('admin/blogs', { blogs, statusFilter: status || '', search: search || '' });
+      const blogs    = await BlogModel.listBlogs({ status, search });
+      const selected = req.params.id ? await BlogModel.findById(req.params.id) : null;
+      res.render('admin/blogs', { blogs, selected, statusFilter: status || '', search: search || '' });
     } catch (err) {
       console.error(err);
       res.status(500).render('status', { status: 'Error', message: 'Could not load blogs.' });
@@ -382,6 +390,17 @@ export class AdminController {
   static async handleBlogs(req, res) {
     const id     = req.params.id;
     const action = req.body.action;
+
+    if (action === 'create') {
+      const { title, category, content, status } = req.body;
+      try {
+        await BlogModel.createBlog(req.authenticatedUser.id, title, category, content, '', status || 'published');
+        return res.redirect('/admin/blogs');
+      } catch (err) {
+        console.error(err);
+        return res.status(500).render('status', { status: 'Database Error', message: 'Could not create blog post.' });
+      }
+    }
 
     if (action === 'delete') {
       try {

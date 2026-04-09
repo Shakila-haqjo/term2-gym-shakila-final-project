@@ -26,22 +26,21 @@ export class BookingModel extends DatabaseModel {
     if (upcoming === true) { sql += ' AND s.date >= CURDATE()'; }
     if (past === true)     { sql += ' AND s.date < CURDATE()'; }
     sql += ' ORDER BY s.date DESC, s.time DESC';
-    const [bookings] = await this.execute(sql, params);
-    return bookings;
+    return await this.query(sql, params);
   }
 
   static async findById(id) {
-    const [[booking]] = await this.execute(BOOKING_SELECT + ' WHERE b.id = ?', [id]);
-    return booking;
+    const rows = await this.query(BOOKING_SELECT + ' WHERE b.id = ?', [id]);
+    return rows[0];
   }
 
   static async findRawById(id) {
-    const [[booking]] = await this.execute('SELECT * FROM bookings WHERE id = ?', [id]);
-    return booking;
+    const rows = await this.query('SELECT * FROM bookings WHERE id = ?', [id]);
+    return rows[0];
   }
 
   static async countConfirmed(sessionId) {
-    const [[{ booked }]] = await this.execute(
+    const [{ booked }] = await this.query(
       "SELECT COUNT(*) AS booked FROM bookings WHERE session_id = ? AND status = 'confirmed'",
       [sessionId]
     );
@@ -49,15 +48,15 @@ export class BookingModel extends DatabaseModel {
   }
 
   static async findExisting(userId, sessionId) {
-    const [[booking]] = await this.execute(
+    const rows = await this.query(
       'SELECT * FROM bookings WHERE user_id = ? AND session_id = ?',
       [userId, sessionId]
     );
-    return booking;
+    return rows[0];
   }
 
   static async createBooking(userId, sessionId, status) {
-    const [result] = await this.execute(
+    const result = await this.query(
       'INSERT INTO bookings (user_id, session_id, status) VALUES (?, ?, ?)',
       [userId, sessionId, status]
     );
@@ -65,34 +64,34 @@ export class BookingModel extends DatabaseModel {
   }
 
   static async reactivate(bookingId) {
-    await this.execute(
+    await this.query(
       "UPDATE bookings SET status = 'confirmed', created_at = NOW() WHERE id = ?",
       [bookingId]
     );
   }
 
   static async updateBookingSession(bookingId, sessionId) {
-    await this.execute('UPDATE bookings SET session_id = ? WHERE id = ?', [sessionId, bookingId]);
+    await this.query('UPDATE bookings SET session_id = ? WHERE id = ?', [sessionId, bookingId]);
   }
 
   static async updateBookingStatus(bookingId, status) {
-    await this.execute('UPDATE bookings SET status = ? WHERE id = ?', [status, bookingId]);
+    await this.query('UPDATE bookings SET status = ? WHERE id = ?', [status, bookingId]);
   }
 
   static async cancelBooking(bookingId) {
-    await this.execute("UPDATE bookings SET status = 'cancelled' WHERE id = ?", [bookingId]);
+    await this.query("UPDATE bookings SET status = 'cancelled' WHERE id = ?", [bookingId]);
   }
 
   static async deleteBooking(bookingId) {
-    await this.execute('DELETE FROM bookings WHERE id = ?', [bookingId]);
+    await this.query('DELETE FROM bookings WHERE id = ?', [bookingId]);
   }
 
   static async getStats() {
-    const [[{ total }]]     = await this.execute('SELECT COUNT(*) AS total FROM bookings');
-    const [[{ confirmed }]] = await this.execute("SELECT COUNT(*) AS confirmed FROM bookings WHERE status = 'confirmed'");
-    const [[{ cancelled }]] = await this.execute("SELECT COUNT(*) AS cancelled FROM bookings WHERE status = 'cancelled'");
-    const [[{ completed }]] = await this.execute("SELECT COUNT(*) AS completed FROM bookings WHERE status = 'completed'");
-    const [trend]           = await this.execute(
+    const [{ total }]     = await this.query('SELECT COUNT(*) AS total FROM bookings');
+    const [{ confirmed }] = await this.query("SELECT COUNT(*) AS confirmed FROM bookings WHERE status = 'confirmed'");
+    const [{ cancelled }] = await this.query("SELECT COUNT(*) AS cancelled FROM bookings WHERE status = 'cancelled'");
+    const [{ completed }] = await this.query("SELECT COUNT(*) AS completed FROM bookings WHERE status = 'completed'");
+    const trend           = await this.query(
       `SELECT DATE(created_at) AS day, COUNT(*) AS cnt
        FROM bookings
        WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)

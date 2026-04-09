@@ -14,18 +14,27 @@
         <% if (blogs.length === 0) { %>
           <p>No blog posts yet.</p>
         <% } else { %>
-          <div class="data-list cols-5" style="margin-top:15px;">
+          <div class="data-list cols-6" style="margin-top:15px;">
             <span class="data-list-heading">Title</span>
             <span class="data-list-heading">Category</span>
             <span class="data-list-heading">Status</span>
             <span class="data-list-heading">Created</span>
             <span class="data-list-heading">Actions</span>
+            <span class="data-list-heading"></span>
             <% for (const blog of blogs) { %>
               <span><%= blog.title %></span>
               <span><%= blog.category || 'N/A' %></span>
               <span class="badge <%= blog.status %>"><%= blog.status %></span>
-              <span><%= blog.created_at ? blog.created_at.slice(0,10) : '' %></span>
-              <a href="/trainer/blog/<%= blog.id %>/edit" class="link-button">Edit</a>
+              <span><%= formatDate(blog.created_at) %></span>
+              <span style="display:flex; gap:6px;">
+                <a href="/blog/<%= blog.id %>" class="link-button" style="width:auto; padding:5px 12px;">Read</a>
+                <a href="/trainer/blog/<%= blog.id %>/edit" class="link-button" style="width:auto; padding:5px 12px;">Edit</a>
+              </span>
+              <form action="/trainer/blog/<%= blog.id %>" method="post">
+                <input type="hidden" name="action" value="delete" />
+                <input type="submit" value="Delete" class="danger"
+                  onclick="return confirm('Are you sure you want to delete &quot;<%= blog.title %>&quot;? This cannot be undone.')" />
+              </form>
             <% } %>
           </div>
         <% } %>

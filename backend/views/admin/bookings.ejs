@@ -39,16 +39,22 @@
               <span><%= b.activity_name || 'N/A' %></span>
               <span><%= b.trainer_name || 'N/A' %></span>
               <span class="badge <%= b.status %>"><%= b.status %></span>
-              <div class="row-actions">
-                <% if (b.status !== 'cancelled') { %>
-                  <form action="/admin/bookings/<%= b.id %>" method="post" style="flex:1;">
-                    <input type="hidden" name="action" value="cancel" />
-                    <input type="submit" value="Cancel" class="danger" />
-                  </form>
-                <% } %>
-                <form action="/admin/bookings/<%= b.id %>" method="post" style="flex:1;">
+              <div style="display:flex; flex-direction:column; gap:6px;">
+                <!-- Update status -->
+                <form action="/admin/bookings/<%= b.id %>" method="post" style="display:flex; gap:4px;">
+                  <input type="hidden" name="action" value="update" />
+                  <select name="status" style="flex:1; padding:5px 8px; font-size:13px;">
+                    <option value="confirmed"  <%= b.status === 'confirmed'  ? 'selected' : '' %>>Confirmed</option>
+                    <option value="cancelled"  <%= b.status === 'cancelled'  ? 'selected' : '' %>>Cancelled</option>
+                    <option value="completed"  <%= b.status === 'completed'  ? 'selected' : '' %>>Completed</option>
+                  </select>
+                  <input type="submit" value="Update" style="width:auto; padding:5px 10px; font-size:13px;" />
+                </form>
+                <!-- Delete -->
+                <form action="/admin/bookings/<%= b.id %>" method="post">
                   <input type="hidden" name="action" value="delete" />
-                  <input type="submit" value="Delete" class="danger" />
+                  <input type="submit" value="Delete" class="danger"
+                    onclick="return confirm('Are you sure you want to permanently delete this booking?')" />
                 </form>
               </div>
             <% } %>

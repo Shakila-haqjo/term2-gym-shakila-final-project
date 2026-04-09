@@ -15,7 +15,7 @@
           <p style="font-size:13px; color:#888; margin-bottom:20px;">
             By <strong><%= blog.author_name || 'Unknown' %></strong>
             <% if (blog.category) { %> &nbsp;&bull;&nbsp; <%= blog.category %><% } %>
-            &nbsp;&bull;&nbsp; <%= blog.created_at ? blog.created_at.slice(0,10) : '' %>
+            &nbsp;&bull;&nbsp; <%= formatDate(blog.created_at) %>
             &nbsp;&bull;&nbsp; <span class="badge <%= blog.status %>"><%= blog.status %></span>
           </p>
           <div style="font-size:15px; line-height:1.8; white-space:pre-wrap;"><%- blog.content || '' %></div>

@@ -1,39 +1,37 @@
 <header>
   <div class="header-inner">
-    <a href="/">
+    <a href="/" class="brand-link">
       <h1>FitGym</h1>
       <span class="tagline">Premium Fitness Management</span>
     </a>
+    <nav class="header-nav">
+      <% if (authenticatedUser) { %>
+        <% if (authenticatedUser.role === 'admin') { %>
+          <a href="/admin/dashboard"   class="<%= currentPath.startsWith('/admin/dashboard')   ? 'nav-active' : '' %>">Dashboard</a>
+          <a href="/admin/users"       class="<%= currentPath.startsWith('/admin/users')       ? 'nav-active' : '' %>">Users</a>
+          <a href="/admin/sessions"    class="<%= currentPath.startsWith('/admin/sessions')    ? 'nav-active' : '' %>">Sessions</a>
+          <a href="/admin/bookings"    class="<%= currentPath.startsWith('/admin/bookings')    ? 'nav-active' : '' %>">Bookings</a>
+          <a href="/admin/activities"  class="<%= currentPath.startsWith('/admin/activities')  ? 'nav-active' : '' %>">Activities</a>
+          <a href="/admin/locations"   class="<%= currentPath.startsWith('/admin/locations')   ? 'nav-active' : '' %>">Locations</a>
+          <a href="/admin/blogs"       class="<%= currentPath.startsWith('/admin/blogs')       ? 'nav-active' : '' %>">Blogs</a>
+        <% } else if (authenticatedUser.role === 'trainer') { %>
+          <a href="/trainer/dashboard" class="<%= currentPath.startsWith('/trainer/dashboard') ? 'nav-active' : '' %>">Dashboard</a>
+          <a href="/trainer/sessions"  class="<%= currentPath.startsWith('/trainer/sessions')  ? 'nav-active' : '' %>">My Sessions</a>
+          <a href="/trainer/blog"      class="<%= currentPath.startsWith('/trainer/blog')      ? 'nav-active' : '' %>">Blog</a>
+        <% } else { %>
+          <a href="/member/dashboard"  class="<%= currentPath.startsWith('/member/dashboard')  ? 'nav-active' : '' %>">Dashboard</a>
+          <a href="/member/sessions"   class="<%= currentPath.startsWith('/member/sessions')   ? 'nav-active' : '' %>">Browse Sessions</a>
+          <a href="/member/bookings"   class="<%= currentPath.startsWith('/member/bookings')   ? 'nav-active' : '' %>">My Bookings</a>
+          <a href="/member/blog"       class="<%= currentPath.startsWith('/member/blog')       ? 'nav-active' : '' %>">Blog</a>
+        <% } %>
+        <a href="/authenticate/logout" class="logout">Logout (<%= authenticatedUser.name %>)</a>
+      <% } else { %>
+        <a href="/"                    class="<%= currentPath === '/'             ? 'nav-active' : '' %>">Home</a>
+        <a href="/timetable"           class="<%= currentPath === '/timetable'    ? 'nav-active' : '' %>">Timetable</a>
+        <a href="/blog"                class="<%= currentPath.startsWith('/blog') ? 'nav-active' : '' %>">Blog</a>
+        <a href="/authenticate"        class="<%= currentPath === '/authenticate' ? 'nav-active' : '' %>">Login</a>
+        <a href="/authenticate/register" class="<%= currentPath === '/authenticate/register' ? 'nav-active' : '' %>">Register</a>
+      <% } %>
+    </nav>
   </div>
 </header>
-<nav>
-  <div class="nav-inner">
-    <% if (authenticatedUser) { %>
-      <% if (authenticatedUser.role === 'admin') { %>
-        <a href="/admin/dashboard">Dashboard</a>
-        <a href="/admin/users">Users</a>
-        <a href="/admin/sessions">Sessions</a>
-        <a href="/admin/bookings">Bookings</a>
-        <a href="/admin/activities">Activities</a>
-        <a href="/admin/locations">Locations</a>
-        <a href="/admin/blogs">Blogs</a>
-      <% } else if (authenticatedUser.role === 'trainer') { %>
-        <a href="/trainer/dashboard">Dashboard</a>
-        <a href="/trainer/sessions">My Sessions</a>
-        <a href="/trainer/blog">Blog</a>
-      <% } else { %>
-        <a href="/member/dashboard">Dashboard</a>
-        <a href="/member/sessions">Browse Sessions</a>
-        <a href="/member/bookings">My Bookings</a>
-        <a href="/member/blog">Blog</a>
-      <% } %>
-      <a href="/authenticate/logout" class="logout">Logout (<%= authenticatedUser.name %>)</a>
-    <% } else { %>
-      <a href="/">Home</a>
-      <a href="/timetable">Timetable</a>
-      <a href="/blog">Blog</a>
-      <a href="/authenticate">Login</a>
-      <a href="/authenticate/register">Register</a>
-    <% } %>
-  </div>
-</nav>

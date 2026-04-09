@@ -3,29 +3,126 @@
   <head>
     <%- include("partials/head.ejs") %>
     <title>FitGym - Login</title>
+    <style>
+      .login-page {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 48px 16px;
+      }
+      .login-wrapper {
+        width: 100%;
+        max-width: 420px;
+      }
+      .login-heading {
+        text-align: center;
+        margin-bottom: 24px;
+      }
+      .login-heading h2 {
+        font-size: 26px;
+        font-weight: 800;
+        color: #1e2537;
+        margin-bottom: 6px;
+      }
+      .login-heading p {
+        font-size: 14px;
+        color: #64748b;
+      }
+      .login-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(30,37,55,0.08);
+        padding: 32px 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .login-field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .login-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 4px;
+      }
+      .btn-secondary {
+        display: block;
+        padding: 9px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: inherit;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        width: 100%;
+        border: 1px solid #cbd5e1;
+        background: #fff;
+        color: #475569;
+        transition: background 0.15s, border-color 0.15s;
+      }
+      .btn-secondary:hover { background: #f8fafc; border-color: #94a3b8; color: #1e2537; }
+      .login-footer {
+        text-align: center;
+        font-size: 13px;
+        color: #64748b;
+        margin-top: 4px;
+      }
+      .login-footer a { color: #1e2537; font-weight: 600; text-decoration: none; }
+      .login-footer a:hover { text-decoration: underline; }
+      .login-error {
+        background: #fff5f5;
+        border: 1px solid #feb2b2;
+        color: #c53030;
+        border-radius: 6px;
+        padding: 10px 14px;
+        font-size: 13px;
+      }
+    </style>
   </head>
   <body>
     <main>
       <%- include("partials/header.ejs") %>
-      <section class="page-content">
-        <form action="/authenticate" method="post" class="form-grid responsive-half margin-auto">
-          <h2 class="two-col">Login</h2>
+      <section class="page-content login-page">
+        <div class="login-wrapper">
 
-          <% if (error) { %>
-            <p class="two-col" style="color:darkred;"><%= error %></p>
-          <% } %>
+          <div class="login-heading">
+            <h2>Welcome back</h2>
+            <p>Sign in to your FitGym account</p>
+          </div>
 
-          <label for="email">Email:</label>
-          <input type="email" name="email" id="email" required />
+          <div class="login-card">
+            <% if (error) { %>
+              <div class="login-error"><%= error %></div>
+            <% } %>
 
-          <label for="password">Password:</label>
-          <input type="password" name="password" id="password" required />
+            <form action="/authenticate" method="post" style="display:contents;">
+              <div class="login-field">
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" placeholder="you@example.com" required />
+              </div>
 
-          <a href="/" class="link-button two-col">Back to Home</a>
-          <input type="submit" value="Login" class="two-col" />
+              <div class="login-field">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" placeholder="Enter your password" required />
+              </div>
 
-          <span class="two-col">New member? <a href="/authenticate/register">Register here</a></span>
-        </form>
+              <div class="login-actions">
+                <input type="submit" value="Login" />
+                <a href="/" class="btn-secondary">Back to Home</a>
+              </div>
+            </form>
+
+            <div class="login-footer">
+              New member? <a href="/authenticate/register">Register here</a>
+            </div>
+          </div>
+
+        </div>
       </section>
       <%- include("partials/footer.ejs") %>
     </main>

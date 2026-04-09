@@ -14,18 +14,27 @@
         <% if (blogs.length === 0) { %>
           <p>No blog posts yet. Be the first to write one!</p>
         <% } else { %>
-          <div class="blog-list">
+          <div class="data-list cols-6" style="margin-top:15px;">
+            <span class="data-list-heading">Title</span>
+            <span class="data-list-heading">Category</span>
+            <span class="data-list-heading">Status</span>
+            <span class="data-list-heading">Created</span>
+            <span class="data-list-heading">Actions</span>
+            <span class="data-list-heading"></span>
             <% for (const blog of blogs) { %>
-              <article class="blog-card">
-                <h3><%= blog.title %></h3>
-                <p class="meta">
-                  By <%= blog.author_name || 'Unknown' %>
-                  <% if (blog.category) { %> &nbsp;&bull;&nbsp; <%= blog.category %><% } %>
-                  &nbsp;&bull;&nbsp; <%= blog.created_at ? blog.created_at.slice(0,10) : '' %>
-                  &nbsp;&bull;&nbsp; <span class="badge <%= blog.status %>"><%= blog.status %></span>
-                </p>
-                <p><%= blog.content ? blog.content.slice(0, 250) : '' %><%= blog.content && blog.content.length > 250 ? '...' : '' %></p>
-              </article>
+              <span><%= blog.title %></span>
+              <span><%= blog.category || 'N/A' %></span>
+              <span class="badge <%= blog.status %>"><%= blog.status %></span>
+              <span><%= formatDate(blog.created_at) %></span>
+              <span style="display:flex; gap:6px;">
+                <a href="/blog/<%= blog.id %>" class="link-button" style="width:auto; padding:5px 12px;">Read</a>
+                <a href="/member/blog/<%= blog.id %>/edit" class="link-button" style="width:auto; padding:5px 12px;">Edit</a>
+              </span>
+              <form action="/member/blog/<%= blog.id %>" method="post">
+                <input type="hidden" name="action" value="delete" />
+                <input type="submit" value="Delete" class="danger"
+                  onclick="return confirm('Are you sure you want to delete &quot;<%= blog.title %>&quot;? This cannot be undone.')" />
+              </form>
             <% } %>
           </div>
         <% } %>

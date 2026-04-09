@@ -23,9 +23,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Session middleware + load req.authenticatedUser on every request
 app.use(AuthController.middleware);
 
-// Make authenticatedUser available in every EJS template automatically
+// Make authenticatedUser, helpers, and current path available in every EJS template
 app.use((req, res, next) => {
   res.locals.authenticatedUser = req.authenticatedUser || null;
+  res.locals.currentPath = req.path;
+  res.locals.formatDate = (val) => {
+    if (!val) return '';
+    const d = val instanceof Date ? val : new Date(val);
+    return d.toLocaleDateString('en-CA'); // YYYY-MM-DD
+  };
   next();
 });
 

@@ -16,22 +16,21 @@ export class BlogModel extends DatabaseModel {
     if (search)        { sql += ' AND (b.title LIKE ? OR b.category LIKE ?)'; params.push(`%${search}%`, `%${search}%`); }
     if (category)      { sql += ' AND b.category = ?';  params.push(category); }
     sql += ' ORDER BY b.created_at DESC';
-    const [blogs] = await this.execute(sql, params);
-    return blogs;
+    return await this.query(sql, params);
   }
 
   static async findById(id) {
-    const [[blog]] = await this.execute(BLOG_SELECT + ' WHERE b.id = ?', [id]);
-    return blog;
+    const rows = await this.query(BLOG_SELECT + ' WHERE b.id = ?', [id]);
+    return rows[0];
   }
 
   static async findRawById(id) {
-    const [[blog]] = await this.execute('SELECT * FROM blogs WHERE id = ?', [id]);
-    return blog;
+    const rows = await this.query('SELECT * FROM blogs WHERE id = ?', [id]);
+    return rows[0];
   }
 
   static async createBlog(authorId, title, category, content, featured_image, status) {
-    const [result] = await this.execute(
+    const result = await this.query(
       'INSERT INTO blogs (title, author_id, category, content, featured_image, status) VALUES (?, ?, ?, ?, ?, ?)',
       [title, authorId, category, content, featured_image, status]
     );
@@ -47,14 +46,14 @@ export class BlogModel extends DatabaseModel {
     }
     if (updates.length === 0) return;
     params.push(id);
-    await this.execute(`UPDATE blogs SET ${updates.join(', ')} WHERE id = ?`, params);
+    await this.query(`UPDATE blogs SET ${updates.join(', ')} WHERE id = ?`, params);
   }
 
   static async deleteBlog(id) {
-    await this.execute('DELETE FROM blogs WHERE id = ?', [id]);
+    await this.query('DELETE FROM blogs WHERE id = ?', [id]);
   }
 
   static async incrementViews(id) {
-    await this.execute('UPDATE blogs SET views = views + 1 WHERE id = ?', [id]);
+    await this.query('UPDATE blogs SET views = views + 1 WHERE id = ?', [id]);
   }
 }

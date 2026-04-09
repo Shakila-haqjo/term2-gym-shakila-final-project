@@ -22,22 +22,21 @@ export class SessionModel extends DatabaseModel {
     if (date)        { sql += ' AND s.date = ?';                      params.push(date); }
     if (upcoming)    { sql += ' AND s.date >= CURDATE()'; }
     sql += ' ORDER BY s.date ASC, s.time ASC';
-    const [sessions] = await this.execute(sql, params);
-    return sessions;
+    return await this.query(sql, params);
   }
 
   static async findById(id) {
-    const [[session]] = await this.execute(SESSION_SELECT + ' WHERE s.id = ?', [id]);
-    return session;
+    const rows = await this.query(SESSION_SELECT + ' WHERE s.id = ?', [id]);
+    return rows[0];
   }
 
   static async findRawById(id) {
-    const [[session]] = await this.execute('SELECT * FROM sessions WHERE id = ?', [id]);
-    return session;
+    const rows = await this.query('SELECT * FROM sessions WHERE id = ?', [id]);
+    return rows[0];
   }
 
   static async createSession(name, activity_id, location_id, trainer_id, date, time, duration_minutes, max_participants, description) {
-    const [result] = await this.execute(
+    const result = await this.query(
       'INSERT INTO sessions (name, activity_id, location_id, trainer_id, date, time, duration_minutes, max_participants, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [name, activity_id, location_id, trainer_id, date, time, duration_minutes, max_participants, description]
     );
@@ -53,33 +52,33 @@ export class SessionModel extends DatabaseModel {
     }
     if (updates.length === 0) return;
     params.push(id);
-    await this.execute(`UPDATE sessions SET ${updates.join(', ')} WHERE id = ?`, params);
+    await this.query(`UPDATE sessions SET ${updates.join(', ')} WHERE id = ?`, params);
   }
 
   static async deleteSession(id) {
-    await this.execute('DELETE FROM bookings WHERE session_id = ?', [id]);
-    await this.execute('DELETE FROM sessions WHERE id = ?', [id]);
+    await this.query('DELETE FROM bookings WHERE session_id = ?', [id]);
+    await this.query('DELETE FROM sessions WHERE id = ?', [id]);
   }
 
   static async getStats(trainerId = null) {
     let total, upcoming, totalBookings;
     if (trainerId) {
-      [[{ total }]]         = await this.execute('SELECT COUNT(*) as total FROM sessions WHERE trainer_id = ?', [trainerId]);
-      [[{ upcoming }]]      = await this.execute('SELECT COUNT(*) as upcoming FROM sessions WHERE trainer_id = ? AND date >= CURDATE()', [trainerId]);
-      [[{ totalBookings }]] = await this.execute(
+      [{ total }]         = await this.query('SELECT COUNT(*) as total FROM sessions WHERE trainer_id = ?', [trainerId]);
+      [{ upcoming }]      = await this.query('SELECT COUNT(*) as upcoming FROM sessions WHERE trainer_id = ? AND date >= CURDATE()', [trainerId]);
+      [{ totalBookings }] = await this.query(
         `SELECT COUNT(*) as totalBookings FROM bookings b
          JOIN sessions s ON s.id = b.session_id
          WHERE s.trainer_id = ? AND b.status = 'confirmed'`, [trainerId]);
     } else {
-      [[{ total }]]         = await this.execute('SELECT COUNT(*) as total FROM sessions');
-      [[{ upcoming }]]      = await this.execute('SELECT COUNT(*) as upcoming FROM sessions WHERE date >= CURDATE()');
-      [[{ totalBookings }]] = await this.execute("SELECT COUNT(*) as totalBookings FROM bookings WHERE status = 'confirmed'");
+      [{ total }]         = await this.query('SELECT COUNT(*) as total FROM sessions');
+      [{ upcoming }]      = await this.query('SELECT COUNT(*) as upcoming FROM sessions WHERE date >= CURDATE()');
+      [{ totalBookings }] = await this.query("SELECT COUNT(*) as totalBookings FROM bookings WHERE status = 'confirmed'");
     }
     return { total, upcoming, totalBookings };
   }
 
   static async getSessionBookings(sessionId) {
-    const [bookings] = await this.execute(
+    return await this.query(
       `SELECT b.*, u.name AS member_name, u.email AS member_email, u.phone AS member_phone
        FROM bookings b
        JOIN users u ON u.id = b.user_id
@@ -87,6 +86,5 @@ export class SessionModel extends DatabaseModel {
        ORDER BY b.created_at DESC`,
       [sessionId]
     );
-    return bookings;
   }
 }

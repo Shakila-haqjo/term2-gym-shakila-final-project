@@ -20,7 +20,7 @@
                 <p class="meta">
                   By <%= blog.author_name || 'Unknown' %>
                   <% if (blog.category) { %> &nbsp;&bull;&nbsp; <%= blog.category %><% } %>
-                  &nbsp;&bull;&nbsp; <%= blog.created_at ? blog.created_at.slice(0,10) : '' %>
+                  &nbsp;&bull;&nbsp; <%= formatDate(blog.created_at) %>
                 </p>
                 <p><%= blog.content ? blog.content.slice(0, 200) : '' %><%= blog.content && blog.content.length > 200 ? '...' : '' %></p>
               </article>

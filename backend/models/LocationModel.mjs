@@ -6,17 +6,16 @@ export class LocationModel extends DatabaseModel {
     const sql = activeOnly
       ? "SELECT * FROM locations WHERE status = 'active' ORDER BY name ASC"
       : 'SELECT * FROM locations ORDER BY name ASC';
-    const [locations] = await this.execute(sql);
-    return locations;
+    return await this.query(sql);
   }
 
   static async findById(id) {
-    const [[location]] = await this.execute('SELECT * FROM locations WHERE id = ?', [id]);
-    return location;
+    const rows = await this.query('SELECT * FROM locations WHERE id = ?', [id]);
+    return rows[0];
   }
 
   static async createLocation(name, address, capacity, status) {
-    const [result] = await this.execute(
+    const result = await this.query(
       'INSERT INTO locations (name, address, capacity, status) VALUES (?, ?, ?, ?)',
       [name, address, capacity, status]
     );
@@ -32,11 +31,11 @@ export class LocationModel extends DatabaseModel {
     if (fields.status   !== undefined) { updates.push('status = ?');   params.push(fields.status); }
     if (updates.length === 0) return;
     params.push(id);
-    await this.execute(`UPDATE locations SET ${updates.join(', ')} WHERE id = ?`, params);
+    await this.query(`UPDATE locations SET ${updates.join(', ')} WHERE id = ?`, params);
   }
 
   static async countUsage(id) {
-    const [[{ used }]] = await this.execute(
+    const [{ used }] = await this.query(
       'SELECT COUNT(*) AS used FROM sessions WHERE location_id = ?',
       [id]
     );
@@ -44,10 +43,10 @@ export class LocationModel extends DatabaseModel {
   }
 
   static async deactivateLocation(id) {
-    await this.execute("UPDATE locations SET status = 'inactive' WHERE id = ?", [id]);
+    await this.query("UPDATE locations SET status = 'inactive' WHERE id = ?", [id]);
   }
 
   static async deleteLocation(id) {
-    await this.execute('DELETE FROM locations WHERE id = ?', [id]);
+    await this.query('DELETE FROM locations WHERE id = ?', [id]);
   }
 }

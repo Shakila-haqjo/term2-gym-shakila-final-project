@@ -3,33 +3,33 @@ import { DatabaseModel } from './DatabaseModel.mjs';
 export class UserModel extends DatabaseModel {
 
   static async findByEmail(email) {
-    const [[user]] = await this.execute('SELECT * FROM users WHERE email = ?', [email]);
-    return user;
+    const rows = await this.query('SELECT * FROM users WHERE email = ?', [email]);
+    return rows[0];
   }
 
   static async findById(id) {
-    const [[user]] = await this.execute(
+    const rows = await this.query(
       'SELECT id, name, email, role, avatar, phone, address, status, created_at FROM users WHERE id = ?',
       [id]
     );
-    return user;
+    return rows[0];
   }
 
   static async checkEmailExists(email) {
-    const [[existing]] = await this.execute('SELECT id FROM users WHERE email = ?', [email]);
-    return existing;
+    const rows = await this.query('SELECT id FROM users WHERE email = ?', [email]);
+    return rows[0];
   }
 
   static async checkEmailConflict(email, excludeId) {
-    const [[conflict]] = await this.execute(
+    const rows = await this.query(
       'SELECT id FROM users WHERE email = ? AND id != ?',
       [email, excludeId]
     );
-    return conflict;
+    return rows[0];
   }
 
   static async createUser(name, email, passwordHash, phone, address, role, status) {
-    const [result] = await this.execute(
+    const result = await this.query(
       'INSERT INTO users (name, email, password_hash, phone, address, role, status) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [name, email, passwordHash, phone, address, role, status]
     );
@@ -37,19 +37,19 @@ export class UserModel extends DatabaseModel {
   }
 
   static async getProfile(id) {
-    const [[user]] = await this.execute(
+    const rows = await this.query(
       'SELECT id, name, email, role, avatar, phone, address FROM users WHERE id = ?',
       [id]
     );
-    return user;
+    return rows[0];
   }
 
   static async getFullById(id) {
-    const [[user]] = await this.execute(
+    const rows = await this.query(
       'SELECT id, name, email, phone, address, role, status, avatar, created_at FROM users WHERE id = ?',
       [id]
     );
-    return user;
+    return rows[0];
   }
 
   static async listUsers({ search, role, status } = {}) {
@@ -59,8 +59,7 @@ export class UserModel extends DatabaseModel {
     if (role)   { sql += ' AND role = ?';   params.push(role); }
     if (status) { sql += ' AND status = ?'; params.push(status); }
     sql += ' ORDER BY created_at DESC';
-    const [users] = await this.execute(sql, params);
-    return users;
+    return await this.query(sql, params);
   }
 
   static async updateUser(id, fields) {
@@ -75,18 +74,18 @@ export class UserModel extends DatabaseModel {
     if (fields.passwordHash !== undefined) { updates.push('password_hash = ?'); params.push(fields.passwordHash); }
     if (updates.length === 0) return;
     params.push(id);
-    await this.execute(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`, params);
+    await this.query(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`, params);
   }
 
   static async deactivateUser(id) {
-    await this.execute("UPDATE users SET status = 'inactive' WHERE id = ?", [id]);
+    await this.query("UPDATE users SET status = 'inactive' WHERE id = ?", [id]);
   }
 
   static async getStats() {
-    const [[{ total }]]    = await this.execute('SELECT COUNT(*) as total FROM users');
-    const [[{ members }]]  = await this.execute("SELECT COUNT(*) as members FROM users WHERE role = 'member'");
-    const [[{ trainers }]] = await this.execute("SELECT COUNT(*) as trainers FROM users WHERE role = 'trainer'");
-    const [[{ active }]]   = await this.execute("SELECT COUNT(*) as active FROM users WHERE status = 'active'");
+    const [{ total }]    = await this.query('SELECT COUNT(*) as total FROM users');
+    const [{ members }]  = await this.query("SELECT COUNT(*) as members FROM users WHERE role = 'member'");
+    const [{ trainers }] = await this.query("SELECT COUNT(*) as trainers FROM users WHERE role = 'trainer'");
+    const [{ active }]   = await this.query("SELECT COUNT(*) as active FROM users WHERE status = 'active'");
     return { total, members, trainers, active };
   }
 }
