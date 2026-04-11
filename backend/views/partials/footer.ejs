@@ -1,3 +1,14 @@
+<!-- ── Confirm Modal ──────────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-box">
+    <p class="modal-message" id="modalMessage"></p>
+    <div class="modal-actions">
+      <button class="modal-cancel" id="modalCancel">Cancel</button>
+      <button class="modal-confirm" id="modalConfirm">Yes, Delete</button>
+    </div>
+  </div>
+</div>
+
 <footer>
   <div class="footer-inner">
     <a href="/">FitGym</a>
@@ -6,3 +17,64 @@
     <a href="/authenticate">Staff Login</a>
   </div>
 </footer>
+
+<script>
+  // ── Hamburger menu ──────────────────────────────────────────────────────────
+  const hamburger = document.getElementById('hamburgerBtn');
+  const nav       = document.getElementById('headerNav');
+  if (hamburger && nav) {
+    hamburger.addEventListener('click', function () {
+      nav.classList.toggle('open');
+      hamburger.textContent = nav.classList.contains('open') ? '\u2715' : '\u2630';
+    });
+  }
+
+  // ── In-page delete confirmation modal ──────────────────────────────────────
+  const modal        = document.getElementById('confirmModal');
+  const modalMessage = document.getElementById('modalMessage');
+  const modalConfirm = document.getElementById('modalConfirm');
+  const modalCancel  = document.getElementById('modalCancel');
+  let   pendingForm  = null;
+  let   pendingBtn   = null;
+
+  // Intercept clicks on any element with data-confirm attribute
+  document.addEventListener('click', function (e) {
+    const btn = e.target.closest('[data-confirm]');
+    if (!btn) return;
+    e.preventDefault();
+    pendingForm = btn.closest('form');
+    pendingBtn  = btn;
+    modalMessage.textContent = btn.dataset.confirm;
+    modal.classList.add('show');
+  });
+
+  // Confirm → submit the form (with the correct action value if it's a submit btn)
+  modalConfirm.addEventListener('click', function () {
+    modal.classList.remove('show');
+    if (!pendingForm) return;
+    if (pendingBtn && pendingBtn.name) {
+      const hidden = document.createElement('input');
+      hidden.type  = 'hidden';
+      hidden.name  = pendingBtn.name;
+      hidden.value = pendingBtn.value;
+      pendingForm.appendChild(hidden);
+    }
+    pendingForm.submit();
+  });
+
+  // Cancel → close modal
+  modalCancel.addEventListener('click', function () {
+    modal.classList.remove('show');
+    pendingForm = null;
+    pendingBtn  = null;
+  });
+
+  // Click outside modal box also closes it
+  modal.addEventListener('click', function (e) {
+    if (e.target === modal) {
+      modal.classList.remove('show');
+      pendingForm = null;
+      pendingBtn  = null;
+    }
+  });
+</script>

@@ -33,7 +33,7 @@
                 <form action="/admin/sessions/<%= session.id %>" method="post" style="flex:1;">
                   <input type="hidden" name="action" value="delete" />
                   <input type="submit" value="Delete" class="danger"
-                    onclick="return confirm('Are you sure you want to delete &quot;<%= session.name %>&quot;? All bookings will also be removed.')" />
+                    data-confirm="Are you sure you want to delete &quot;<%= session.name %>&quot;? All bookings will also be removed." />
                 </form>
               </div>
             <% } %>
@@ -93,7 +93,7 @@
             <% } else { %>
               <input type="submit" name="action" value="update" class="two-col" />
               <input type="submit" name="action" value="delete" class="two-col danger"
-                onclick="return confirm('Are you sure you want to delete this session? All bookings for this session will also be removed.')" />
+                data-confirm="Are you sure you want to delete this session? All bookings for this session will also be removed." />
             <% } %>
           </form>
         </div>

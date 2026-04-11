@@ -4,7 +4,10 @@
       <h1>FitGym</h1>
       <span class="tagline">Premium Fitness Management</span>
     </a>
-    <nav class="header-nav">
+
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">&#9776;</button>
+
+    <nav class="header-nav" id="headerNav">
       <% if (authenticatedUser) { %>
         <% if (authenticatedUser.role === 'admin') { %>
           <a href="/admin/dashboard"   class="<%= currentPath.startsWith('/admin/dashboard')   ? 'nav-active' : '' %>">Dashboard</a>

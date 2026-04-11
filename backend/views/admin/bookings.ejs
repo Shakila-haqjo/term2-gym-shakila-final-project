@@ -54,7 +54,7 @@
                 <form action="/admin/bookings/<%= b.id %>" method="post">
                   <input type="hidden" name="action" value="delete" />
                   <input type="submit" value="Delete" class="danger"
-                    onclick="return confirm('Are you sure you want to permanently delete this booking?')" />
+                    data-confirm="Are you sure you want to permanently delete this booking?" />
                 </form>
               </div>
             <% } %>
