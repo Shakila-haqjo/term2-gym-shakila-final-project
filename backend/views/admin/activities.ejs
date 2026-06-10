@@ -25,8 +25,7 @@
                 <a href="/admin/activities/<%= activity.id %>" class="link-button" style="flex:1;">Edit</a>
                 <form action="/admin/activities/<%= activity.id %>" method="post" style="flex:1;">
                   <input type="hidden" name="action" value="delete" />
-                  <input type="submit" value="Delete" class="danger"
-                    data-confirm="Are you sure you want to delete &quot;<%= activity.name %>&quot;?" />
+                  <input type="submit" value="Delete" class="danger"  data-confirm="Are you sure you want to delete &quot;<%= activity.name %>&quot;?" />
                 </form>
               </div>
             <% } %>

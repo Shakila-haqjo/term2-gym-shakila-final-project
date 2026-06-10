@@ -2,43 +2,72 @@
 <html>
   <head>
     <%- include("../partials/head.ejs") %>
-    <title>FitGym - My Blog Posts</title>
+    <title>FitGym - Blog Posts</title>
   </head>
-  <body>
+
+  <body class="trainer-page">
     <main>
       <%- include("../partials/header.ejs") %>
+
       <section class="page-content">
-        <h2 class="section-heading">My Blog Posts</h2>
-        <a href="/trainer/blog/create" class="link-button" style="width:auto; padding:8px 20px; margin-bottom:15px; display:inline-block;">Write a Post</a>
+        <h2 class="section-heading">All Blog Posts</h2>
+
+        <a href="/trainer/blog/create" class="link-button"
+           style="width:auto; padding:8px 20px; margin-bottom:15px; display:inline-block;">
+          Write a Post
+        </a>
 
         <% if (blogs.length === 0) { %>
           <p>No blog posts yet.</p>
         <% } else { %>
-          <div class="data-list cols-6" style="margin-top:15px;">
-            <span class="data-list-heading">Title</span>
-            <span class="data-list-heading">Category</span>
-            <span class="data-list-heading">Status</span>
-            <span class="data-list-heading">Created</span>
-            <span class="data-list-heading">Actions</span>
-            <span class="data-list-heading"></span>
+
+          <div class="card-list">
+
             <% for (const blog of blogs) { %>
-              <span><%= blog.title %></span>
-              <span><%= blog.category || 'N/A' %></span>
-              <span class="badge <%= blog.status %>"><%= blog.status %></span>
-              <span><%= formatDate(blog.created_at) %></span>
-              <span style="display:flex; gap:6px;">
-                <a href="/blog/<%= blog.id %>" class="link-button" style="width:auto; padding:5px 12px;">Read</a>
-                <a href="/trainer/blog/<%= blog.id %>/edit" class="link-button" style="width:auto; padding:5px 12px;">Edit</a>
-              </span>
-              <form action="/trainer/blog/<%= blog.id %>" method="post">
-                <input type="hidden" name="action" value="delete" />
-                <input type="submit" value="Delete" class="danger"
-                  data-confirm="Are you sure you want to delete &quot;<%= blog.title %>&quot;? This cannot be undone." />
-              </form>
+              <article class="card">
+
+                <h3><%= blog.title %></h3>
+
+                <!-- <p>Category: <%= blog.category || 'N/A' %></p>
+
+                <p>
+                  Status:
+                  <span class="badge <%= blog.status %>">
+                    <%= blog.status %>
+                  </span>
+                </p> -->
+
+                <p>
+                  Created:
+                  <strong><%= formatDate(blog.created_at) %></strong>
+                </p>
+
+                <div class="row-actions">
+
+                  <!-- READ BUTTON -->
+                  <a href="/blog/<%= blog.id %>" class="link-button" style="width:auto;">
+                    Read
+                  </a>
+
+                  <!-- DELETE ONLY OWN BLOG -->
+                  <% if (blog.author_id === authenticatedUser.id) { %>
+                    <form action="/trainer/blog/<%= blog.id %>" method="post">
+                      <input type="hidden" name="action" value="delete" />
+                      <input type="submit" value="Delete" class="danger"
+                        data-confirm="Are you sure you want to delete &quot;<%= blog.title %>&quot;?" />
+                    </form>
+                  <% } %>
+
+                </div>
+
+              </article>
             <% } %>
+
           </div>
+
         <% } %>
       </section>
+
       <%- include("../partials/footer.ejs") %>
     </main>
   </body>

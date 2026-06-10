@@ -2,7 +2,7 @@
 <html>
   <head>
     <%- include("../partials/head.ejs") %>
-    <title>FitGym - Browse Sessions</title>
+    <title>FitGym -  Sessions</title>
   </head>
   <body>
     <main>
@@ -16,7 +16,6 @@
           <input type="submit" value="Filter" style="width:auto;" />
           <a href="/member/sessions" class="link-button" style="width:auto;">Clear</a>
         </form>
-
         <% if (sessions.length === 0) { %>
           <p>No upcoming sessions found.</p>
         <% } else { %>
@@ -24,7 +23,11 @@
             <% for (const session of sessions) { %>
               <article class="card">
                 <h3><%= session.name %></h3>
-                <p>Date: <strong><%= session.date %></strong> at <strong><%= session.time ? session.time.slice(0,5) : '' %></strong></p>
+                <!-- <p>Date: <strong><%= session.date %></strong> at <strong><%= session.time ? session.time.slice(0,5) : '' %></strong></p> -->
+                 <p>
+  Date: <strong><%= formatDate(session.date) %></strong>
+  at <strong><%= session.time ? session.time.slice(0,5) : '' %></strong>
+</p>
                 <p>Activity: <%= session.activity_name || 'N/A' %></p>
                 <p>Location: <%= session.location_name || 'N/A' %></p>
                 <p>Trainer: <%= session.trainer_name || 'N/A' %></p>

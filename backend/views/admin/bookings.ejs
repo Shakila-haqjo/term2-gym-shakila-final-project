@@ -10,6 +10,20 @@
       <section class="page-content">
         <h2 class="section-heading">Bookings Management</h2>
 
+
+        <!-- <button class="btn btn-outline" onclick="showCreateForm()">
+  + Create Booking
+</button> -->
+     <a href="/admin/bookings/create"
+   class="link-button"
+   style="width:auto;">
+   + Create Booking
+</a>
+
+
+
+
+
         <form action="/admin/bookings" method="get" class="search-form">
           <select name="status">
             <option value="">All statuses</option>
@@ -35,13 +49,18 @@
             <% for (const b of bookings) { %>
               <span><%= b.member_name %></span>
               <span><%= b.session_name %></span>
-              <span><%= b.session_date %></span>
+
+              <!-- <span><%= b.session_date %></span> -->
+               <span><%= formatDate(b.session_date) %></span>
               <span><%= b.activity_name || 'N/A' %></span>
               <span><%= b.trainer_name || 'N/A' %></span>
               <span class="badge <%= b.status %>"><%= b.status %></span>
               <div style="display:flex; flex-direction:column; gap:6px;">
+             <a  href="/admin/bookings/<%= b.id %>"  style=" display:block; background:rgb(10, 4, 68);
+    color:white;  padding:8px; text-align:center; text-decoration:none; "> Edit</a>
+              
                 <!-- Update status -->
-                <form action="/admin/bookings/<%= b.id %>" method="post" style="display:flex; gap:4px;">
+                <!-- <form action="/admin/bookings/<%= b.id %>" method="post" style="display:flex; gap:4px;">
                   <input type="hidden" name="action" value="update" />
                   <select name="status" style="flex:1; padding:5px 8px; font-size:13px;">
                     <option value="confirmed"  <%= b.status === 'confirmed'  ? 'selected' : '' %>>Confirmed</option>
@@ -49,7 +68,7 @@
                     <option value="completed"  <%= b.status === 'completed'  ? 'selected' : '' %>>Completed</option>
                   </select>
                   <input type="submit" value="Update" style="width:auto; padding:5px 10px; font-size:13px;" />
-                </form>
+                </form> -->
                 <!-- Delete -->
                 <form action="/admin/bookings/<%= b.id %>" method="post">
                   <input type="hidden" name="action" value="delete" />

@@ -12,7 +12,7 @@
 
         <article>
           <h2 class="section-heading"><%= blog.title %></h2>
-          <p style="font-size:13px; color:#888; margin-bottom:20px;">
+          <p style="font-size:13px; color:#763939; margin-bottom:20px;">
             By <strong><%= blog.author_name || 'Unknown' %></strong>
             <% if (blog.category) { %> &nbsp;&bull;&nbsp; <%= blog.category %><% } %>
             &nbsp;&bull;&nbsp; <%= formatDate(blog.created_at) %>

@@ -126,9 +126,6 @@ CREATE TABLE IF NOT EXISTS blogs (
 INSERT INTO users (name, email, password_hash, phone, address, role, status) VALUES
 ('Admin User',    'admin@gym.com',   '$2b$10$hash_admin_placeholder',   '+1000000001', '1 Admin St',   'admin',   'active'),
 ('Sarah Johnson', 'sarah@gym.com',   '$2b$10$hash_sarah_placeholder',   '+1000000002', '2 Trainer Ave', 'trainer', 'active'),
-('Mike Williams', 'mike@gym.com',    '$2b$10$hash_mike_placeholder',    '+1000000003', '3 Fitness Rd',  'trainer', 'active'),
-('Alice Brown',   'alice@gym.com',   '$2b$10$hash_alice_placeholder',   '+1000000004', '4 Member Ln',   'member',  'active'),
-('Bob Davis',     'bob@gym.com',     '$2b$10$hash_bob_placeholder',     '+1000000005', '5 Member Ln',   'member',  'active'),
 ('Carol Wilson',  'carol@gym.com',   '$2b$10$hash_carol_placeholder',   '+1000000006', '6 Member Ln',   'member',  'active');
 
 -- Activities

@@ -30,9 +30,8 @@
                 </form>
               </div>
             <% } %>
-          </section>
-
-          <!-- Create / Edit form -->
+          </section> 
+              <!-- Create / Edit form -->
           <% const editLocation = selected; %>
           <form action="/admin/locations/<%= editLocation ? editLocation.id : '' %>" method="post" class="form-grid">
             <h3 class="two-col"><%= editLocation ? 'Edit Location' : 'Create New Location' %></h3>

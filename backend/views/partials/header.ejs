@@ -6,7 +6,6 @@
     </a>
 
     <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">&#9776;</button>
-
     <nav class="header-nav" id="headerNav">
       <% if (authenticatedUser) { %>
         <% if (authenticatedUser.role === 'admin') { %>
@@ -19,11 +18,11 @@
           <a href="/admin/blogs"       class="<%= currentPath.startsWith('/admin/blogs')       ? 'nav-active' : '' %>">Blogs</a>
         <% } else if (authenticatedUser.role === 'trainer') { %>
           <a href="/trainer/dashboard" class="<%= currentPath.startsWith('/trainer/dashboard') ? 'nav-active' : '' %>">Dashboard</a>
-          <a href="/trainer/sessions"  class="<%= currentPath.startsWith('/trainer/sessions')  ? 'nav-active' : '' %>">My Sessions</a>
+          <a href="/trainer/sessions"  class="<%= currentPath.startsWith('/trainer/sessions')  ? 'nav-active' : '' %>">Sessions</a>
           <a href="/trainer/blog"      class="<%= currentPath.startsWith('/trainer/blog')      ? 'nav-active' : '' %>">Blog</a>
         <% } else { %>
           <a href="/member/dashboard"  class="<%= currentPath.startsWith('/member/dashboard')  ? 'nav-active' : '' %>">Dashboard</a>
-          <a href="/member/sessions"   class="<%= currentPath.startsWith('/member/sessions')   ? 'nav-active' : '' %>">Browse Sessions</a>
+          <a href="/member/sessions"   class="<%= currentPath.startsWith('/member/sessions')   ? 'nav-active' : '' %>">Sessions</a>
           <a href="/member/bookings"   class="<%= currentPath.startsWith('/member/bookings')   ? 'nav-active' : '' %>">My Bookings</a>
           <a href="/member/blog"       class="<%= currentPath.startsWith('/member/blog')       ? 'nav-active' : '' %>">Blog</a>
         <% } %>

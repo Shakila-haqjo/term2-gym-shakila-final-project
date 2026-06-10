@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    
     <%- include("../partials/head.ejs") %>
     <title>FitGym - My Bookings</title>
   </head>
@@ -23,7 +24,7 @@
             <span class="data-list-heading">Actions</span>
             <% for (const b of bookings) { %>
               <span><%= b.session_name %></span>
-              <span><%= b.session_date %></span>
+              <span><%= formatDate(b.session_date) %></span>
               <span><%= b.session_time ? b.session_time.slice(0,5) : '' %></span>
               <span><%= b.activity_name || 'N/A' %></span>
               <span class="badge <%= b.status %>"><%= b.status %></span>

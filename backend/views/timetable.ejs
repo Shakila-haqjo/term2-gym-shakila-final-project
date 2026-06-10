@@ -17,7 +17,7 @@
             <% for (const session of sessions) { %>
               <article class="card">
                 <h3><%= session.name %></h3>
-                <p>Date: <strong><%= session.date %></strong> at <strong><%= session.time ? session.time.slice(0,5) : '' %></strong></p>
+                <p>Date: <strong><%= formatDate(session.date) %></strong> at <strong><%= session.time ? session.time.slice(0,5) : ' ' %></strong></p>
                 <p>Activity: <%= session.activity_name || 'N/A' %></p>
                 <p>Location: <%= session.location_name || 'N/A' %></p>
                 <p>Trainer: <%= session.trainer_name || 'N/A' %></p>

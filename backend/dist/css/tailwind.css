@@ -657,7 +657,7 @@
       &:has(> input[type="date"]) {
         :where(input[type="date"]) {
           display: inline-flex;
-          webkit-appearance: none;
+          -webkit-user-drag: none;
           appearance: none;
         }
         input[type="date"]::-webkit-calendar-picker-indicator {

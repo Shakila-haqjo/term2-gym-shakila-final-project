@@ -4,41 +4,76 @@
     <%- include("../partials/head.ejs") %>
     <title>FitGym - Blog</title>
   </head>
-  <body>
+
+  <body class="member-page">
     <main>
       <%- include("../partials/header.ejs") %>
+
       <section class="page-content">
+
         <h2 class="section-heading">Blog</h2>
-        <a href="/member/blog/create" class="link-button" style="width:auto; padding:8px 20px; margin-bottom:15px; display:inline-block;">Write a Post</a>
+
+        <!-- Create button -->
+        <a href="/member/blog/create" 
+           class="link-button" 
+           style="width:auto; padding:8px 20px; margin-bottom:15px; display:inline-block;">
+          Write a Post
+        </a>
 
         <% if (blogs.length === 0) { %>
           <p>No blog posts yet. Be the first to write one!</p>
         <% } else { %>
-          <div class="data-list cols-6" style="margin-top:15px;">
-            <span class="data-list-heading">Title</span>
-            <span class="data-list-heading">Category</span>
-            <span class="data-list-heading">Status</span>
-            <span class="data-list-heading">Created</span>
-            <span class="data-list-heading">Actions</span>
-            <span class="data-list-heading"></span>
+
+          <!-- ✅ FIX: Use ONLY blog-grid (remove stats-row & table layout) -->
+          <div class="blog-grid">
+
             <% for (const blog of blogs) { %>
-              <span><%= blog.title %></span>
-              <span><%= blog.category || 'N/A' %></span>
-              <span class="badge <%= blog.status %>"><%= blog.status %></span>
-              <span><%= formatDate(blog.created_at) %></span>
-              <span style="display:flex; gap:6px;">
-                <a href="/blog/<%= blog.id %>" class="link-button" style="width:auto; padding:5px 12px;">Read</a>
-                <a href="/member/blog/<%= blog.id %>/edit" class="link-button" style="width:auto; padding:5px 12px;">Edit</a>
-              </span>
-              <form action="/member/blog/<%= blog.id %>" method="post">
-                <input type="hidden" name="action" value="delete" />
-                <input type="submit" value="Delete" class="danger"
-                  data-confirm="Are you sure you want to delete &quot;<%= blog.title %>&quot;? This cannot be undone." />
-              </form>
+
+              <div class="blog-card">
+
+                <!-- Title -->
+                <h3 class="blog-title"><%= blog.title %></h3>
+
+                <!-- Meta -->
+                <!-- <p class="blog-meta">
+                  Category: <%= blog.category || 'N/A' %>
+                </p> -->
+
+                <!-- Date (only date, no time) -->
+                <p class="blog-date">
+                  Created: <%= formatDate(blog.created_at) %>
+                </p>
+
+                <!-- Actions -->
+                <div class="blog-actions">
+
+                  <a href="/blog/<%= blog.id %>" class="link-button">
+                    Read
+                  </a>
+
+                  <form action="/member/blog/<%= blog.id %>" method="post">
+                    <input type="hidden" name="action" value="delete" />
+
+                    <input 
+                      type="submit" 
+                      value="Delete" 
+                      class="danger"
+                      data-confirm="Are you sure you want to delete '<%= blog.title %>'?"
+                    />
+                  </form>
+
+                </div>
+
+              </div>
+
             <% } %>
+
           </div>
+
         <% } %>
+
       </section>
+
       <%- include("../partials/footer.ejs") %>
     </main>
   </body>

@@ -1,5 +1,13 @@
 import { DatabaseModel } from './DatabaseModel.mjs';
 
+/**
+ * UserModel
+ *
+ * Handles all database operations related to users.
+ * TERM 2 ADDITIONS (marked with ── TERM 2 ──):
+ *   - findByAuthKey(key)     - look up user by authentication_key
+ *   - setAuthKey(id, key)    - save/clear authentication_key on login/logout
+ */
 export class UserModel extends DatabaseModel {
 
   static async findByEmail(email) {
@@ -87,5 +95,38 @@ export class UserModel extends DatabaseModel {
     const [{ trainers }] = await this.query("SELECT COUNT(*) as trainers FROM users WHERE role = 'trainer'");
     const [{ active }]   = await this.query("SELECT COUNT(*) as active FROM users WHERE status = 'active'");
     return { total, members, trainers, active };
+  }
+
+  // ── TERM 2 ADDITIONS ──────────────────────────────────────────────────────
+
+  /**
+   * Find a user by their authentication_key.
+   * Called by the API auth middleware on every request that sends x-auth-key.
+   * Mirrors coffee project's EmployeeModel.getByAuthenticationKey().
+   *
+   * @param {string} key - UUID authentication key
+   * @returns {Promise<Object|undefined>} User record or undefined
+   */
+  static async findByAuthKey(key) {
+    const rows = await this.query(
+      'SELECT id, name, email, phone, address, role, avatar, status, authentication_key FROM users WHERE authentication_key = ?',
+      [key]
+    );
+    return rows[0];
+  }
+
+  /**
+   * Save or clear the authentication_key for a user.
+   * Called on login (set a UUID) and logout (set NULL).
+   * Mirrors coffee project's EmployeeModel.update() auth key handling.
+   *
+   * @param {number} id  - User ID
+   * @param {string|null} key - UUID to store, or null to clear
+   */
+  static async setAuthKey(id, key) {
+    await this.query(
+      'UPDATE users SET authentication_key = ? WHERE id = ?',
+      [key, id]
+    );
   }
 }

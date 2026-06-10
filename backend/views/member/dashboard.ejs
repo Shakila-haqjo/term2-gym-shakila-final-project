@@ -12,13 +12,16 @@
 
         <h3 style="margin: 15px 0 5px;">Your Upcoming Bookings</h3>
         <% if (bookings.length === 0) { %>
-          <p>You have no upcoming bookings. <a href="/member/sessions">Browse sessions</a> to book one.</p>
+          <p>You have no upcoming bookings. <a href="/member/sessions"> sessions</a> to book one.</p>
         <% } else { %>
           <div class="card-list">
             <% for (const b of bookings) { %>
               <article class="card">
                 <h3><%= b.session_name %></h3>
-                <p>Date: <strong><%= b.session_date %></strong> at <strong><%= b.session_time ? b.session_time.slice(0,5) : '' %></strong></p>
+      <p>
+  Date: <strong><%= formatDate(b.session_date) %></strong>
+  at <strong><%= b.session_time ? b.session_time.slice(0,5) : '' %></strong>
+</p>
                 <p>Activity: <%= b.activity_name || 'N/A' %></p>
                 <p>Location: <%= b.location_name || 'N/A' %></p>
                 <p>Trainer: <%= b.trainer_name || 'N/A' %></p>
@@ -32,6 +35,7 @@
             <% } %>
           </div>
         <% } %>
+        
 
       </section>
       <%- include("../partials/footer.ejs") %>

@@ -141,7 +141,7 @@ textarea {
   font-size: 14px;
   font-family: inherit;
   background: #fff;
-  color: #1a1a2e;
+  color: #34344c;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
@@ -156,7 +156,7 @@ textarea { height: 6em; resize: vertical; }
 label {
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: #121a26;
 }
 
 /* ── Buttons ─────────────────────────────────────────────────────── */
@@ -224,16 +224,10 @@ input[type="submit"].danger:hover {
 
 /* ── Data list ───────────────────────────────────────────────────── */
 .data-list {
-  display: grid;
-  align-content: start;
-  gap: 10px;
   background: #fff;
   border: 1px solid #e2e8f0;
   border-radius: 10px;
-  padding: 16px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
-
 .cols-3 { grid-template-columns: 1fr 1fr 1fr; }
 .cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
 .cols-5 { grid-template-columns: 1fr 1fr 1fr 1fr 1fr; }
@@ -262,7 +256,7 @@ input[type="submit"].danger:hover {
 .section-heading {
   font-size: 20px;
   font-weight: 700;
-  color: #1e2537;
+  color: #181c29;
   margin: 0 0 20px;
   padding-bottom: 10px;
   border-bottom: 2px solid #e2e8f0;
@@ -378,15 +372,15 @@ input[type="submit"].danger:hover {
 .hamburger {
   display: none;
   margin-left: auto;
-  background: none;
-  border: 1px solid rgba(255,255,255,0.3);
-  color: #fff;
-  font-size: 20px;
-  padding: 5px 11px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.25);
+  color: white;
+  font-size: 18px;
+  width: 42px;
+  height: 42px;
   border-radius: 6px;
   cursor: pointer;
-  line-height: 1;
-  flex-shrink: 0;
+  padding: 0;
 }
 
 /* ── Confirm modal ───────────────────────────────────────────────── */
@@ -429,7 +423,7 @@ input[type="submit"].danger:hover {
   padding: 9px 24px;
   border: 1px solid #cbd5e1;
   background: #fff;
-  color: #374151;
+  color: #596984;
   border-radius: 6px;
   font-size: 14px;
   font-weight: 600;
@@ -468,48 +462,321 @@ input[type="submit"].danger:hover {
   .card-list        { grid-template-columns: 1fr 1fr; }
   .stats-row        { grid-template-columns: 1fr 1fr; }
 }
+@media screen and (max-width:768px){
 
-@media screen and (max-width: 768px) {
-  /* Show hamburger, hide nav by default */
-  .hamburger { display: block; }
-
-  nav.header-nav {
-    display: none;
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-    padding: 8px 0 12px;
-    border-top: 1px solid rgba(255,255,255,0.1);
-    margin-top: 4px;
-    gap: 2px;
+  .hamburger{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width:40px;
+    height:40px;
+    font-size:20px;
+    padding:0;
   }
 
-  nav.header-nav.open { display: flex; }
-
-  nav.header-nav a {
-    width: 100%;
-    padding: 9px 14px;
-    border-radius: 6px;
+  .header-inner{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
   }
 
-  nav.header-nav a.logout,
-  nav.header-nav a.nav-logout { margin-left: 0; }
-
-  header .header-inner {
-    flex-wrap: wrap;
-    padding: 10px 0;
+  nav.header-nav{
+    display:none;
+    width:100%;
+    flex-direction:column;
+    background:#1e2537;
   }
+
+  nav.header-nav.open{
+    display:flex;
+  }
+
+  nav.header-nav a{
+    width:100%;
+    padding:12px;
+    box-sizing:border-box;
+  }
+
+  .page-content{
+    overflow-x:auto;
+    overflow-y:hidden;
+    width:100%;
+  }
+
+  .half-half-layout{
+    min-width:1200px;
+  }
+
+  .data-list{
+    min-width:1200px;
+  }
+
+  .form-grid{
+    min-width:550px;
+  }
+
+  .search-form{
+    min-width:700px;
+  }
+
 }
 
-@media screen and (max-width: 600px) {
-  .page-content      { width: 100%; padding: 0 12px 40px; }
-  .responsive-half   { width: 100%; }
-  .card-list         { grid-template-columns: 1fr; }
-  .stats-row         { grid-template-columns: 1fr 1fr; }
-  .cols-3, .cols-4, .cols-5, .cols-6, .cols-7 { grid-template-columns: 1fr 1fr; }
-  .form-grid         { grid-template-columns: 1fr; }
-  .form-grid .two-col { grid-column: 1; }
-  .search-form       { flex-direction: column; }
-  .search-form input,
-  .search-form select { width: 100%; flex: none; }
+
+/* Base button (shared style) */
+.btn {
+  padding: 8px 14px;
+  border-radius: 20px;   /* pill shape like filter buttons */
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+/* OUTLINE style (like Filter / Clear) */
+.btn-outline {
+  background: transparent;
+  border: 1px solid #000;
+  color: #000;
+}
+
+.btn-outline:hover {
+  background: #000;
+  color: #fff;
+}
+
+/* SOLID black style (for primary actions) */
+.btn-black {
+  background: #000;
+  color: #fff;
+}
+
+.btn-black:hover {
+  background: #222;
+}
+.stat-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.data-list a {
+  display: contents; /* keeps grid layout */
+  text-decoration: none;
+  color: inherit;
+}
+
+.data-list span {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.data-list a:hover span {
+  background: #f5f5f5;
+}
+
+.stat-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+}
+
+
+
+@media (max-width: 768px) {
+  .header-inner {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .page-content {
+    width: 100%;
+    padding: 10px;
+  }
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+/* ─────────────────────────────────────────────
+   FIX: Mobile select dropdown overflow issue
+   (for blog status + all forms)
+───────────────────────────────────────────── */
+
+/* Make select inputs fully responsive */
+select {
+  width: 100%;
+  max-width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* Prevent form from overflowing screen */
+
+/* Mobile fix: stack form properly */
+
+
+
+
+
+
+
+.row-actions .link-button {
+  width: auto;
+  display: inline-block;
+}
+
+
+
+
+.link-button {
+  display: inline-block;
+  padding: 8px 14px;
+  background: #29303c;   /* keep your button color */
+  color: #ffffff !important;  /* FORCE white text */
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+.link-button:hover {
+  background: #29303c;
+  color: #ffffff !important;
+}
+.data-list {
+  display: grid;
+  gap: 0;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px;
+}
+
+/* ===============================
+   BLOG SYSTEM FIX (FINAL)
+=================================*/
+
+/* ===== MEMBER + TRAINER = CARDS ONLY ===== */
+.member-page .blog-list,
+.trainer-page .blog-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+
+.member-page .blog-card,
+.trainer-page .blog-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 18px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: 0.2s ease;
+}
+
+.member-page .blog-card:hover,
+.trainer-page .blog-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+
+.member-page .blog-grid,
+.trainer-page .blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+.blog-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.blog-actions form {
+  margin: 0;
+}
+
+.blog-actions .link-button,
+.blog-actions input[type="submit"] {
+  width: auto;
+}
+
+/* FORCE: ensure cards never become table */
+
+
+/* ===== ADMIN = TABLE ONLY ===== */
+.admin-page .data-list {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* header row */
+.admin-page .data-list-heading {
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  background: #f8fafc;
+  color: #64748b;
+  padding: 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* table cells */
+.admin-page .data-list > span,
+.admin-page .data-list > div,
+.admin-page .data-list > a {
+  padding: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+/* remove last border row look */
+
+
+/* hover row effect */
+.admin-page .data-list > span:hover,
+.admin-page .data-list > div:hover {
+  background: #f9fafb;
+}
+
+/* force NO card style in admin */
+.admin-page .blog-card {
+  display: contents !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+html,
+body {
+  overflow-x: auto;
+}
+
+main {
+  min-width: 1200px;
 }

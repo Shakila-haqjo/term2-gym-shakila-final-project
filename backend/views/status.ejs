@@ -14,7 +14,12 @@
             <p><%= message %></p>
           <% } %>
           <br />
-          <a href="javascript:history.back()" class="link-button">Go Back</a>
+      <a href="<%= typeof backUrl !== 'undefined'
+  ? backUrl
+  : '/' %>"
+  class="link-button">
+  Go back
+</a>
         </div>
       </section>
       <%- include("partials/footer.ejs") %>

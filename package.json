@@ -1,25 +1,29 @@
 {
-  "name": "backend",
+  "name": "gym-backend",
   "version": "1.0.0",
+  "type": "module",
   "main": "backend/server.mjs",
   "scripts": {
     "dev": "nodemon",
-    "start": "node backend/server.mjs",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node backend/server.mjs"
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.2.1",
     "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
     "daisyui": "^5.5.19",
     "ejs": "^4.0.1",
     "express": "^5.2.1",
     "express-ejs-layouts": "^2.5.1",
+    "express-openapi-validator": "^5.6.2",
     "express-session": "^1.19.0",
     "mysql2": "^3.16.2",
+    "swagger-jsdoc": "^6.3.0",
+    "swagger-ui-express": "^5.0.1",
+    "tailwindcss": "^4.2.2",
     "validator": "^13.15.26"
   },
   "devDependencies": {
-    "nodemon": "^3.1.11",
-    "tailwindcss": "^4.2.2"
+    "nodemon": "^3.1.11"
   }
 }

@@ -1,135 +1,145 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <%- include("../partials/head.ejs") %>
-    <title>FitGym - Blog Management</title>
+  <title>FitGym - Blog Management</title>
 </head>
 
-<body>
+//
   <main>
     <%- include("../partials/header.ejs") %>
-      <section class="page-content">
-        <h2 class="section-heading">Blog Management</h2>
 
-        <form action="/admin/blogs" method="get" class="search-form">
-          <input type="text" name="search" placeholder="Search title..." value="<%= search %>" />
-          <select name="status">
-            <option value="">All statuses</option>
-            <option value="published" <%=statusFilter==='published' ? 'selected' : '' %>>Published</option>
-            <option value="draft" <%=statusFilter==='draft' ? 'selected' : '' %>>Draft</option>
-          </select>
-          <input type="submit" value="Filter" style="width:auto;" />
-          <a href="/admin/blogs" class="link-button" style="width:auto;">Clear</a>
-        </form>
+    <section class="page-content">
+      <h2 class="section-heading">Blog Management</h2>
 
-        <div class="half-half-layout" style="margin-top:15px;">
+      <!-- Filter -->
+      <form action="/admin/blogs" method="get" class="search-form">
+        <input type="text" name="search" placeholder="Search title..." value="<%= search %>" />
+
+        <select name="status">
+          <option value="">All statuses</option>
+          <option value="published" <%= statusFilter==='published' ? 'selected' : '' %>>Published</option>
+          <option value="draft" <%= statusFilter==='draft' ? 'selected' : '' %>>Draft</option>
+        </select>
+
+        <input type="submit" value="Filter" style="width:auto;" />
+        <a href="/admin/blogs" class="link-button" style="width:auto;">Clear</a>
+      </form>
+
+      <div class="data-list">
+
+        <!-- BLOG LIST -->
+        
+<% if (blogs.length === 0) { %>
+  <p>No blog posts found.</p>
+<% } else { %>
+
+<section class="data-list cols-5">
+
+  <!-- HEADINGS -->
+  <span class="data-list-heading">Title</span>
+  <span class="data-list-heading">Author</span>
+  <span class="data-list-heading">Category</span>
+  <span class="data-list-heading">Status</span>
+  <span class="data-list-heading">Actions</span>
+
+  <% blogs.forEach(blog => { %>
+
+    <span><%= blog.title %></span>
+
+    <span><%= blog.author_name || 'Unknown' %></span>
+
+    <span><%= blog.category || 'General' %></span>
+
+    <span class="badge <%= blog.status %>">
+      <%= blog.status %>
+    </span>
+
+    <div class="row-actions">
+
+      <a href="/admin/blogs/<%= blog.id %>" class="link-button">
+        View
+      </a>
+
+      <form action="/admin/blogs/<%= blog.id %>" method="post">
+        <input type="hidden" name="action" value="delete" />
+        <input type="submit" value="Delete" class="danger"
+          data-confirm="Are you sure you want to delete this blog post?" />
+      </form>
+
+    </div>
+
+  <% }) %>
+
+</section>
 
 
-          <!-- Blog list -->
-          <section>
-            <% if (blogs.length===0) { %>
-              <p>No blog posts found.</p>
-              <% } else { %>
-                <div class="data-list cols-6">
-                  <span class="data-list-heading">Title</span>
-                  <span class="data-list-heading">Author</span>
-                  <span class="data-list-heading">Category</span>
-                  <span class="data-list-heading">Status</span>
-                  <span class="data-list-heading">Created</span>
-                  <span class="data-list-heading">Actions</span>
-                  <% for (const blog of blogs) { %>
-                    <span><a href="/admin/blogs/<%= blog.id %>" class="link-button"
-                        style="background:none;color:#1e2537;padding:0;font-weight:500;">
-                        <%= blog.title %>
-                      </a></span>
-                    <span>
-                      <%= blog.author_name || 'Unknown' %>
-                    </span>
-                    <span>
-                      <%= blog.category || 'N/A' %>
-                    </span>
-                    <span class="badge <%= blog.status %>">
-                      <%= blog.status %>
-                    </span>
-                    <span>
-                      <%= formatDate(blog.created_at) %>
-                    </span>
-                    <span style="display:flex;gap:6px;">
-                      <a href="/admin/blogs/<%= blog.id %>" class="link-button" style="width:auto;">View</a>
-                      <form action="/admin/blogs/<%= blog.id %>" method="post" style="display:inline;">
-                        <input type="hidden" name="action" value="delete" />
-                        <input type="submit" value="Delete" class="danger" style="width:auto;"
-                          data-confirm="Are you sure you want to delete &quot;<%= blog.title %>&quot;? This cannot be undone." />
-                      </form>
-                    </span>
-                    <% } %>
-                </div>
-                <% } %>
-          </section>
 
-          <!-- Create form / View panel -->
-          <% if (selected) { %>
-            <!-- View selected blog -->
-            <div class="form-grid">
-              <h3 class="two-col">
-                <%= selected.title %>
-              </h3>
-              <span style="color:#666;">By</span>
-              <span><strong>
-                  <%= selected.author_name %>
-                </strong></span>
-              <span style="color:#666;">Category</span>
-              <span>
-                <%= selected.category || 'N/A' %>
-              </span>
-              <span style="color:#666;">Status</span>
-              <span class="badge <%= selected.status %>">
-                <%= selected.status %>
-              </span>
-              <span style="color:#666;">Created</span>
-              <span>
-                <%= formatDate(selected.created_at) %>
-              </span>
-              <div class="two-col"
-                style="padding:12px;background:#f9f9f9;border:1px solid #ddd;border-radius:6px;line-height:1.6;white-space:pre-wrap;">
-                <%= selected.content %>
-              </div>
-              <a href="/admin/blogs" class="link-button two-col">Back to list</a>
-              <form action="/admin/blogs/<%= selected.id %>" method="post" class="two-col">
-                <input type="hidden" name="action" value="delete" />
-                <input type="submit" value="Delete Post" class="danger" style="width:100%;"
-                  data-confirm="Are you sure you want to delete &quot;<%= selected.title %>&quot;? This cannot be undone." />
-              </form>
+          <% } %>
+
+        <!-- RIGHT PANEL -->
+        <% if (selected) { %>
+
+          <!-- VIEW BLOG -->
+          <div class="form-grid">
+            <h3 class="two-col"><%= selected.title %></h3>
+
+            <span style="color:#666;">By</span>
+            <span><strong><%= selected.author_name %></strong></span>
+
+            <span style="color:#666;">Category</span>
+            <span><%= selected.category || 'N/A' %></span>
+
+            <span style="color:#666;">Status</span>
+            <span class="badge <%= selected.status %>"><%= selected.status %></span>
+
+            <span style="color:#666;">Created</span>
+            <span><%= formatDate(selected.created_at) %></span>
+
+            <div class="two-col"
+              style="padding:12px;background:#f9f9f9;border:1px solid #ddd;border-radius:6px;line-height:1.6;white-space:pre-wrap;">
+              <%= selected.content %>
             </div>
-            <% } else { %>
-              <!-- Create new blog -->
-              <form action="/admin/blogs" method="post" class="form-grid">
-                <h3 class="two-col">Create New Blog Post</h3>
 
-                <label for="title">Title:</label>
-                <input type="text" name="title" id="title" required />
+            <a href="/admin/blogs" class="link-button two-col">Back to list</a>
 
-                <label for="category">Category:</label>
-                <input type="text" name="category" id="category" placeholder="e.g. Fitness Tips" />
+            <form action="/admin/blogs/<%= selected.id %>" method="post" class="two-col">
+              <input type="hidden" name="action" value="delete" />
+              <input type="submit" value="Delete Post" class="danger" style="width:100%;"
+                data-confirm="Are you sure you want to delete '<%= selected.title %>'?" />
+            </form>
+          </div>
 
-                <label for="status">Status:</label>
-                <select name="status" id="status">
-                  <option value="published">Published</option>
-                  <option value="draft">Draft</option>
-                </select>
+        <% } else { %>
 
-                <label for="content">Content:</label>
-                <textarea name="content" id="content" rows="8" style="resize:vertical;" required></textarea>
+          <!-- CREATE BLOG -->
+          <form action="/admin/blogs" method="post" class="form-grid">
+            <h3 class="two-col">Create New Blog Post</h3>
 
-                <input type="submit" name="action" value="create" class="two-col" />
-              </form>
-              <% } %>
+            <label for="title">Title:</label>
+            <input type="text" name="title" id="title" required />
 
-        </div>
-      </section>
-      <%- include("../partials/footer.ejs") %>
+            <!-- <label for="category">Category:</label>
+            <input type="text" name="category" id="category" placeholder="e.g. Fitness Tips" /> -->
+
+            <label for="status">Status:</label>
+            <select name="status" id="status">
+              <option value="published">Published</option>
+              <!-- <option value="draft">Draft</option> -->
+            </select>
+
+            <label for="content">Content:</label>
+            <textarea name="content" id="content" rows="8" style="resize:vertical;" required></textarea>
+
+            <input type="submit" name="action" value="create" class="two-col" />
+          </form>
+
+        <% } %>
+
+      </div>
+    </section>
+
+    <%- include("../partials/footer.ejs") %>
   </main>
 </body>
-
 </html>
