@@ -1,44 +1,27 @@
 /**
  * APIBlogsController.mjs
- *
- * REST API endpoints for blog posts.
- *
- * Routes (mounted at /api/blogs):
- *   GET    /api/blogs      - All published posts (public)
- *   POST   /api/blogs      - Create a post (member/trainer)
- *   DELETE /api/blogs/:id  - Delete a post (own or admin)
+ * GET    /api/blogs     - All published posts (public)
+ * POST   /api/blogs     - Create post (member/trainer)
+ * DELETE /api/blogs/:id - Delete post (own or admin)
  */
-
 import express from "express";
 import { APIAuthenticationController } from "./APIAuthenticationController.mjs";
-import { BlogModel } from "../../models/BlogModel.mjs";
+import { BlogModel }                   from "../../models/BlogModel.mjs";
 
 export class APIBlogsController {
   static routes = express.Router();
 
   static {
-    // GET /api/blogs - public (no auth required per use case diagram)
-    this.routes.get("/", this.getBlogs);
-
-    // POST /api/blogs - member or trainer only
-    this.routes.post(
-      "/",
+    this.routes.get("/", APIBlogsController.getBlogs);
+    this.routes.post("/",
       APIAuthenticationController.restrict(["member", "trainer", "admin"]),
-      this.createBlog,
-    );
-
-    // DELETE /api/blogs/:id
-    this.routes.delete(
-      "/:id",
+      APIBlogsController.createBlog);
+    this.routes.delete("/:id",
       APIAuthenticationController.restrict(["member", "trainer", "admin"]),
-      this.deleteBlog,
-    );
+      APIBlogsController.deleteBlog);
   }
 
   /**
-   * GET /api/blogs
-   * Returns all published blog posts, newest first.
-   *
    * @openapi
    * /api/blogs:
    *    get:
@@ -62,9 +45,7 @@ export class APIBlogsController {
    *                                        example: "My Fitness Journey"
    *                                    content:
    *                                        type: string
-   *                                    category:
-   *                                        type: string
-   *                                        example: "Fitness Tips"
+   *                                        example: "Today I ran 5km..."
    *                                    authorName:
    *                                        type: string
    *                                        example: "Alice Smith"
@@ -77,36 +58,33 @@ export class APIBlogsController {
    *                    application/json:
    *                        schema:
    *                            $ref: "#/components/schemas/Error"
+   *                        example:
+   *                            message: "Failed to load blog posts from database"
+   *                            errors: ["Database error"]
    */
   static async getBlogs(req, res) {
     try {
       const blogs = await BlogModel.listBlogs({ publishedOnly: true });
-      const data  = blogs.map((b) => ({
-        id:          b.id,
-        title:       b.title,
-        category:    b.category,
-        content:     b.content,
-        status:      b.status,
-        views:       b.views,
-        createdAt:   b.created_at,
-        authorId:    b.author_id,
-        authorName:  b.author_name,
+      const data  = blogs.map(b => ({
+        id:           b.id,
+        title:        b.title,
+        category:     b.category,
+        content:      b.content,
+        status:       b.status,
+        views:        b.views,
+        createdAt:    b.created_at,
+        authorId:     b.author_id,
+        authorName:   b.author_name,
         authorAvatar: b.author_avatar,
       }));
-      res.status(200).json(data);
+      return res.status(200).json(data);
     } catch (error) {
       console.error(error);
-      res.status(500).json({
-        message: "Failed to load blog posts from database",
-        errors: [String(error)],
-      });
+      return res.status(500).json({ message: "Failed to load blog posts from database", errors: [String(error)] });
     }
   }
 
   /**
-   * POST /api/blogs
-   * Create a new blog post.
-   *
    * @openapi
    * /api/blogs:
    *    post:
@@ -129,7 +107,7 @@ export class APIBlogsController {
    *                                example: "My Fitness Journey"
    *                            content:
    *                                type: string
-   *                                example: "Today I ran 5km..."
+   *                                example: "Today I ran 5km for the first time!"
    *                            category:
    *                                type: string
    *                                example: "Fitness Tips"
@@ -153,40 +131,65 @@ export class APIBlogsController {
    *                    application/json:
    *                        schema:
    *                            $ref: "#/components/schemas/Error"
+   *                        example:
+   *                            message: "Title must be at least 3 characters."
+   *                            errors: ["Validation failed"]
+   *            '401':
+   *                description: "Not authenticated"
+   *                content:
+   *                    application/json:
+   *                        schema:
+   *                            $ref: "#/components/schemas/Error"
+   *                        example:
+   *                            message: "Not authenticated"
+   *                            errors: ["Please authenticate to access this resource"]
+   *            '500':
+   *                description: "Server error"
+   *                content:
+   *                    application/json:
+   *                        schema:
+   *                            $ref: "#/components/schemas/Error"
+   *                        example:
+   *                            message: "Failed to create blog post"
+   *                            errors: ["Database error"]
    */
-  static async createBlog(req, res) {
-    const { title, content, category } = req.body;
+ static async createBlog(req, res) {
+  const { title, content, category } = req.body;
 
-    if (!title || title.trim().length < 3) {
-      return res.status(400).json({ message: "Title must be at least 3 characters." });
-    }
-    if (!content || content.trim().length < 10) {
-      return res.status(400).json({ message: "Content must be at least 10 characters." });
-    }
+  // Check for HTML tags — prevent XSS
+  const htmlTagPattern = /<[^>]*>/g;
+  if (!title || title.trim().length < 3)
+    return res.status(400).json({ message: "Title must be at least 3 characters.", errors: ["Validation failed"] });
+  if (htmlTagPattern.test(title))
+    return res.status(400).json({ message: "Title cannot contain HTML tags or special characters.", errors: ["XSS not allowed"] });
+  if (!content || content.trim().length < 10)
+    return res.status(400).json({ message: "Content must be at least 10 characters.", errors: ["Validation failed"] });
+  if (/<[^>]*>/g.test(content))
+    return res.status(400).json({ message: "Content cannot contain HTML tags or special characters.", errors: ["XSS not allowed"] });
 
-    try {
+  // Sanitise — strip any remaining special chars
+  const sanitise = (str) => str
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;")
+    .replace(/\//g, "&#x2F;");
+
+  const cleanTitle    = sanitise(title.trim());
+  const cleanContent  = sanitise(content.trim());
+  const cleanCategory = category ? sanitise(category.trim()) : null;
+   try {
       const insertId = await BlogModel.createBlog(
-        req.authenticatedUser.id,
-        title.trim(),
-        category || null,
-        content.trim(),
-        null,
-        "published",
-      );
-      res.status(200).json({ id: insertId, message: "Blog post created" });
+    req.authenticatedUser.id, cleanTitle, cleanCategory, cleanContent, null, "published"
+  );
+      return res.status(200).json({ id: insertId, message: "Blog post created" });
     } catch (error) {
       console.error(error);
-      res.status(500).json({
-        message: "Failed to create blog post",
-        errors: [String(error)],
-      });
+      return res.status(500).json({ message: "Failed to create blog post", errors: [String(error)] });
     }
   }
 
   /**
-   * DELETE /api/blogs/:id
-   * Delete a blog post.
-   *
    * @openapi
    * /api/blogs/{id}:
    *    delete:
@@ -212,42 +215,56 @@ export class APIBlogsController {
    *                                message:
    *                                    type: string
    *                                    example: "Blog post deleted"
+   *            '401':
+   *                description: "Not authenticated"
+   *                content:
+   *                    application/json:
+   *                        schema:
+   *                            $ref: "#/components/schemas/Error"
+   *                        example:
+   *                            message: "Not authenticated"
+   *                            errors: ["Please authenticate to access this resource"]
    *            '403':
    *                description: "Forbidden - not your post"
    *                content:
    *                    application/json:
    *                        schema:
    *                            $ref: "#/components/schemas/Error"
+   *                        example:
+   *                            message: "You can only delete your own posts."
+   *                            errors: ["Access forbidden"]
    *            '404':
    *                description: "Blog post not found"
    *                content:
    *                    application/json:
    *                        schema:
    *                            $ref: "#/components/schemas/Error"
+   *                        example:
+   *                            message: "Blog post not found."
+   *                            errors: ["No post with that ID exists"]
+   *            '500':
+   *                description: "Server error"
+   *                content:
+   *                    application/json:
+   *                        schema:
+   *                            $ref: "#/components/schemas/Error"
+   *                        example:
+   *                            message: "Failed to delete blog post"
+   *                            errors: ["Database error"]
    */
   static async deleteBlog(req, res) {
     const blogId = parseInt(req.params.id);
     const me     = req.authenticatedUser;
-
     try {
       const blog = await BlogModel.findRawById(blogId);
-      if (!blog) {
-        return res.status(404).json({ message: "Blog post not found." });
-      }
-
-      // Members/trainers can only delete their own posts; admin can delete any
-      if (me.role !== "admin" && blog.author_id !== me.id) {
-        return res.status(403).json({ message: "You can only delete your own posts." });
-      }
-
+      if (!blog) return res.status(404).json({ message: "Blog post not found.", errors: ["No post with that ID exists"] });
+      if (me.role !== "admin" && blog.author_id !== me.id)
+        return res.status(403).json({ message: "You can only delete your own posts.", errors: ["Access forbidden"] });
       await BlogModel.deleteBlog(blogId);
-      res.status(200).json({ message: "Blog post deleted" });
+      return res.status(200).json({ message: "Blog post deleted" });
     } catch (error) {
       console.error(error);
-      res.status(500).json({
-        message: "Failed to delete blog post",
-        errors: [String(error)],
-      });
+      return res.status(500).json({ message: "Failed to delete blog post", errors: [String(error)] });
     }
   }
 }

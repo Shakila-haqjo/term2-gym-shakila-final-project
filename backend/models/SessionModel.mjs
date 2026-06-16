@@ -202,4 +202,10 @@ export class SessionModel extends DatabaseModel {
       [sessionId]
     );
   }
+  static async cancelSession(id) {
+  await this.query(
+    "DELETE FROM sessions WHERE id = ?",
+    [id]
+  );
+}
 }

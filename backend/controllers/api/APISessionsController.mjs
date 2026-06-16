@@ -1,36 +1,26 @@
 /**
  * APISessionsController.mjs
- *
- * Mirrors coffee's APIProductsController.
- * Sessions = Products in the gym context.
- *
- * Routes (mounted at /api/sessions):
- *   GET /api/sessions              - All upcoming sessions (timetable) - public
- *   GET /api/sessions?trainer_id=X - Trainer's sessions
- *   GET /api/sessions/:id          - Single session details
+ * GET    /api/sessions              - All upcoming sessions (public)
+ * GET    /api/sessions?trainer_id=X - Trainer's sessions
+ * GET    /api/sessions/:id          - Single session
+ * DELETE /api/sessions/:id          - Cancel session (trainer only)
  */
-
 import express from "express";
-import { SessionModel } from "../../models/SessionModel.mjs";
+import { SessionModel }                from "../../models/SessionModel.mjs";
+import { APIAuthenticationController } from "./APIAuthenticationController.mjs";
 
 export class APISessionsController {
   static routes = express.Router();
 
   static {
-    // GET /api/sessions  and  GET /api/sessions?trainer_id=X
-    this.routes.get("/", this.getSessions);
-
-    // GET /api/sessions/:id
-    this.routes.get("/:id", this.getSessionById);
+    this.routes.get("/",   APISessionsController.getSessions);
+    this.routes.get("/:id", APISessionsController.getSessionById);
+    this.routes.delete("/:id",
+      APIAuthenticationController.restrict(["trainer", "admin"]),
+      APISessionsController.cancelSession);
   }
 
   /**
-   * GET /api/sessions
-   * GET /api/sessions?trainer_id=3
-   *
-   * Mirrors coffee's getProducts. Returns upcoming sessions for the timetable.
-   * If trainer_id provided, returns only that trainer's sessions.
-   *
    * @openapi
    * /api/sessions:
    *    get:
@@ -39,7 +29,6 @@ export class APISessionsController {
    *        parameters:
    *            - name: trainer_id
    *              in: query
-   *              description: Filter by trainer ID
    *              required: false
    *              schema:
    *                  type: integer
@@ -66,6 +55,9 @@ export class APISessionsController {
    *                                    trainerName:
    *                                        type: string
    *                                        example: "Sarah Johnson"
+   *                                    trainerId:
+   *                                        type: integer
+   *                                        example: 6
    *                                    date:
    *                                        type: string
    *                                        format: date
@@ -91,24 +83,23 @@ export class APISessionsController {
    *                    application/json:
    *                        schema:
    *                            $ref: "#/components/schemas/Error"
+   *                        example:
+   *                            message: "Failed to load sessions from database"
+   *                            errors: ["Database error"]
    */
   static async getSessions(req, res) {
     try {
       const filters = { upcoming: true };
-      if (req.query.trainer_id) {
-        filters.trainerId = parseInt(req.query.trainer_id);
-      }
-
+      if (req.query.trainer_id) filters.trainerId = parseInt(req.query.trainer_id);
       const sessions = await SessionModel.listSessions(filters);
-
-      // Map to clean camelCase JSON - mirrors coffee's product mapping
-      const data = sessions.map((s) => ({
+      const data = sessions.map(s => ({
         id:              s.id,
         name:            s.name,
         activityName:    s.activity_name,
         locationName:    s.location_name,
         locationAddress: s.location_address,
         trainerName:     s.trainer_name,
+        trainerId:       s.trainer_id,
         date:            s.date,
         time:            s.time,
         durationMinutes: s.duration_minutes,
@@ -116,22 +107,14 @@ export class APISessionsController {
         bookedCount:     s.booked_count,
         description:     s.description,
       }));
-
-      res.status(200).json(data);
+      return res.status(200).json(data);
     } catch (error) {
       console.error(error);
-      res.status(500).json({
-        message: "Failed to load sessions from database",
-        errors: [error],
-      });
+      return res.status(500).json({ message: "Failed to load sessions from database", errors: [String(error)] });
     }
   }
 
   /**
-   * GET /api/sessions/:id
-   * Mirrors coffee's getProductById.
-   * Used by BookingCheckoutView to load session details.
-   *
    * @openapi
    * /api/sessions/{id}:
    *    get:
@@ -158,40 +141,40 @@ export class APISessionsController {
    *                                name:
    *                                    type: string
    *                                    example: "Morning Yoga"
-   *                                activityName:
-   *                                    type: string
-   *                                    example: "Yoga"
-   *                                trainerName:
-   *                                    type: string
-   *                                    example: "Sarah Johnson"
+   *                                trainerId:
+   *                                    type: integer
+   *                                    example: 6
    *            '404':
    *                description: "Session not found"
    *                content:
    *                    application/json:
    *                        schema:
    *                            $ref: "#/components/schemas/Error"
+   *                        example:
+   *                            message: "Session not found"
+   *                            errors: ["No session exists with that ID"]
    *            '500':
    *                description: "Server error"
    *                content:
    *                    application/json:
    *                        schema:
    *                            $ref: "#/components/schemas/Error"
+   *                        example:
+   *                            message: "Failed to load session from database"
+   *                            errors: ["Database error"]
    */
   static async getSessionById(req, res) {
     try {
       const session = await SessionModel.findById(parseInt(req.params.id));
-
-      if (!session) {
-        return res.status(404).json({ message: "Session not found" });
-      }
-
-      res.status(200).json({
+      if (!session) return res.status(404).json({ message: "Session not found", errors: ["No session exists with that ID"] });
+      return res.status(200).json({
         id:              session.id,
         name:            session.name,
         activityName:    session.activity_name,
         locationName:    session.location_name,
         locationAddress: session.location_address,
         trainerName:     session.trainer_name,
+        trainerId:       session.trainer_id,
         date:            session.date,
         time:            session.time,
         durationMinutes: session.duration_minutes,
@@ -201,10 +184,86 @@ export class APISessionsController {
       });
     } catch (error) {
       console.error(error);
-      res.status(500).json({
-        message: "Failed to load session from database",
-        errors: [error],
-      });
+      return res.status(500).json({ message: "Failed to load session from database", errors: [String(error)] });
+    }
+  }
+
+  /**
+   * @openapi
+   * /api/sessions/{id}:
+   *    delete:
+   *        summary: "Cancel a trainer session"
+   *        tags: [Sessions]
+   *        security:
+   *            - ApiKey: []
+   *        parameters:
+   *            - name: id
+   *              in: path
+   *              required: true
+   *              schema:
+   *                  type: integer
+   *                  example: 1
+   *        responses:
+   *            '200':
+   *                description: "Session cancelled"
+   *                content:
+   *                    application/json:
+   *                        schema:
+   *                            type: object
+   *                            properties:
+   *                                message:
+   *                                    type: string
+   *                                    example: "Session cancelled"
+   *            '401':
+   *                description: "Not authenticated"
+   *                content:
+   *                    application/json:
+   *                        schema:
+   *                            $ref: "#/components/schemas/Error"
+   *                        example:
+   *                            message: "Not authenticated"
+   *                            errors: ["Please authenticate to access this resource"]
+   *            '403':
+   *                description: "Forbidden - not your session"
+   *                content:
+   *                    application/json:
+   *                        schema:
+   *                            $ref: "#/components/schemas/Error"
+   *                        example:
+   *                            message: "You can only cancel your own sessions."
+   *                            errors: ["Access forbidden"]
+   *            '404':
+   *                description: "Session not found"
+   *                content:
+   *                    application/json:
+   *                        schema:
+   *                            $ref: "#/components/schemas/Error"
+   *                        example:
+   *                            message: "Session not found."
+   *                            errors: ["No session exists with that ID"]
+   *            '500':
+   *                description: "Server error"
+   *                content:
+   *                    application/json:
+   *                        schema:
+   *                            $ref: "#/components/schemas/Error"
+   *                        example:
+   *                            message: "Failed to cancel session"
+   *                            errors: ["Database error"]
+   */
+  static async cancelSession(req, res) {
+    try {
+      const sessionId = parseInt(req.params.id);
+      const me        = req.authenticatedUser;
+      const session   = await SessionModel.findById(sessionId);
+      if (!session) return res.status(404).json({ message: "Session not found.", errors: ["No session exists with that ID"] });
+      if (me.role === "trainer" && session.trainer_id !== me.id)
+        return res.status(403).json({ message: "You can only cancel your own sessions.", errors: ["Access forbidden"] });
+      await SessionModel.cancelSession(sessionId);
+      return res.status(200).json({ message: "Session cancelled" });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Failed to cancel session", errors: [String(error)] });
     }
   }
 }
