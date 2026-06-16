@@ -6,30 +6,54 @@ import StatusPage from "../common/StatusPage";
 
 function BookingsView() {
   const { user, status: authStatus } = useAuthenticate();
-  const [bookings, setBookings] = useState([]);
-  const [status, setStatus]     = useState(null);
-  const [loading, setLoading]   = useState(true);
+  const [bookings, setBookings]       = useState([]);
+  const [status, setStatus]           = useState(null);
+  const [loading, setLoading]         = useState(true);
+  const [confirmCancel, setConfirmCancel] = useState(null); // bookingId to cancel
 
-  // Show status page for guests and trainers
-  if (authStatus !== "resuming" && !user) {
-    return <StatusPage title="Login Required"
-      message="You need to login to view your bookings."
-      actionLabel="Go to Login" actionPath="/login" />;
-  }
-  if (user && user.role === "trainer") {
-    return <StatusPage title="Unauthorised"
-      message="Trainers cannot access the bookings page. Please use the Timetable to manage your sessions."
-      actionLabel="Go to Timetable" actionPath="/timetable" />;
+  // ── Access control ────────────────────────────────────────────────────────
+  if (authStatus === "resuming") {
+    return <span className="loading loading-spinner loading-xl m-8"></span>;
   }
 
+  if (!user) {
+    return (
+      <StatusPage
+        title="Login Required"
+        message="You need to login to view your bookings."
+        actionLabel="Go to Login"
+        actionPath="/login"
+      />
+    );
+  }
+
+  if (user.role === "trainer") {
+    return (
+      <StatusPage
+        title="Unauthorised"
+        message="Trainers cannot access the bookings page. Please use My Sessions to manage your sessions."
+        actionLabel="Go to My Sessions"
+        actionPath="/timetable"
+      />
+    );
+  }
+
+  // ── Data fetching ─────────────────────────────────────────────────────────
   const getBookings = useCallback(() => {
     if (!user) return;
     setLoading(true);
     setStatus(null);
-    fetchAPI("GET", "/bookings?member_id=" + user.id, null, localStorage.getItem("auth-key"))
+    fetchAPI(
+      "GET",
+      "/bookings?member_id=" + user.id,
+      null,
+      localStorage.getItem("auth-key")
+    )
       .then(response => {
         if (response.status == 200) {
-          setBookings(response.body);
+          // Only show confirmed bookings — cancelled ones should not appear
+          const confirmed = response.body.filter(b => b.status === "confirmed");
+          setBookings(confirmed);
         } else {
           setStatus(response.body.message);
         }
@@ -40,34 +64,49 @@ function BookingsView() {
 
   useEffect(() => { getBookings(); }, [getBookings]);
 
-  const cancelBooking = useCallback(bookingId => {
-    fetchAPI("DELETE", "/bookings/" + bookingId, null, localStorage.getItem("auth-key"))
+  // ── Cancel booking (confirmed, then refresh) ─────────────────────────────
+  const doCancelBooking = useCallback(() => {
+    if (!confirmCancel) return;
+    const bookingId = confirmCancel;
+    setConfirmCancel(null);
+
+    fetchAPI(
+      "DELETE",
+      "/bookings/" + bookingId,
+      null,
+      localStorage.getItem("auth-key")
+    )
       .then(response => {
-        if (response.status == 200) { getBookings(); }
-        else { setStatus(response.body.message); }
+        if (response.status == 200) {
+          getBookings(); // refresh — cancelled booking will not appear
+        } else {
+          setStatus(response.body.message);
+        }
       })
       .catch(error => setStatus(String(error)));
-  }, [getBookings]);
+  }, [confirmCancel, getBookings]);
 
   return (
     <section className="flex flex-col items-center p-4 gap-4">
       <div className="flex justify-between items-center self-stretch">
         <h1 className="text-3xl font-bold">My Bookings</h1>
-        {user && (
-          <XMLDownloadButton route="/bookings/xml"
-            authenticationKey={localStorage.getItem("auth-key") || ""}
-            filename="my-bookings.xml" className="btn btn-outline btn-sm">
-            Export XML
-          </XMLDownloadButton>
-        )}
+        <XMLDownloadButton
+          route="/bookings/xml"
+          authenticationKey={localStorage.getItem("auth-key") || ""}
+          filename="my-bookings.xml"
+          className="btn btn-outline btn-sm">
+          Export XML
+        </XMLDownloadButton>
       </div>
 
       {status && <span className="text-error self-start">{status}</span>}
 
-      {/* Only show spinner while actually loading */}
-      {loading && <span className="loading loading-spinner loading-xl mt-8"></span>}
+      {/* Spinner — only while loading */}
+      {loading && (
+        <span className="loading loading-spinner loading-xl mt-8"></span>
+      )}
 
-      {/* No bookings message — no spinner */}
+      {/* No bookings message */}
       {!loading && bookings.length === 0 && !status && (
         <div className="flex flex-col items-center gap-2 mt-8 opacity-60">
           <p>No bookings yet.</p>
@@ -75,6 +114,7 @@ function BookingsView() {
         </div>
       )}
 
+      {/* Bookings list — only confirmed bookings shown */}
       <ul className="list self-stretch">
         {bookings.map(booking => (
           <li key={booking.id} className="list-row items-center gap-4">
@@ -82,24 +122,50 @@ function BookingsView() {
               <span className="font-semibold">{booking.activityName}</span>
               <span className="text-sm opacity-70">{booking.trainerName}</span>
               <span className="text-xs opacity-50">
-                {booking.sessionDate instanceof Date
-                  ? booking.sessionDate.toLocaleDateString("en-AU")
-                  : String(booking.sessionDate).split("T")[0]
-                } at {booking.sessionTime?.slice(0, 5)}
+                {String(booking.sessionDate).split("T")[0]} at{" "}
+                {booking.sessionTime?.slice(0, 5)}
               </span>
               <span className="text-xs opacity-50">{booking.locationName}</span>
-              <span className={`badge badge-sm mt-1 ${
-                booking.status === "confirmed" ? "badge-success" :
-                booking.status === "cancelled" ? "badge-error" : "badge-neutral"
-              }`}>{booking.status}</span>
+              <span className="badge badge-success badge-sm mt-1">
+                confirmed
+              </span>
             </div>
-            {booking.status === "confirmed" && (
-              <button onClick={() => cancelBooking(booking.id)}
-                className="btn btn-error btn-sm">Cancel</button>
-            )}
+            <button
+              onClick={() => setConfirmCancel(booking.id)}
+              className="btn btn-error btn-sm">
+              Cancel
+            </button>
           </li>
         ))}
       </ul>
+
+      {/* Confirmation Modal — cancel booking */}
+      {confirmCancel && (
+        <div className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">Cancel Booking</h3>
+            <p className="py-4">
+              Are you sure you want to cancel this booking? This action cannot be undone.
+            </p>
+            <div className="modal-action">
+              <button
+                onClick={() => setConfirmCancel(null)}
+                className="btn btn-ghost">
+                Keep Booking
+              </button>
+              <button
+                onClick={doCancelBooking}
+                className="btn btn-error">
+                Cancel Booking
+              </button>
+            </div>
+          </div>
+          <div
+            className="modal-backdrop"
+            onClick={() => setConfirmCancel(null)}>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

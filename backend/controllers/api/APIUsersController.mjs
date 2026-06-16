@@ -17,17 +17,17 @@ export class APIUsersController {
 
   static {
     this.routes.get("/self",
-      APIAuthenticationController.restrict("any"),
+      APIAuthenticationController.restrict(["member", "trainer", "admin"]),
       APIUsersController.getAuthenticatedUser);
 
-    this.routes.put("/:id",
-      APIAuthenticationController.restrict("any"),
-      APIUsersController.updateProfile);
+     this.routes.put("/:id",
+       APIAuthenticationController.restrict(["member", "trainer", "admin"]),
+       APIUsersController.updateProfile);
 
     // PATCH — update a single field (new per feedback)
-    this.routes.patch("/:id",
-      APIAuthenticationController.restrict("any"),
-      APIUsersController.patchProfile);
+   this.routes.patch("/:id",
+  APIAuthenticationController.restrict(["member", "trainer", "admin"]),
+  APIUsersController.patchProfile);
   }
 
   /**

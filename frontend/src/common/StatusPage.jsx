@@ -1,8 +1,9 @@
 /**
  * StatusPage.jsx
  * Shows a status message when access is denied or login is required.
- * Used for: guests accessing /profile or /bookings
- *           trainers accessing /bookings
+ * Used for:
+ *  - Guests accessing /profile or /bookings (login required)
+ *  - Trainers accessing /bookings (unauthorised)
  */
 import { useNavigate } from "react-router";
 import { FaLock } from "react-icons/fa";
@@ -15,7 +16,9 @@ function StatusPage({ title = "Access Denied", message, actionLabel, actionPath 
       <h1 className="text-2xl font-bold text-center">{title}</h1>
       <p className="text-center opacity-70">{message}</p>
       {actionLabel && actionPath && (
-        <button onClick={() => navigate(actionPath)} className="btn btn-primary">
+        <button
+          onClick={() => navigate(actionPath)}
+          className="btn btn-primary mt-2">
           {actionLabel}
         </button>
       )}

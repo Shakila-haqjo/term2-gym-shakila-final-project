@@ -44,10 +44,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'dist')));
 
 // ── Session middleware (unchanged from Term 1) ───────────────────────────
-app.use(AuthController.middleware);
-
-// ── REST API routes (Term 2 - used by React frontend) ────────────────────
+// ── REST API routes FIRST — before any EJS middleware ────────────────────
 app.use("/api", APIController.routes);
+
+// ── Session middleware (EJS only - runs after API routes) ────────────────
+app.use(AuthController.middleware);
 
 // ── Redirect root to timetable/products ──────────────────────────────────
 app.get("/", (req, res) => {

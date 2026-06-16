@@ -11,28 +11,24 @@
  *   POST   /api/register      - Register new member account
  */
 
-import express from "express";
-import bcrypt from "bcryptjs";
+import express   from "express";
+import bcrypt    from "bcryptjs";
 import validator from "validator";
 import { UserModel } from "../../models/UserModel.mjs";
 
 export class APIAuthenticationController {
   static middleware = express.Router();
-  static routes = express.Router();
+  static routes     = express.Router();
 
   static {
-    // Middleware: checks x-auth-key header on every request (mirrors coffee)
     this.middleware.use(this.#APIAuthenticationProvider);
-
-    // Routes - same structure as coffee project
-    this.routes.post("/authenticate", this.handleAuthenticate);
+    this.routes.post("/authenticate",   this.handleAuthenticate);
     this.routes.delete("/authenticate", this.handleAuthenticate);
-    this.routes.post("/register", this.handleRegister);
+    this.routes.post("/register",       this.handleRegister);
   }
 
   /**
    * Middleware: reads x-auth-key header, looks up user, attaches to req.
-   * Mirrors coffee's #APIAuthenticationProvider exactly.
    * @private
    */
   static async #APIAuthenticationProvider(req, res, next) {
@@ -43,7 +39,6 @@ export class APIAuthenticationController {
         if (user) {
           req.authenticatedUser = user;
         } else {
-          // Key not found - mirrors coffee's "not found" error
           return res.status(404).json({
             message: "Failed to authenticate - key not found",
           });
@@ -61,8 +56,6 @@ export class APIAuthenticationController {
   /**
    * POST /api/authenticate  - Login
    * DELETE /api/authenticate - Logout
-   *
-   * Mirrors coffee's handleAuthenticate method exactly.
    *
    * @openapi
    * /api/authenticate:
@@ -96,28 +89,49 @@ export class APIAuthenticationController {
    *                            properties:
    *                                authenticationKey:
    *                                    type: string
-   *                                    example: "uuid-here"
+   *                                    example: "a3f8c2d1-7b4e-4f9a-8c3d-2e1f5b6a9d0c"
    *                                id:
    *                                    type: integer
-   *                                    example: 1
+   *                                    example: 3
    *                                name:
    *                                    type: string
    *                                    example: "Alice Smith"
+   *                                email:
+   *                                    type: string
+   *                                    example: "alice@gym.com"
    *                                role:
    *                                    type: string
    *                                    example: "member"
    *            '400':
-   *                description: "Invalid credentials"
+   *                description: "Invalid credentials or missing fields"
    *                content:
    *                    application/json:
    *                        schema:
-   *                            $ref: "#/components/schemas/Error"
+   *                            type: object
+   *                            properties:
+   *                                message:
+   *                                    type: string
+   *                                    example: "Invalid credentials"
+   *                                errors:
+   *                                    type: array
+   *                                    items:
+   *                                        type: string
+   *                                    example: ["Email or password is incorrect"]
    *            '500':
    *                description: "Server error"
    *                content:
    *                    application/json:
    *                        schema:
-   *                            $ref: "#/components/schemas/Error"
+   *                            type: object
+   *                            properties:
+   *                                message:
+   *                                    type: string
+   *                                    example: "Failed to authenticate user"
+   *                                errors:
+   *                                    type: array
+   *                                    items:
+   *                                        type: string
+   *                                    example: ["Database connection failed"]
    *    delete:
    *        summary: "Logout - clear authentication key"
    *        tags: [Authentication]
@@ -135,40 +149,58 @@ export class APIAuthenticationController {
    *                                    type: string
    *                                    example: "Logged out successfully"
    *            '401':
-   *                description: "Not authenticated"
+   *                description: "Not authenticated - no valid auth key provided"
    *                content:
    *                    application/json:
    *                        schema:
-   *                            $ref: "#/components/schemas/Error"
+   *                            type: object
+   *                            properties:
+   *                                message:
+   *                                    type: string
+   *                                    example: "Please login to access the requested resources"
+   *                                errors:
+   *                                    type: array
+   *                                    items:
+   *                                        type: string
+   *                                    example: ["Please authenticate to access this resource"]
    */
   static async handleAuthenticate(req, res) {
     if (req.method == "POST") {
-      // LOGIN - mirrors coffee's POST authenticate handler
       try {
         const { email, password } = req.body;
 
         if (!email || !password) {
-          return res.status(400).json({ message: "Email and password are required." });
+          return res.status(400).json({
+            message: "Email and password are required.",
+            errors: ["Both email and password must be provided"],
+          });
         }
         if (!validator.isEmail(email)) {
-          return res.status(400).json({ message: "Invalid email format." });
+          return res.status(400).json({
+            message: "Invalid email format.",
+            errors: ["Please provide a valid email address"],
+          });
         }
 
         const user = await UserModel.findByEmail(email.toLowerCase().trim());
         if (!user) {
-          return res.status(400).json({ message: "Invalid credentials" });
+          return res.status(400).json({
+            message: "Invalid credentials",
+            errors: ["Email or password is incorrect"],
+          });
         }
         if (user.status !== "active") {
-          return res.status(403).json({ message: "Account is inactive. Contact an admin." });
+          return res.status(403).json({
+            message: "Account is inactive. Contact an admin.",
+            errors: ["Account has been deactivated"],
+          });
         }
 
         const passwordMatch = await bcrypt.compare(password, user.password_hash);
         if (passwordMatch) {
-          // Generate UUID auth key - mirrors coffee project exactly
           const authenticationKey = crypto.randomUUID();
           await UserModel.setAuthKey(user.id, authenticationKey);
-
-          res.status(200).json({
+          return res.status(200).json({
             authenticationKey,
             id:    user.id,
             name:  user.name,
@@ -176,20 +208,26 @@ export class APIAuthenticationController {
             role:  user.role,
           });
         } else {
-          res.status(400).json({ message: "Invalid credentials" });
+          return res.status(400).json({
+            message: "Invalid credentials",
+            errors: ["Email or password is incorrect"],
+          });
         }
       } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Failed to authenticate user" });
+        return res.status(500).json({
+          message: "Failed to authenticate user",
+          errors: [String(error)],
+        });
       }
     } else if (req.method == "DELETE") {
-      // LOGOUT - mirrors coffee's DELETE authenticate handler exactly
       if (req.authenticatedUser) {
         await UserModel.setAuthKey(req.authenticatedUser.id, null);
-        res.status(200).json({ message: "Logged out successfully" });
+        return res.status(200).json({ message: "Logged out successfully" });
       } else {
-        res.status(401).json({
+        return res.status(401).json({
           message: "Please login to access the requested resources",
+          errors: ["Please authenticate to access this resource"],
         });
       }
     }
@@ -246,38 +284,86 @@ export class APIAuthenticationController {
    *                                    type: string
    *                                    example: "Registration successful"
    *            '400':
-   *                description: "Validation error"
+   *                description: "Validation error - missing or invalid fields"
    *                content:
    *                    application/json:
    *                        schema:
-   *                            $ref: "#/components/schemas/Error"
+   *                            type: object
+   *                            properties:
+   *                                message:
+   *                                    type: string
+   *                                    example: "Name is required and must be at least 2 characters."
+   *                                errors:
+   *                                    type: array
+   *                                    items:
+   *                                        type: string
+   *                                    example: ["Validation failed - check all required fields"]
    *            '409':
    *                description: "Email already registered"
    *                content:
    *                    application/json:
    *                        schema:
-   *                            $ref: "#/components/schemas/Error"
+   *                            type: object
+   *                            properties:
+   *                                message:
+   *                                    type: string
+   *                                    example: "An account with this email already exists."
+   *                                errors:
+   *                                    type: array
+   *                                    items:
+   *                                        type: string
+   *                                    example: ["Duplicate email - please use a different email address"]
+   *            '500':
+   *                description: "Server error"
+   *                content:
+   *                    application/json:
+   *                        schema:
+   *                            type: object
+   *                            properties:
+   *                                message:
+   *                                    type: string
+   *                                    example: "Registration failed. Please try again."
+   *                                errors:
+   *                                    type: array
+   *                                    items:
+   *                                        type: string
+   *                                    example: ["Database error"]
    */
   static async handleRegister(req, res) {
     const { name, email, password, phone, address } = req.body;
 
     if (!name || !email || !password) {
-      return res.status(400).json({ message: "Name, email, and password are required." });
+      return res.status(400).json({
+        message: "Name, email, and password are required.",
+        errors: ["All required fields must be provided"],
+      });
     }
     if (!validator.isEmail(email)) {
-      return res.status(400).json({ message: "Invalid email format." });
+      return res.status(400).json({
+        message: "Invalid email format.",
+        errors: ["Please provide a valid email address"],
+      });
     }
     if (!/^[a-zA-Z\-\' ]{2,}$/.test(name.trim())) {
-      return res.status(400).json({ message: "Invalid name." });
+      return res.status(400).json({
+        message: "Invalid name.",
+        errors: ["Name must be at least 2 characters and contain only letters"],
+      });
     }
     if (password.length < 6) {
-      return res.status(400).json({ message: "Password must be at least 6 characters." });
+      return res.status(400).json({
+        message: "Password must be at least 6 characters.",
+        errors: ["Password is too short"],
+      });
     }
 
     try {
       const existing = await UserModel.checkEmailExists(email.toLowerCase().trim());
       if (existing) {
-        return res.status(409).json({ message: "Email is already registered." });
+        return res.status(409).json({
+          message: "An account with this email already exists.",
+          errors: ["Duplicate email - please use a different email address"],
+        });
       }
 
       const hash     = await bcrypt.hash(password, 10);
@@ -294,20 +380,22 @@ export class APIAuthenticationController {
       return res.status(200).json({ id: insertId, message: "Registration successful" });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: "Registration failed. Please try again." });
+      return res.status(500).json({
+        message: "Registration failed. Please try again.",
+        errors: [String(error)],
+      });
     }
   }
 
   /**
-   * Restrict routes by role - mirrors coffee project exactly.
+   * Restrict routes by role.
    * @param {Array<"member"|"trainer"|"admin"> | "any"} allowedRoles
-   * @returns {express.RequestHandler}
    */
   static restrict(allowedRoles) {
     return function (req, res, next) {
       if (req.authenticatedUser) {
         if (
-          allowedRoles == "any" ||
+          allowedRoles === "any" ||
           allowedRoles.includes(req.authenticatedUser.role)
         ) {
           next();

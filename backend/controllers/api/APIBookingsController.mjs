@@ -387,12 +387,12 @@ export class APIBookingsController {
         [memberId]
       );
 
-      // XML 1.0 with DTD (per feedback)
+      // XML 1.0 with DTD and copyright as XML tag (per feedback)
       let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
-      xml    += `<!-- Copyright (c) ${new Date().getFullYear()} High Street Gym. All rights reserved. -->\n`;
       xml    += `<!DOCTYPE bookings [\n`;
-      xml    += `  <!ELEMENT bookings (booking*)>\n`;
+      xml    += `  <!ELEMENT bookings (copyright, booking*)>\n`;
       xml    += `  <!ATTLIST bookings exportDate CDATA #REQUIRED member CDATA #REQUIRED>\n`;
+      xml    += `  <!ELEMENT copyright (#PCDATA)>\n`;
       xml    += `  <!ELEMENT booking (status, createdAt, session, activity, location, trainer)>\n`;
       xml    += `  <!ATTLIST booking id CDATA #REQUIRED>\n`;
       xml    += `  <!ELEMENT status (#PCDATA)>\n`;
@@ -407,6 +407,7 @@ export class APIBookingsController {
       xml    += `  <!ELEMENT trainer (#PCDATA)>\n`;
       xml    += `]>\n`;
       xml    += `<bookings exportDate="${exportDate}" member="${APIBookingsController.escapeXml(memberName)}">\n`;
+      xml    += `  <copyright>Copyright (c) ${new Date().getFullYear()} High Street Gym. All rights reserved.</copyright>\n`;
 
       for (const b of bookings) {
         const d = b.session_date instanceof Date
