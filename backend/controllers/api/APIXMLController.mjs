@@ -25,12 +25,43 @@ export class APIXMLController {
    *            - ApiKey: []
    *        responses:
    *            '200':
-   *                description: "XML export of trainer sessions with DTD and copyright"
+   *                description: "XML export of trainer sessions with DTD and copyright tag"
    *                content:
-   *                    text/xml:
+   *                    text/plain:
    *                        schema:
    *                            type: string
-   *                        example: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<copyright>Copyright (c) 2026 High Street Gym. All rights reserved.</copyright>\n<!DOCTYPE sessions [\n  <!ELEMENT sessions (copyright, session*)>\n  <!ATTLIST sessions exportDate CDATA #REQUIRED trainer CDATA #REQUIRED>\n  <!ELEMENT session (name, activity, location, date, time, durationMinutes, maxParticipants, bookedCount, description)>\n  <!ATTLIST session id CDATA #REQUIRED>\n  <!ELEMENT name (#PCDATA)>\n  <!ELEMENT activity (#PCDATA)>\n  <!ELEMENT location (#PCDATA)>\n  <!ELEMENT date (#PCDATA)>\n  <!ELEMENT time (#PCDATA)>\n  <!ELEMENT durationMinutes (#PCDATA)>\n  <!ELEMENT maxParticipants (#PCDATA)>\n  <!ELEMENT bookedCount (#PCDATA)>\n  <!ELEMENT description (#PCDATA)>\n]>\n<sessions exportDate=\"2026-06-16\" trainer=\"Sarah Johnson\">\n  <session id=\"1\">\n    <name>Morning Yoga</name>\n    <activity>Yoga</activity>\n    <location>Studio A</location>\n    <date>2026-06-19</date>\n    <time>09:00:00</time>\n    <durationMinutes>60</durationMinutes>\n    <maxParticipants>20</maxParticipants>\n    <bookedCount>5</bookedCount>\n    <description>Relaxing morning yoga</description>\n  </session>\n</sessions>"
+   *                            example: |
+   *                                <?xml version="1.0" encoding="UTF-8"?>
+   *                                <!DOCTYPE sessions [
+   *                                  <!ELEMENT sessions (copyright, session*)>
+   *                                  <!ATTLIST sessions exportDate CDATA #REQUIRED trainer CDATA #REQUIRED>
+   *                                  <!ELEMENT copyright (#PCDATA)>
+   *                                  <!ELEMENT session (name, activity, location, date, time, durationMinutes, maxParticipants, bookedCount, description)>
+   *                                  <!ATTLIST session id CDATA #REQUIRED>
+   *                                  <!ELEMENT name (#PCDATA)>
+   *                                  <!ELEMENT activity (#PCDATA)>
+   *                                  <!ELEMENT location (#PCDATA)>
+   *                                  <!ELEMENT date (#PCDATA)>
+   *                                  <!ELEMENT time (#PCDATA)>
+   *                                  <!ELEMENT durationMinutes (#PCDATA)>
+   *                                  <!ELEMENT maxParticipants (#PCDATA)>
+   *                                  <!ELEMENT bookedCount (#PCDATA)>
+   *                                  <!ELEMENT description (#PCDATA)>
+   *                                ]>
+   *                                <sessions exportDate="2026-06-17" trainer="Sarah Johnson">
+   *                                  <copyright>Copyright (c) 2026 High Street Gym. All rights reserved.</copyright>
+   *                                  <session id="1">
+   *                                    <name>Morning Yoga</name>
+   *                                    <activity>Yoga</activity>
+   *                                    <location>Studio A</location>
+   *                                    <date>2026-06-19</date>
+   *                                    <time>09:00:00</time>
+   *                                    <durationMinutes>60</durationMinutes>
+   *                                    <maxParticipants>20</maxParticipants>
+   *                                    <bookedCount>5</bookedCount>
+   *                                    <description>Relaxing morning yoga session</description>
+   *                                  </session>
+   *                                </sessions>
    *            '401':
    *                description: "Not authenticated"
    *                content:
@@ -84,7 +115,6 @@ export class APIXMLController {
       const exportDate = new Date().toISOString().split("T")[0];
       const year       = new Date().getFullYear();
 
-      // XML 1.0 with DTD — copyright as XML tag (not comment)
       let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
       xml    += `<!DOCTYPE sessions [\n`;
       xml    += `  <!ELEMENT sessions (copyright, session*)>\n`;
@@ -128,7 +158,10 @@ export class APIXMLController {
         .send(xml);
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: "Failed to export sessions as XML", errors: [String(error)] });
+      return res.status(500).json({
+        message: "Failed to export sessions as XML",
+        errors:  [String(error)]
+      });
     }
   }
 

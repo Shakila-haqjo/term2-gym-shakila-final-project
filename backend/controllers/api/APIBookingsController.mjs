@@ -230,7 +230,9 @@ export class APIBookingsController {
     if (me.role === "member" && me.id !== requestedMemberId)
       return res.status(403).json({ message: "You can only view your own bookings.", errors: ["Access forbidden"] });
     try {
-      const bookings = await BookingModel.listBookings({ userId: requestedMemberId });
+      const allBookings = await BookingModel.listBookings({ userId: requestedMemberId });
+      // Only return confirmed bookings — cancelled ones should not appear
+      const bookings = allBookings.filter(b => b.status === "confirmed");
       const data = bookings.map(b => ({
         id:              b.id,
         status:          b.status,
@@ -255,7 +257,7 @@ export class APIBookingsController {
    * @openapi
    * /api/bookings/{id}:
    *    delete:
-   *        summary: "Cancel a booking"
+   *        summary: "Cancel and delete a booking (removes from active bookings)"
    *        tags: [Bookings]
    *        security:
    *            - ApiKey: []
@@ -322,8 +324,8 @@ export class APIBookingsController {
       if (!booking) return res.status(404).json({ message: "Booking not found.", errors: ["No booking with that ID exists"] });
       if (me.role === "member" && booking.user_id !== me.id)
         return res.status(403).json({ message: "You can only cancel your own bookings.", errors: ["Access forbidden"] });
-      await BookingModel.cancelBooking(bookingId);
-      return res.status(200).json({ message: "Booking cancelled" });
+      await BookingModel.deleteBooking(bookingId);
+      return res.status(200).json({ message: "Booking deleted" });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: "Failed to cancel booking", errors: [String(error)] });
@@ -340,30 +342,76 @@ export class APIBookingsController {
    *            - ApiKey: []
    *        responses:
    *            '200':
-   *                description: "XML export of bookings with DTD and activity data"
+   *                description: "XML export of member bookings with DTD and copyright tag"
    *                content:
-   *                    text/xml:
+   *                    text/plain:
    *                        schema:
    *                            type: string
-   *                            example: "<?xml version='1.0'?><bookings>...</bookings>"
+   *                            example: |
+   *                                <?xml version="1.0" encoding="UTF-8"?>
+   *                                <!DOCTYPE bookings [
+   *                                  <!ELEMENT bookings (copyright, booking*)>
+   *                                  <!ATTLIST bookings exportDate CDATA #REQUIRED member CDATA #REQUIRED>
+   *                                  <!ELEMENT copyright (#PCDATA)>
+   *                                  <!ELEMENT booking (status, createdAt, session, activity, location, trainer)>
+   *                                  <!ATTLIST booking id CDATA #REQUIRED>
+   *                                  <!ELEMENT status (#PCDATA)>
+   *                                  <!ELEMENT createdAt (#PCDATA)>
+   *                                  <!ELEMENT session (name, date, time, durationMinutes)>
+   *                                  <!ELEMENT name (#PCDATA)>
+   *                                  <!ELEMENT date (#PCDATA)>
+   *                                  <!ELEMENT time (#PCDATA)>
+   *                                  <!ELEMENT durationMinutes (#PCDATA)>
+   *                                  <!ELEMENT activity (#PCDATA)>
+   *                                  <!ELEMENT location (#PCDATA)>
+   *                                  <!ELEMENT trainer (#PCDATA)>
+   *                                ]>
+   *                                <bookings exportDate="2026-06-17" member="Alice Smith">
+   *                                  <copyright>Copyright (c) 2026 High Street Gym. All rights reserved.</copyright>
+   *                                  <booking id="1">
+   *                                    <status>confirmed</status>
+   *                                    <createdAt>2026-06-09</createdAt>
+   *                                    <session>
+   *                                      <name>Morning Yoga</name>
+   *                                      <date>2026-06-19</date>
+   *                                      <time>09:00:00</time>
+   *                                      <durationMinutes>60</durationMinutes>
+   *                                    </session>
+   *                                    <activity>Yoga</activity>
+   *                                    <location>Studio A</location>
+   *                                    <trainer>Sarah Johnson</trainer>
+   *                                  </booking>
+   *                                </bookings>
    *            '401':
    *                description: "Not authenticated"
    *                content:
    *                    application/json:
    *                        schema:
-   *                            $ref: "#/components/schemas/Error"
-   *                        example:
-   *                            message: "Not authenticated"
-   *                            errors: ["Please authenticate to access this resource"]
+   *                            type: object
+   *                            properties:
+   *                                message:
+   *                                    type: string
+   *                                    example: "Not authenticated"
+   *                                errors:
+   *                                    type: array
+   *                                    items:
+   *                                        type: string
+   *                                    example: ["Please authenticate to access this resource"]
    *            '500':
    *                description: "Server error"
    *                content:
    *                    application/json:
    *                        schema:
-   *                            $ref: "#/components/schemas/Error"
-   *                        example:
-   *                            message: "Failed to export bookings as XML"
-   *                            errors: ["Database error"]
+   *                            type: object
+   *                            properties:
+   *                                message:
+   *                                    type: string
+   *                                    example: "Failed to export bookings as XML"
+   *                                errors:
+   *                                    type: array
+   *                                    items:
+   *                                        type: string
+   *                                    example: ["Database error"]
    */
   static async getBookingsXML(req, res) {
     try {
@@ -387,12 +435,12 @@ export class APIBookingsController {
         [memberId]
       );
 
-      // XML 1.0 with DTD and copyright as XML tag (per feedback)
+      // XML 1.0 with DTD (per feedback)
       let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
       xml    += `<!DOCTYPE bookings [\n`;
       xml    += `  <!ELEMENT bookings (copyright, booking*)>\n`;
-      xml    += `  <!ATTLIST bookings exportDate CDATA #REQUIRED member CDATA #REQUIRED>\n`;
       xml    += `  <!ELEMENT copyright (#PCDATA)>\n`;
+      xml    += `  <!ATTLIST bookings exportDate CDATA #REQUIRED member CDATA #REQUIRED>\n`;
       xml    += `  <!ELEMENT booking (status, createdAt, session, activity, location, trainer)>\n`;
       xml    += `  <!ATTLIST booking id CDATA #REQUIRED>\n`;
       xml    += `  <!ELEMENT status (#PCDATA)>\n`;
