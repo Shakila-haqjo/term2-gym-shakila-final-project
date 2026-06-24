@@ -1,3 +1,4 @@
+
 /**
  * APIBookingsController.mjs
  * POST   /api/bookings              - Create booking (member)
@@ -480,8 +481,8 @@ export class APIBookingsController {
       }
       xml += `</bookings>\n`;
 
-      return res.status(200).contentType("text/xml")
-        .set("Content-Disposition", 'attachment; filename="my-bookings.xml"')
+      return res.status(200).contentType("text/plain")
+        .set("Content-Disposition", 'inline; filename="my-bookings.xml"')
         .send(xml);
     } catch (error) {
       console.error("XML export error:", error);

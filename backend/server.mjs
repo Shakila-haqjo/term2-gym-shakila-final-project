@@ -28,11 +28,20 @@ const PORT = process.env.PORT || 3000;
 
 // ── CORS - allows React dev server (port 5173) to call this server ──────────
 // Mirrors coffee project's cors setup exactly
-app.use(
-  cors({
-    origin: true,
-  }),
-);
+
+const corsOptions = {
+  origin: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "x-auth-key", "x-test-header"],
+};
+
+app.use(cors(corsOptions));
+
+// Explicitly handle OPTIONS preflight requests for all routes
+app.options(/.*/, cors(corsOptions));
+
+
+
 
 // ── View engine (EJS for admin pages - unchanged from Term 1) ─────────────
 app.set('view engine', 'ejs');
@@ -45,6 +54,7 @@ app.use(express.static(path.join(__dirname, 'dist')));
 
 // ── Session middleware (unchanged from Term 1) ───────────────────────────
 // ── REST API routes FIRST — before any EJS middleware ────────────────────
+
 app.use("/api", APIController.routes);
 
 // ── Session middleware (EJS only - runs after API routes) ────────────────

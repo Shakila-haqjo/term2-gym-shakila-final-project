@@ -153,8 +153,8 @@ export class APIXMLController {
       }
       xml += `</sessions>\n`;
 
-      return res.status(200).contentType("text/xml")
-        .set("Content-Disposition", 'attachment; filename="my-sessions.xml"')
+      return res.status(200).contentType("text/plain")
+        .set("Content-Disposition", 'inline; filename="my-sessions.xml"')
         .send(xml);
     } catch (error) {
       console.error(error);
